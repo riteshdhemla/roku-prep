@@ -50,6 +50,7 @@ offline.
 default branch, and can also be run manually from the Actions tab. All links are relative, so
 the site works served from the `/roku-prep/` subpath.
 
-One-time setup, in **Settings → Pages**, set **Source** to **GitHub Actions**. Pages on a
-private repository requires a paid plan; on a free account, make the repo public first.
+The workflow enables Pages itself on its first successful run, so no manual Settings step is
+needed. Pages on a private repository requires a paid plan, though — on a free account, make
+the repo public first (**Settings → General → Change visibility**), then re-run the workflow.
 

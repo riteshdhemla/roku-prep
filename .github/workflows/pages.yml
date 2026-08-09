@@ -26,10 +26,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
+      # enablement turns Pages on via the API on the first run, so the
+      # repository needs no manual Settings step.
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       # The site is plain static HTML, so the repo root is the artifact as-is.
       - name: Upload site
