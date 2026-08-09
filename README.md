@@ -43,3 +43,13 @@ python3 -m http.server 8000
 
 The only external requests are Google Fonts stylesheets; the pages fall back to system fonts
 offline.
+
+## Deployment
+
+`.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to the
+default branch, and can also be run manually from the Actions tab. All links are relative, so
+the site works served from the `/roku-prep/` subpath.
+
+One-time setup, in **Settings → Pages**, set **Source** to **GitHub Actions**. Pages on a
+private repository requires a paid plan; on a free account, make the repo public first.
+
