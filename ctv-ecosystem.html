@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How a CTV ad actually gets served &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">01</div><div class="kicker">Domain foundation</div></div>
+  <h1>How a CTV ad actually gets served</h1>
+  <p class="why">Every Spark job and SQL query in the rest of this site operates on tables produced by this pipeline. If you can name where a row comes from and why it might be missing, duplicated, or wrong, your design answers stop being generic.</p>
+  <div class="tags"><span class="tag">Both panels</span><span class="tag">Domain</span><span class="tag">Read first</span></div>
+</header>
+<section><h2>The request path, end to end</h2>
+<p>A viewer starts a show on a connected TV. Roughly this happens:</p>
+<ol>
+<li><strong>Ad break signalled.</strong> The player or the streaming server reaches a cue point in the content &mdash; often an SCTE-35 marker carried in the stream.</li>
+<li><strong>Ad request.</strong> The publisher's ad server is asked to fill a break. It carries device identifier, app/channel, content metadata, geo, and pod parameters (break duration, number of slots).</li>
+<li><strong>Auction.</strong> The publisher's SSP issues an <strong>OpenRTB bid request</strong> to many DSPs. Each DSP decides whether to bid, at what price, with which creative. First-price is now standard. This produces a <em>bid request log</em> and a <em>bid response log</em>, both enormous &mdash; typically 10&ndash;100&times; the impression volume, since most requests don't become impressions.</li>
+<li><strong>VAST response.</strong> The winner returns a <strong>VAST</strong> XML document: the creative's media file URLs plus a list of tracking URLs (beacons).</li>
+<li><strong>Stitching or client playback.</strong> Either the client player fetches and plays the creative, or a server stitches it into the stream (see SSAI below).</li>
+<li><strong>Beacons fire.</strong> As playback progresses, HTTP calls hit tracking endpoints: <code>impression</code>, <code>start</code>, <code>firstQuartile</code>, <code>midpoint</code>, <code>thirdQuartile</code>, <code>complete</code>, plus error beacons.</li>
+<li><strong>Logs land.</strong> Beacon hits become the impression log &mdash; the billing-grade record. Everything downstream is derived from it.</li>
+</ol>
+<div class="k"><b>The consequence for your pipelines</b><p>An impression is not a single event. It is a <em>set</em> of beacon events that must be assembled, deduplicated, and reconciled against the auction record. Most CTV data quality work is exactly this join.</p></div>
+<figure><svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Ad request path from device through auction to beacon logs">
+<defs><marker id="a1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+<path d="M0,0 L7,3.5 L0,7 z" fill="#4FD1C5"/></marker></defs>
+<g>
+<rect class="svg-box" x="4"   y="40" width="96" height="42" rx="3"/>
+<rect class="svg-box" x="128" y="40" width="96" height="42" rx="3"/>
+<rect class="svg-box" x="252" y="40" width="96" height="42" rx="3"/>
+<rect class="svg-box" x="376" y="40" width="96" height="42" rx="3"/>
+<rect class="svg-box" x="500" y="40" width="96" height="42" rx="3"/>
+<rect class="svg-box" x="600" y="40" width="96" height="42" rx="3"/>
+<text class="svg-t" x="52"  y="58" text-anchor="middle">TV / player</text>
+<text class="svg-s" x="52"  y="72" text-anchor="middle">cue point</text>
+<text class="svg-t" x="176" y="58" text-anchor="middle">Ad server</text>
+<text class="svg-s" x="176" y="72" text-anchor="middle">pod params</text>
+<text class="svg-t" x="300" y="58" text-anchor="middle">SSP auction</text>
+<text class="svg-s" x="300" y="72" text-anchor="middle">OpenRTB</text>
+<text class="svg-t" x="424" y="58" text-anchor="middle">Winner</text>
+<text class="svg-s" x="424" y="72" text-anchor="middle">VAST XML</text>
+<text class="svg-t" x="548" y="58" text-anchor="middle">SSAI stitch</text>
+<text class="svg-s" x="548" y="72" text-anchor="middle">or client</text>
+<text class="svg-t" x="648" y="58" text-anchor="middle">Beacons</text>
+<text class="svg-s" x="648" y="72" text-anchor="middle">q1..complete</text>
+<path class="svg-cool" marker-end="url(#a1)" d="M100 61 H124"/>
+<path class="svg-cool" marker-end="url(#a1)" d="M224 61 H248"/>
+<path class="svg-cool" marker-end="url(#a1)" d="M348 61 H372"/>
+<path class="svg-cool" marker-end="url(#a1)" d="M472 61 H496"/>
+<path class="svg-cool" marker-end="url(#a1)" d="M596 61 H596"/>
+</g>
+<g>
+<rect class="svg-box" x="252" y="128" width="96" height="34" rx="3"/>
+<rect class="svg-box" x="376" y="128" width="96" height="34" rx="3"/>
+<rect class="svg-box" x="600" y="128" width="96" height="34" rx="3"/>
+<text class="svg-l" x="300" y="149" text-anchor="middle">bid_requests</text>
+<text class="svg-l" x="424" y="149" text-anchor="middle">auctions</text>
+<text class="svg-l" x="648" y="149" text-anchor="middle">impressions</text>
+<path class="svg-dash" d="M300 82 V128"/>
+<path class="svg-dash" d="M424 82 V128"/>
+<path class="svg-dash" d="M648 82 V128"/>
+<text class="svg-s" x="4" y="152">tables produced</text>
+</g>
+<text class="svg-s" x="4" y="24">one ad break</text>
+</svg><figcaption><b>The request path</b>Each arrow is a network hop that can fail, time out, or be retried. The tables below the line are what your queries actually read &mdash; and an impression is assembled from beacons rather than emitted as one event.</figcaption></figure></section>
+<section><h2>Ad pods, and why they change every query</h2>
+<p>Linear TV has commercial breaks; CTV inherited them as <strong>pods</strong>. A single break might be 90 seconds holding four to six ad slots. This is the structural difference from web display, and it shows up everywhere.</p>
+<ul>
+<li><strong>Pod position matters.</strong> The first slot in a break performs differently from the last; queries that ignore <code>pod_position</code> mix incomparable inventory.</li>
+<li><strong>Competitive separation.</strong> Two car ads cannot share a pod. This is a constraint the decisioning system enforces, and a reason a bid can win the auction and still not serve.</li>
+<li><strong>Pod-level frequency.</strong> Capping must consider the break as a unit, not just the day &mdash; the same ad twice in one pod is a visible failure.</li>
+<li><strong>Partial pods.</strong> Unfilled slots are a fill-rate problem, and a break that ends early because the viewer abandoned produces truncated beacon sequences.</li>
+</ul>
+<p>So the natural grain of a CTV impression table is <code>(session, break, pod_position)</code>, not just <code>(user, ad)</code> &mdash; and a design that assumes one ad per request will get corrected.</p>
+<figure><svg viewBox="0 0 700 150" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Ad pod structure with four slots between content segments">
+<rect class="svg-box" x="4" y="40" width="150" height="40" rx="3"/>
+<text class="svg-l" x="79" y="65" text-anchor="middle">content</text>
+<g>
+<rect x="162" y="40" width="126" height="40" rx="3" fill="#241C13" stroke="#F4A259"/>
+<rect x="292" y="40" width="126" height="40" rx="3" fill="#241C13" stroke="#F4A259"/>
+<rect x="422" y="40" width="60" height="40" rx="3" fill="#241C13" stroke="#F4A259"/>
+<rect x="486" y="40" width="60" height="40" rx="3" fill="#241C13" stroke="#F4A259"/>
+<text class="svg-t" x="225" y="65" text-anchor="middle">slot 1</text>
+<text class="svg-t" x="355" y="65" text-anchor="middle">slot 2</text>
+<text class="svg-t" x="452" y="65" text-anchor="middle">3</text>
+<text class="svg-t" x="516" y="65" text-anchor="middle">4</text>
+</g>
+<rect class="svg-box" x="554" y="40" width="142" height="40" rx="3"/>
+<text class="svg-l" x="625" y="65" text-anchor="middle">content</text>
+<path class="svg-hot" d="M162 92 V102 H546 V92"/>
+<text class="svg-l" x="354" y="120" text-anchor="middle" fill="#F4A259">one pod &mdash; 90s, 4 slots</text>
+<text class="svg-s" x="225" y="34" text-anchor="middle">highest value</text>
+<text class="svg-s" x="516" y="34" text-anchor="middle">drop-off risk</text>
+<text class="svg-s" x="4" y="140">grain = (session, break, pod_position)</text>
+</svg><figcaption><b>Pod structure</b>A break holds several slots, so the natural grain is (session, break, pod_position). Position drives value and drop-off; competitive separation is enforced across slots in the same pod.</figcaption></figure></section>
+<section><h2>SSAI, and the identity problem it creates</h2>
+<p><strong>Server-side ad insertion</strong> stitches ads into the video stream on a server so the viewer sees one continuous stream and ad blockers can't distinguish content from ads. It is how most premium CTV inventory is delivered.</p>
+<p>The cost is that the <em>server</em>, not the device, now sits between you and the viewer:</p>
+<ul>
+<li><strong>Beacons fire from the stitcher</strong>, so the source IP and user agent belong to the SSAI vendor's infrastructure rather than the household. If you build identity on IP, SSAI traffic collapses onto a handful of data-centre IPs &mdash; a classic cause of the million-device identity component from stage 03.</li>
+<li><strong>Identifiers must be passed explicitly</strong> through the request chain. Missing or malformed device IDs are common, and they arrive as nulls, zeros, or all-Fs sentinels.</li>
+<li><strong>Impression counting is server-asserted.</strong> A beacon means the stitcher believed the ad was delivered, which is not identical to the viewer watching it. Discrepancy reconciliation between publisher, SSP, and DSP counts is a permanent operational activity, and 2&ndash;10% gaps are normal.</li>
+</ul>
+<div class="k"><b>Interview-ready line</b><p>"SSAI means the impression beacon originates from infrastructure, not from the household &mdash; so I'd treat IP as an unreliable identity signal on that traffic and require the passed-through device identifier, with the sentinel values denylisted."</p></div></section>
+<section><h2>Identifiers, co-viewing, and what "a user" means</h2>
+<p>CTV device identifiers are platform-specific: Roku's RIDA, Samsung's TIFA, Amazon's device ID, Vizio's, and so on &mdash; each resettable by the viewer, each namespaced per platform. There is no cross-platform cookie equivalent, which is precisely why identity graphs (stage 09) matter more here than on web.</p>
+<p><strong>ACR</strong> &mdash; automatic content recognition &mdash; is the other distinctive CTV data source: the TV fingerprints what is on screen, including linear broadcast, giving exposure data no ad server sees.</p>
+<p>Two conceptual traps worth naming before an interviewer does:</p>
+<p><strong>The device is a household, not a person.</strong> One living-room TV is shared. Person-level targeting on a shared screen is an inference, not an observation, and any experiment randomised at the individual level leaks across the household.</p>
+<p><strong>Co-viewing means one impression reaches multiple people.</strong> Reach computed from device counts <em>understates</em> human reach, sometimes by 1.5&ndash;2&times;. Some measurement systems apply a co-viewing factor, usually panel-derived. If an interviewer asks how you'd compute reach and you answer "distinct devices" without flagging this, you've answered the web question.</p></section>
+<section><h2>The tables you will be asked to work with</h2>
+<table>
+<tr><th>Table</th><th>Grain</th><th>Volume shape</th><th>Gotchas</th></tr>
+<tr><td><code>bid_requests</code></td><td>One row per opportunity sent to DSPs</td><td>Largest by far</td><td>Most never serve; huge, wide, often sampled</td></tr>
+<tr><td><code>bid_responses</code></td><td>One row per DSP bid</td><td>Multiple per request</td><td>Join back to request; timeouts appear as absences</td></tr>
+<tr><td><code>auctions</code></td><td>One row per resolved auction</td><td>&lt; requests</td><td>Winner, clearing price, loss reasons</td></tr>
+<tr><td><code>impressions</code></td><td>One row per beacon fire</td><td>&lt; auctions (fill, errors, abandonment)</td><td>Duplicates from retries; billing-grade</td></tr>
+<tr><td><code>quartiles</code> / events</td><td>One row per playback milestone</td><td>~4&times; impressions</td><td>Out-of-order arrival; missing <code>complete</code> is normal</td></tr>
+<tr><td><code>delivery_state</code></td><td>Campaign &times; time bucket</td><td>Small</td><td>Pacing, budget spent, mutable</td></tr>
+<tr><td><code>avails_forecast</code></td><td>Inventory segment &times; future period</td><td>Small</td><td>Your forecasting work lands here</td></tr>
+</table>
+<p><strong>Guaranteed vs non-guaranteed</strong> is the commercial split that drives forecasting: guaranteed deals promise a specific impression count to an advertiser, so under-delivery is a contractual failure and over-delivery is unpaid inventory. That asymmetry is why quantile forecasts and calibrated intervals matter more than point accuracy &mdash; and it is the natural bridge to your Samsung work.</p>
+<figure><svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Volume funnel from bid requests down to completions">
+<g>
+<rect x="120" y="12"  width="560" height="26" rx="2" fill="#1E2733" stroke="#2E3545"/>
+<rect x="120" y="48"  width="330" height="26" rx="2" fill="#1E2733" stroke="#2E3545"/>
+<rect x="120" y="84"  width="150" height="26" rx="2" fill="#1E2733" stroke="#2E3545"/>
+<rect x="120" y="120" width="90"  height="26" rx="2" fill="#182A2A" stroke="#4FD1C5"/>
+<rect x="120" y="156" width="76"  height="26" rx="2" fill="#182A2A" stroke="#4FD1C5"/>
+<text class="svg-l" x="112" y="30"  text-anchor="end">bid_requests</text>
+<text class="svg-l" x="112" y="66"  text-anchor="end">bid_responses</text>
+<text class="svg-l" x="112" y="102" text-anchor="end">auctions won</text>
+<text class="svg-l" x="112" y="138" text-anchor="end">impressions</text>
+<text class="svg-l" x="112" y="174" text-anchor="end">completions</text>
+<text class="svg-s" x="690" y="30"  text-anchor="end">~100&times;</text>
+<text class="svg-s" x="460" y="66">fill / timeout loss</text>
+<text class="svg-s" x="280" y="102">lost auctions</text>
+<text class="svg-s" x="220" y="138">errors, abandonment</text>
+<text class="svg-s" x="206" y="174">drop-off</text>
+</g>
+<path class="svg-dash" d="M120 190 H680"/>
+<text class="svg-s" x="120" y="208">billing-grade records live only in the bottom two bands</text>
+</svg><figcaption><b>Volume funnel</b>Bid requests dwarf everything downstream, which is why they are sampled rather than retained whole. Only the bottom two bands are billing-grade.</figcaption></figure></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Impressions in our log are 8% higher than the DSP's count for the same campaign. Where do you look?</div>
+    <div class="hint">Enumerate causes by where in the chain they arise.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>An 8% gap is within the normal band for CTV, so I'd frame it as reconciliation rather than a bug, then enumerate causes by position in the chain.</p>
+<ul>
+<li><strong>Counting point differs.</strong> We may count the impression beacon at ad start; they may count on a viewability or completion threshold. Different definitions, both correct.</li>
+<li><strong>Deduplication differs.</strong> Beacon retries are common; if we dedup on a 1-hour window and they dedup on the day, our number is higher.</li>
+<li><strong>Filtering differs.</strong> Invalid traffic exclusion, bot lists, and known-bad device sentinels are applied at different points and with different lists.</li>
+<li><strong>Timezone and day boundary.</strong> An 8% shift is consistent with a boundary offset if delivery is uneven across the day.</li>
+<li><strong>Loss in transit.</strong> Their beacon endpoint dropping requests under load shows up as our surplus.</li>
+</ul>
+<p>Practically I'd reconcile on one campaign for one hour and trace a sample of specific impression IDs through both systems, rather than argue about aggregates &mdash; the mismatch is nearly always definitional and a hundred rows will show it.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">It's not 8%, it's 40%, and only on one publisher.</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Then it's a defect, not a definitional gap, and the single-publisher scoping is the most useful clue &mdash; it rules out anything in our shared logic and points at that integration.</p><p>The candidates I'd check in order: are they double-firing beacons, either from a misconfigured VAST wrapper or a player retrying without an idempotency key? Is SSAI in the path re-requesting on stream restarts, so one viewer session generates multiple impression events? Is the device identifier absent for that publisher, which would break our dedup entirely because we'd have no key to dedup on? And is the publisher's traffic disproportionately from one IP range, suggesting a stitcher or a proxy inflating what looks like distinct sessions?</p><p>The fastest discriminator is to pull raw beacons for a handful of sessions from that publisher and look at the actual sequence. If one <code>impression</code> beacon appears five times with the same parameters seconds apart, that's a retry problem; if it appears with distinct IDs, it's a re-request problem, and those have different fixes.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Design frequency capping for CTV. What's different from web?</div>
+    <div class="hint">Two things: the shared screen, and the pod.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>Two structural differences change the design.</p>
+<p><strong>The unit is a household, not a person.</strong> The device identifies a TV that several people watch. So a cap of three per day is a cap on household exposures, and if the product intent is per-person, we cannot deliver that from device data alone &mdash; we'd need a co-viewing model, and I'd want that stated rather than implied.</p>
+<p><strong>Pods create a second capping level.</strong> Beyond daily caps, you need per-break constraints: no repeat of the same creative in a pod, and typically no repeat within a content session. That's a decisioning-time constraint evaluated across the slots in the break simultaneously, not a simple counter.</p>
+<p>Mechanically: a per-(device, campaign, day) counter with TTL for the daily cap, plus per-pod state held for the duration of the break. Given ad serving is latency-critical and distributed, I'd accept slight overshoot from eventual consistency across regions rather than put a coordination round-trip in the serve path &mdash; and I'd size the overshoot against the contractual meaning of the cap.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Same household streams on the TV and on a phone. Same cap?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>That's the identity graph question, and the answer depends on what we can defensibly link. If the phone and TV resolve to the same household in the graph &mdash; via shared account login, which is the strong signal, or shared residential IP, which is weaker &mdash; then the cap should apply at the household level and be enforced across both.</p><p>But I'd flag the precision risk. IP-based linking on mobile is unreliable: the phone leaves the house and joins other networks, carrier NAT groups unrelated households together, and SSAI traffic doesn't carry a household IP at all. Over-merging here means we cap a household we've wrongly assembled and under-deliver to real viewers.</p><p>So my proposal would be to enforce cross-device capping only on deterministic links (authenticated account), and treat probabilistic links as advisory &mdash; usable for reporting reach, not for a hard delivery constraint. That's the general precision-versus-recall posture from the identity stage, applied to a case where the cost of a wrong merge is measurable in undelivered impressions.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Why is your bid request table a hundred times bigger than your impression table, and what do you do about it?</div>
+    <div class="hint">They want to see whether you'd store it all.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>Because every ad opportunity is offered to many DSPs and most opportunities never serve &mdash; no bid clears, another bidder wins, the pod fills elsewhere, or the viewer abandons. The funnel from request to impression is steep by design.</p>
+<p>What I'd do with it depends on the use case, and I wouldn't store it uniformly:</p>
+<ul>
+<li><strong>Sample for analytics.</strong> A deterministic hash-based sample &mdash; say 1% keyed on request ID &mdash; preserves distributional properties for most analysis at 1% of the cost. Deterministic so the sample is stable across reruns and joinable.</li>
+<li><strong>Keep aggregates at full fidelity.</strong> Bid rate, win rate, clearing price distributions by segment, computed on the full stream and stored small.</li>
+<li><strong>Retain full raw briefly</strong> &mdash; days, not months &mdash; for debugging and dispute, then expire.</li>
+<li><strong>Project aggressively.</strong> Bid requests are very wide; most analysis needs a dozen fields. A narrow derived table costs a fraction.</li>
+</ul>
+<p>The thing I'd push back on is the reflex to keep everything at full resolution forever, which is where most of the storage bill in this domain comes from.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Someone needs to investigate why a specific advertiser lost a specific auction three months ago. Your sample doesn't contain it.</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>Then the sample was the wrong tool for that need, and I'd rather design for it explicitly than widen retention globally. Options, roughly in cost order.</p><p><strong>Keep a targeted full-fidelity slice:</strong> retain all requests for a small set of high-value advertisers or deals, where disputes are actually likely, at full resolution for a longer window. Most auction forensics is concentrated in a handful of relationships.</p><p><strong>Keep loss reasons in aggregate at full coverage:</strong> we don't need every bid request row to answer "why do we lose this advertiser's auctions" &mdash; a per-segment loss-reason breakdown at full coverage answers the pattern question, and the pattern is what actually informs a fix.</p><p><strong>Tiered storage rather than deletion:</strong> full raw compressed on cold object storage for the compliance window, expensive and slow to query but present when a genuine dispute arises.</p><p>The general point I'd make is that "we might need it someday" isn't a retention policy. I'd want to know which specific questions must be answerable at what horizon, then size retention to those, because that conversation usually reveals that three months of full raw was never actually required.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">How would you compute reach for a CTV campaign? Be careful.</div>
+    <div class="hint">The careless answer is distinct devices.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>The mechanical answer is distinct devices exposed, via an HLL sketch per campaign per day so ranges merge &mdash; but I'd immediately qualify that this is <em>device</em> reach, and it is not what an advertiser means by reach.</p>
+<p>Three corrections stand between device count and human reach:</p>
+<ul>
+<li><strong>Device to household.</strong> One household may have several CTV devices. Without resolving them, we overstate household reach. That's the identity graph.</li>
+<li><strong>Household to people.</strong> Co-viewing means one impression can reach two or three people. This <em>understates</em> human reach and is typically corrected with a panel-derived co-viewing factor that varies by daypart and genre &mdash; primetime co-viewing is much higher than late night.</li>
+<li><strong>Cross-platform.</strong> The same person reached on CTV and mobile is one person, which requires cross-device identity.</li>
+</ul>
+<p>So I'd deliver device reach as the measured quantity, household reach as the resolved quantity, and human reach as a modelled estimate with its assumptions stated. Conflating the three is how you end up in a reconciliation argument you can't win.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">The advertiser only cares about one number. Which do you put on the report?</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>Household reach as the headline, with device and estimated person reach available alongside &mdash; and I'd argue for that rather than just pick one.</p><p>Household is the right default because it's the unit we can actually measure with defensible precision: it's derived from observed data plus deterministic linking, not from a panel-derived model. Device reach is an implementation artifact that no advertiser thinks in, and it moves when a household buys a second TV, which makes it a confusing number to plan against. Person reach is the one they conceptually want, but it carries modelling uncertainty that compounds with our identity uncertainty, and putting a modelled number alone on a report invites disputes we can't resolve with data.</p><p>What I'd insist on regardless of which number wins is that the definition is fixed, documented in a semantic layer, and identical across every surface &mdash; dashboard, API, and invoice. The failure that actually damages trust isn't picking the imperfect metric; it's the same word meaning different things in two places.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Request &rarr; OpenRTB auction &rarr; VAST response &rarr; playback &rarr; beacons. The impression log is assembled from beacons, not emitted as one event.</li>
+    <li>Pods mean the grain is (session, break, pod_position); position, competitive separation, and per-pod frequency all follow.</li>
+    <li>SSAI fires beacons from infrastructure, so IP is not a household signal on that traffic and identifiers must be passed explicitly.</li>
+    <li>Device identifiers are platform-specific and resettable; there is no cross-platform cookie, which is why the identity graph carries the load.</li>
+    <li>A device is a household, and co-viewing means one impression reaches more than one person &mdash; device reach is not human reach.</li>
+    <li>Bid requests dwarf impressions; sample deterministically, aggregate at full fidelity, retain raw briefly.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Designing as if one ad request equals one impression.</li>
+    <li>Using IP as an identity signal without mentioning SSAI.</li>
+    <li>Reporting device counts as reach with no co-viewing or household caveat.</li>
+    <li>Assuming clicks exist as a CTV performance signal.</li>
+    <li>Proposing to store all bid requests indefinitely at full fidelity.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="index.html"><span>Back</span>All stages</a>
+<a class="nx" href="roku-platform.html"><span>Next</span>What makes Roku's data different</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

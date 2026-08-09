@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What makes Roku's data different &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">02</div><div class="kicker">Company context</div></div>
+  <h1>What makes Roku's data different</h1>
+  <p class="why">Roku owns the operating system, so its identity is authenticated rather than inferred, its measurement reaches across streaming and linear via ACR, and its data product is a Snowflake clean room. Several default adtech answers are wrong here &mdash; this stage corrects them.</p>
+  <div class="tags"><span class="tag">Roku-specific</span><span class="tag">Ad Data Activation</span><span class="tag">Read after the CTV stage</span></div>
+</header>
+<section><h2>The structural position</h2>
+<p>Most companies in this space are one node in the chain. Roku is several at once, and that shapes every data question.</p>
+<ul>
+<li><strong>OS and device owner.</strong> Roku ships the operating system on its own players and on Roku-branded TVs. That means device-level telemetry, the home screen as inventory, and &mdash; crucially &mdash; <strong>automatic content recognition</strong> on TVs, which sees what is on screen regardless of source.</li>
+<li><strong>Publisher.</strong> The Roku Channel is owned-and-operated FAST/AVOD inventory, so Roku holds both supply and the audience data.</li>
+<li><strong>Distribution platform.</strong> Third-party apps run on the OS; Roku participates in their monetisation.</li>
+<li><strong>Demand side.</strong> OneView is Roku's DSP, so campaigns can be planned, bought, and measured inside the platform.</li>
+<li><strong>Data product.</strong> Roku Data Cloud and the clean room expose audience and measurement capability to advertisers and agencies.</li>
+</ul>
+<div class="k"><b>The consequence for design answers</b><p>When a question involves joining exposure to outcome, Roku frequently has both sides in-house. That changes the honest answer from "we'd need a third-party identity provider" to "we'd resolve within our own graph and use the clean room for the advertiser's side." Reaching for cookie-syncing or an external ID consortium as your default is the tell that you're answering the generic web question.</p></div>
+<figure><svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Roku spanning OS, publisher, distribution, demand and data layers">
+<text class="svg-s" x="4" y="16">typical company occupies one layer</text>
+<g>
+<rect class="svg-box" x="4" y="28" width="330" height="26" rx="2"/>
+<rect class="svg-box" x="4" y="60" width="330" height="26" rx="2"/>
+<rect class="svg-box" x="4" y="92" width="330" height="26" rx="2"/>
+<rect class="svg-box" x="4" y="124" width="330" height="26" rx="2"/>
+<rect class="svg-box" x="4" y="156" width="330" height="26" rx="2"/>
+<text class="svg-l" x="16" y="46">OS / device &mdash; telemetry, ACR</text>
+<text class="svg-l" x="16" y="78">publisher &mdash; The Roku Channel</text>
+<text class="svg-l" x="16" y="110">distribution &mdash; third-party apps</text>
+<text class="svg-l" x="16" y="142">demand &mdash; OneView DSP</text>
+<text class="svg-l" x="16" y="174">data product &mdash; clean room</text>
+</g>
+<g>
+<rect x="374" y="28" width="300" height="154" rx="3" fill="#182A2A" stroke="#4FD1C5" stroke-width="1.5"/>
+<text class="svg-t" x="524" y="92" text-anchor="middle" fill="#4FD1C5">Roku spans all five</text>
+<text class="svg-s" x="524" y="112" text-anchor="middle">so exposure and outcome are</text>
+<text class="svg-s" x="524" y="128" text-anchor="middle">often both in-house</text>
+</g>
+<text class="svg-s" x="4" y="208">consequence: identity is authenticated, not inferred &mdash; the hard match is the advertiser's file</text>
+</svg><figcaption><b>Platform position</b>Most companies sit in one band and must buy or infer everything outside it. Roku spans all five, so exposure and outcome are frequently both in-house &mdash; which is why the default cookie-syncing answer is the wrong instinct here.</figcaption></figure></section>
+<section><h2>Authenticated identity changes the posture</h2>
+<p>Stage 10 argues for precision-favouring probabilistic matching because most adtech identity is inferred. Roku's base layer is different: viewers sign in to a Roku account, so the household is <strong>known</strong>, not estimated. Roku's own framing has been that the future of TV advertising rests on direct connection with consumers rather than cookies or consortiums.</p>
+<p>What that changes:</p>
+<ul>
+<li><strong>The account is the household anchor.</strong> Devices attach to an account deterministically. So the device&rarr;household resolution problem &mdash; hard on the open web &mdash; is largely solved by login, and the interesting problems move elsewhere.</li>
+<li><strong>The hard problem shifts to the advertiser's side.</strong> Matching Roku households to an advertiser's CRM file &mdash; hashed emails, postal addresses, loyalty IDs &mdash; is where match rate, precision, and privacy constraints now live.</li>
+<li><strong>Person-within-household remains inferred.</strong> Login gives you the household, not who is watching. Co-viewing and profile-level attribution are still modelling problems.</li>
+<li><strong>Signal is consent-gated, not scarce.</strong> Roku's data comes from ACR and opt-in first-party signals including account sign-ups and purchases across the OS. So the constraint is <em>permission and purpose</em> rather than identifier decay.</li>
+</ul>
+<p>If asked to design identity here, lead with the deterministic spine and treat probabilistic linking as an extension for cross-device and cross-publisher cases &mdash; the inverse of how you'd frame it for a web-scale DSP.</p>
+<div class="fp"><b class="hdr">From first principles</b><p>Why does authenticated identity change the design rather than just improve the numbers? Because it changes what kind of quantity a household is.</p><p>With inferred identity, a household is an estimate carrying a confidence, so everything downstream inherits that uncertainty and the system must be built around managing it &mdash; thresholds, decay, size caps, precision-recall tuning.</p><p>With an account, the device-to-household link is an observed fact. The uncertainty doesn't vanish; it <em>moves</em>. It relocates to two places: matching Roku households to an advertiser's file, and inferring which person within the household is watching.</p><p>That relocation is the whole point. It means the interesting engineering here is match rate, clean room mechanics, and co-viewing models &mdash; not cookie syncing or probabilistic device graphs, which is where a candidate reasoning from generic adtech will spend their answer.</p></div></section>
+<section><h2>ACR: the asset nobody else has in the same form</h2>
+<p>Automatic content recognition fingerprints what is displayed on the TV. Because it operates at the screen rather than in an app, it observes exposure across <em>all</em> sources &mdash; streaming apps, and linear broadcast and cable.</p>
+<p>Why this matters for an MLE:</p>
+<ul>
+<li><strong>Cross-screen incremental reach.</strong> The question advertisers care most about is "how many people did my streaming buy reach that my linear buy didn't?" Answering it requires observing both, which ACR does and log-level ad server data does not.</li>
+<li><strong>Behavioural segmentation.</strong> Viewing patterns from ACR support audience segments &mdash; genre affinity, daypart behaviour, competitive-brand exposure &mdash; that aren't derivable from Roku-served impressions alone.</li>
+<li><strong>Linear ad exposure as a feature.</strong> ACR can detect that a household saw a competitor's linear spot, which is a powerful and unusual feature for targeting and for incrementality modelling.</li>
+</ul>
+<p><strong>The engineering shape:</strong> ACR is a high-volume, continuous fingerprint stream matched against a reference library of content and ad creative. Treat it in design answers as a matching pipeline with confidence scores, not as clean labelled events &mdash; matches are probabilistic, coverage is partial (only ACR-enabled, opted-in TVs), and the panel-to-population extrapolation is itself a modelling step.</p>
+<div class="k"><b>Say this if ACR comes up</b><p>"ACR gives observed exposure rather than served impressions, so it's the only way to measure incremental reach over linear &mdash; but it's a probabilistic match over a consented subset, so I'd treat coverage and match confidence as first-class rather than assuming it's ground truth."</p></div></section>
+<section><h2>The clean room, concretely</h2>
+<p>Roku's clean room is built on Snowflake's data-collaboration technology and is integrated with OneView so planning flows into buying. It is used by agencies including Omnicom, dentsu and Horizon, and it connects to agency identity assets such as Omnicom's Omni ID and dentsu's M1. It also serves the Measurement Partner Program.</p>
+<p><strong>How a query actually works:</strong> the advertiser loads encrypted first-party data into a secure environment; a match is computed against Roku's data without either party seeing the other's user-level rows; the advertiser runs permitted queries and receives only privacy-enforced aggregate output.</p>
+<p><strong>The controls to be able to name:</strong></p>
+<ul>
+<li><strong>Minimum aggregation thresholds</strong> &mdash; a result must cover enough users that no individual is recoverable.</li>
+<li><strong>Query allowlisting</strong> &mdash; only certain query templates or output shapes are permitted.</li>
+<li><strong>Differencing defence</strong> &mdash; the real attack is running two nearly identical queries and subtracting. Defences are query budgets, logging and review, minimum thresholds, and calibrated noise.</li>
+<li><strong>Match rate</strong> as the commercial metric, and the honest caveat that it depends on the denominator and the identifier quality on both sides.</li>
+</ul>
+<p><strong>Snowflake mechanics worth knowing</strong>, since the platform is Snowflake rather than Spark: micro-partitions with automatic min/max metadata (the same pruning logic as stage 09, different vocabulary); <strong>clustering keys</strong> rather than physical partitioning; <strong>virtual warehouses</strong> as independently sized compute over shared storage, which is how multi-tenant clean rooms isolate cost; <strong>zero-copy cloning</strong> and <strong>time travel</strong>; and <strong>secure data sharing</strong>, which lets a consumer query a provider's data without copying it &mdash; the mechanism the clean room is built on.</p>
+<figure><svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Clean room flow with match, threshold gate and aggregate output">
+<rect class="svg-box" x="4" y="30" width="130" height="52" rx="3"/>
+<text class="svg-t" x="69" y="52" text-anchor="middle">Advertiser</text>
+<text class="svg-s" x="69" y="68" text-anchor="middle">encrypted 1P data</text>
+<rect class="svg-box" x="4" y="118" width="130" height="52" rx="3"/>
+<text class="svg-t" x="69" y="140" text-anchor="middle">Roku</text>
+<text class="svg-s" x="69" y="156" text-anchor="middle">ACR + OS signals</text>
+<rect x="190" y="30" width="300" height="140" rx="4" fill="#141C21" stroke="#4FD1C5" stroke-width="1.5"/>
+<text class="svg-s" x="204" y="50" fill="#4FD1C5">SECURE ENVIRONMENT (Snowflake)</text>
+<rect class="svg-box" x="212" y="64" width="120" height="38" rx="3"/>
+<text class="svg-l" x="272" y="87" text-anchor="middle">match</text>
+<rect class="svg-box" x="350" y="64" width="120" height="38" rx="3"/>
+<text class="svg-l" x="410" y="87" text-anchor="middle">permitted query</text>
+<rect x="212" y="116" width="258" height="38" rx="3" fill="#241C13" stroke="#F4A259"/>
+<text class="svg-l" x="341" y="139" text-anchor="middle" fill="#F4A259">min threshold &middot; query budget &middot; noise</text>
+<path class="svg-line" d="M134 56 H190"/>
+<path class="svg-line" d="M134 144 H190"/>
+<path class="svg-line" d="M332 83 H350"/>
+<rect class="svg-box" x="546" y="72" width="150" height="52" rx="3"/>
+<text class="svg-t" x="621" y="94" text-anchor="middle">Aggregates only</text>
+<text class="svg-s" x="621" y="110" text-anchor="middle">no user-level rows</text>
+<path class="svg-line" d="M490 98 H546"/>
+<text class="svg-s" x="190" y="196">the attack these controls target is differencing: two near-identical queries, subtracted</text>
+</svg><figcaption><b>Clean room flow</b>Neither party sees the other's rows; only aggregates leave. The controls in amber exist mainly to defeat differencing &mdash; running two nearly identical queries and subtracting &mdash; not to prevent bulk extraction, which the architecture already blocks.</figcaption></figure></section>
+<section><h2>Audience activation, which is likely the job</h2>
+<p>"Ad Data Activation" means turning raw signal into a targetable, measurable audience and getting it into the buying path. The lifecycle is worth having as a mental pipeline:</p>
+<ol>
+<li><strong>Signal.</strong> ACR viewing, OS first-party events, Roku Channel engagement, advertiser first-party data via the clean room, and partner data.</li>
+<li><strong>Segment definition.</strong> Rule-based (saw genre X, three-plus times, last 30 days) or model-based (propensity to purchase category Y).</li>
+<li><strong>Expansion / lookalike modelling.</strong> A seed audience &mdash; usually small, from advertiser CRM &mdash; expanded to a scaled audience. This is the classic ML task on this team.</li>
+<li><strong>Quality control.</strong> Size, freshness, overlap with other segments, and predicted performance.</li>
+<li><strong>Activation.</strong> Push to OneView and to partner DSPs, with segment IDs that stay stable so measurement can attribute against them.</li>
+<li><strong>Measurement feedback.</strong> Did the segment deliver incremental outcomes? Feed that back into the model.</li>
+</ol>
+<p><strong>Lookalike modelling specifics</strong>, since it's the most probable ML design question: it's a positive-unlabelled problem &mdash; you have converters (positives) and a vast unlabelled population, not clean negatives. Standard approaches are PU learning, or sampling the unlabelled population as pseudo-negatives and accepting the bias. Evaluation is the hard part: offline AUC on held-out seed members is easy and misleading, because the real question is whether the expanded audience <em>converts incrementally</em> &mdash; which needs a holdout test in market. Seed size, seed quality, and expansion ratio are the levers, and the honest trade-off is reach against precision, priced by the advertiser's tolerance for waste.</p></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">An advertiser gives us a 50,000-household seed and wants a 5 million household lookalike audience. Design it.</div>
+    <div class="hint">Positive-unlabelled, and the evaluation is the hard half.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>First I'd clarify the objective, because "lookalike" hides a choice: similar in <em>behaviour</em>, or likely to <em>convert</em>? Those give different models and different audiences, and the advertiser usually means the second while saying the first.</p>
+<p><strong>Setup.</strong> Seed households arrive via the clean room as matched Roku households &mdash; so step zero is the match, and 50,000 supplied records will match to fewer, which I'd want quantified before modelling.</p>
+<p><strong>Features.</strong> ACR viewing behaviour (genre, daypart, linear exposure), Roku Channel engagement, OS-level opt-in signals, device and geo context. All consent-scoped and purpose-limited.</p>
+<p><strong>Model.</strong> This is positive-unlabelled: I have positives and an unlabelled population, not negatives. I'd sample the unlabelled population as pseudo-negatives, train a gradient-boosted classifier, and rank the population by score, taking the top 5 million. I'd be explicit that the resulting scores are not calibrated probabilities under PU sampling &mdash; they're a ranking, which is all we need.</p>
+<p><strong>Guardrails.</strong> Exclude existing customers if the goal is acquisition; check the expanded audience isn't collapsing onto one demographic or a handful of high-viewing households; and enforce a minimum segment size for privacy.</p>
+<p><strong>Evaluation.</strong> Offline: hold out part of the seed and check recall in the top-ranked population. But that only proves we can find people like the seed. The question that matters is whether they convert incrementally, which needs an in-market holdout.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">The offline metrics are excellent and the campaign underperforms. What's your first hypothesis?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>That we optimised for similarity to the seed and the seed is the advertiser's <em>existing</em> customers &mdash; so the model found people who look like current customers, many of whom are already customers or would have converted anyway. High offline recall, near-zero incrementality. That's the classic lookalike failure and it's a targeting-selection problem, not a model-quality problem.</p><p>Related hypotheses I'd check: the seed was too small or unrepresentative after matching, so the model learned noise; the expansion ratio was too aggressive, so the tail of the ranking is barely better than random and 5 million is well past where the signal ends; or the features are proxying for heavy viewers, meaning we selected people who see lots of ads rather than people who respond to them &mdash; which inflates attributed conversions and delivers no lift.</p><p>The diagnostic is a holdout: split the expanded audience, suppress from some, and compare. If lift is flat but attributed conversions look fine, that confirms the selection-bias story. And I'd want to look at performance by score decile &mdash; if the top decile lifts and the rest doesn't, the model is fine and the expansion ratio is wrong, which is a much cheaper fix than rebuilding.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">How do you compute incremental reach of a streaming campaign over the advertiser's linear TV buy?</div>
+    <div class="hint">This is the ACR question, and it has a coverage caveat.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>This is exactly what ACR enables and log-level ad server data can't answer, because linear exposure is invisible to the ad server.</p>
+<p><strong>Mechanically:</strong> ACR gives households observed as exposed to the advertiser's linear spots. The Roku ad server gives households exposed to the streaming campaign. Both resolve to the same household identity, so the sets are directly comparable: incremental reach is streaming-exposed minus the intersection, and I'd compute it with mergeable sketches per day so any date range is cheap.</p>
+<p><strong>The caveats I'd volunteer:</strong></p>
+<ul>
+<li><strong>Coverage.</strong> ACR is on a consented subset of ACR-capable TVs, not the whole base. So the observed intersection is a sample, and extrapolating to the advertiser's full linear campaign is a modelling step with its own error &mdash; not a count.</li>
+<li><strong>Match confidence.</strong> ACR matches are probabilistic; a threshold choice trades false positives against missed exposures, and it should be stated.</li>
+<li><strong>Household versus person.</strong> Both sides are household-level, so this is incremental <em>household</em> reach. Converting to people needs a co-viewing factor and that assumption should be visible in the output.</li>
+</ul>
+<p>I'd deliver the observed figure with its coverage denominator alongside the extrapolated one, rather than a single number that hides which is which.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">The advertiser's agency reports a very different incremental reach from their own panel-based measurement. Who's right?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Probably neither exactly, and I'd resist framing it as a contest &mdash; the two methods measure different things and disagreeing is expected.</p><p>A panel is a small, carefully balanced sample projected to the population; its strength is representativeness and demographic calibration, its weakness is small sample size, so it has wide error bars on narrow slices and can't see long-tail apps well. ACR is a large but self-selected census-like sample; its strength is scale and granularity, its weakness is that coverage isn't representative &mdash; ACR-enabled Roku households skew in ways that matter.</p><p>So the productive move is reconciliation rather than argument: agree the universe definition, the exposure threshold, the time window, and the household definition, then compare on a slice where both have decent sample. Most of the gap usually comes from definitional differences and from the projection method, not from either measurement being wrong.</p><p>I'd also say plainly that this is why the Measurement Partner Program exists &mdash; third-party certification is how the industry resolves exactly this, and pointing to an independent methodology is more credible than us asserting our own number is better.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Design the pipeline that builds and activates an audience segment, end to end.</div>
+    <div class="hint">Stability of the segment ID is the detail that separates good from generic.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p><strong>Definition layer:</strong> a segment is a versioned specification &mdash; rule-based predicate or model reference, plus a lookback window and consent scope. Stored as a definition, not as a materialised list, so it can be recomputed and audited.</p>
+<p><strong>Build:</strong> a scheduled Spark or Snowflake job evaluates the definition against the household feature store, producing the member set. Incremental where the definition allows &mdash; recomputing every segment from scratch daily is the naive design.</p>
+<p><strong>Quality gates before publication:</strong> size within expected bounds (and above the privacy minimum), day-over-day churn within tolerance, overlap with related segments, and freshness of the underlying signals. A segment that halves overnight should block, not publish.</p>
+<p><strong>Activation:</strong> push to OneView and to partner destinations, each with its own identifier space and its own latency and size constraints.</p>
+<p><strong>The detail I'd emphasise: segment ID stability.</strong> The ID must be stable across rebuilds and its <em>definition version</em> must be recorded with it. If a segment's meaning changes silently, every historical measurement against it becomes uninterpretable &mdash; and the person who discovers that is usually an advertiser disputing a report months later.</p>
+<p><strong>Feedback:</strong> delivery and outcome data flow back so segment performance is measurable, which is what makes the next definition better rather than just different.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">An advertiser says their segment dropped 30% in size overnight and their delivery collapsed. Walk me through it.</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>I'd separate "the segment genuinely changed" from "the pipeline broke", because the investigations diverge immediately.</p><p><strong>Pipeline causes</strong> first, since they're more likely and more urgent: an upstream signal partition missing or partial, so the predicate evaluated against incomplete data; an identity graph rebuild that changed household resolution and re-keyed members; a feature job that failed silently and left stale or null features; or a definition change deployed without anyone connecting it to this segment.</p><p><strong>Genuine causes:</strong> the lookback window rolling past a high-activity period, seasonality, or a consent change reducing the eligible population.</p><p>The fastest discriminator is whether <em>other</em> segments moved too. A broad drop points at a shared upstream input; an isolated one points at that definition or its specific signals.</p><p>And I'd note the process failure regardless of cause: a 30% overnight change should have been caught by the churn gate before publication, not reported by the advertiser. If the gate exists and didn't fire, its threshold is wrong; if it doesn't exist, that's the durable fix, and it matters more than this one incident because the next one will be a segment nobody is watching closely.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">An agency wants to run their own analysis in the clean room. What stops them from extracting user-level data?</div>
+    <div class="hint">Name the controls and the attack they're actually designed against.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>Several layers, and the interesting one is not the obvious one.</p>
+<p><strong>The obvious controls:</strong> the agency never receives raw rows &mdash; matching happens inside the environment and only aggregate output is returned; permitted query shapes are constrained; and minimum aggregation thresholds mean a result must cover enough users that no individual is recoverable.</p>
+<p><strong>The attack those don't fully stop is differencing.</strong> If I can define arbitrary audiences, I can run two queries whose populations differ by one household and subtract the results to learn about that household &mdash; every individual result was above threshold, and I still extracted individual-level information.</p>
+<p><strong>Defences against it:</strong> a query budget per party over a period; logging and review of query patterns, since differencing has a recognisable shape; restricting how finely audiences can be specified; and calibrated noise so small differences aren't reliably interpretable &mdash; the differential-privacy-flavoured answer, which costs accuracy and is worth stating as a trade-off rather than a free win.</p>
+<p>I'd add that the durable control here is partly contractual and procedural rather than purely technical: permitted-use terms, audit rights, and the fact that a party attempting this is identifiable in the logs. Pretending the technical controls are complete on their own would be overclaiming.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">How would you detect a differencing attack in progress?</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>By looking at query <em>sequences</em> rather than individual queries, since every query in the attack is individually legitimate. The signature is a series of queries over near-identical population definitions with small systematic variations, run in close succession by one party &mdash; high pairwise similarity between consecutive audience predicates, and result sets whose sizes differ by very small amounts.</p><p>Practically I'd compute a similarity measure over the audience definitions in each party's recent query history and alert on clusters of near-duplicates, plus flag any pair whose result counts differ by less than some small threshold. Neither is conclusive on its own &mdash; an analyst iterating on a segment definition looks similar &mdash; so I'd treat it as a review trigger rather than an automatic block, and route it to a human who can look at intent.</p><p>I'd also be honest about the limits: a patient attacker spreading queries over weeks, or across several accounts, defeats naive sequence detection. That's why the budget and the noise matter as structural defences &mdash; detection is a backstop, not the primary control. Designing as though detection alone is sufficient is how these systems fail.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Roku is OS owner, publisher, distributor, DSP, and data product at once &mdash; both sides of exposure-to-outcome are often in-house.</li>
+    <li>Identity is anchored on authenticated accounts, so the household is known; the hard matching problem moves to the advertiser's file.</li>
+    <li>ACR observes screen-level exposure including linear, enabling incremental reach &mdash; but it's a probabilistic match over a consented subset.</li>
+    <li>The clean room runs on Snowflake, integrates with OneView, and connects to agency IDs like Omni ID and M1.</li>
+    <li>Clean room controls: minimum thresholds, query allowlists, budgets, noise &mdash; aimed at differencing, not just at raw extraction.</li>
+    <li>Activation lifecycle: signal &rarr; definition &rarr; expansion &rarr; quality gates &rarr; push to OneView/partners &rarr; measurement feedback. Segment IDs must be stable and version-recorded.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Reaching for cookie syncing or an ID consortium as the default identity answer.</li>
+    <li>Treating ACR as ground-truth labelled exposure with full coverage.</li>
+    <li>Describing a clean room only as "we don't share raw data" with no mention of differencing.</li>
+    <li>Evaluating a lookalike model on offline AUC alone.</li>
+    <li>Designing segment activation with no stability or versioning of the segment ID.</li>
+    <li>Assuming Spark for everything when the collaboration layer is Snowflake.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="ctv-ecosystem.html"><span>Previous</span>How a CTV ad actually gets served</a>
+<a class="nx" href="spark-execution.html"><span>Next</span>From DAG to shuffle</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

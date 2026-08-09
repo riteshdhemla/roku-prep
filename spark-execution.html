@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>From DAG to shuffle &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">03</div><div class="kicker">Distributed execution</div></div>
+  <h1>From DAG to shuffle</h1>
+  <p class="why">Every Panel 2 conversation eventually lands here. You will not be asked to define Spark &mdash; you will be handed a slow job and asked why. The skill is reading a symptom backwards to a physical cause.</p>
+  <div class="tags"><span class="tag">Panel 2 core</span><span class="tag">Panel 1 probe</span><span class="tag">Educative: Distributed Systems for Practitioners</span></div>
+</header>
+<section><h2>The three-layer mental model</h2>
+<p>Hold Spark in three layers and almost every question resolves cleanly.</p>
+<p><strong>Logical layer.</strong> Your DataFrame operations build an unevaluated plan. Nothing runs. Transformations are lazy; only an <em>action</em> (<code>write</code>, <code>collect</code>, <code>count</code>) triggers execution. This is why an error in your logic often surfaces only at the write.</p>
+<p><strong>Physical layer.</strong> Catalyst optimises the logical plan and picks physical operators &mdash; which join strategy, where to insert an <code>Exchange</code> (a shuffle). The result is a DAG of <em>stages</em>. A stage is a maximal run of operations that can happen without moving data between executors.</p>
+<p><strong>Execution layer.</strong> Each stage becomes a set of <em>tasks</em>, one per partition, scheduled onto executor cores. Stages run in dependency order; tasks within a stage run in parallel.</p>
+<div class="k"><b>The sentence that anchors everything</b><p>A stage boundary exists wherever a record has to move from the partition it is in to a different partition. That movement is the shuffle. Everything expensive is downstream of that one fact.</p></div>
+<p>Narrow dependencies &mdash; <code>map</code>, <code>filter</code>, <code>select</code>, <code>withColumn</code> &mdash; each output partition reads exactly one input partition, so they fuse into a single stage with no data movement. Wide dependencies &mdash; <code>groupBy</code>, <code>join</code>, <code>distinct</code>, <code>repartition</code>, window functions &mdash; each output partition may need records from every input partition, so a shuffle is unavoidable.</p>
+<figure><svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="DAG showing narrow operations fused into one stage and a shuffle boundary">
+<rect x="4" y="30" width="286" height="150" rx="4" fill="#182A2A" stroke="#4FD1C5" stroke-dasharray="4 3"/>
+<text class="svg-s" x="16" y="50" fill="#4FD1C5">STAGE 1 &mdash; narrow, fused, no data movement</text>
+<rect class="svg-box" x="20" y="66" width="70" height="34" rx="3"/>
+<rect class="svg-box" x="110" y="66" width="70" height="34" rx="3"/>
+<rect class="svg-box" x="200" y="66" width="70" height="34" rx="3"/>
+<text class="svg-l" x="55" y="87" text-anchor="middle">scan</text>
+<text class="svg-l" x="145" y="87" text-anchor="middle">filter</text>
+<text class="svg-l" x="235" y="87" text-anchor="middle">project</text>
+<path class="svg-line" d="M90 83 H110"/><path class="svg-line" d="M180 83 H200"/>
+<text class="svg-s" x="20" y="130">each output partition reads</text>
+<text class="svg-s" x="20" y="146">exactly one input partition</text>
+<rect x="310" y="30" width="80" height="150" rx="4" fill="#241C13" stroke="#F4A259" stroke-width="1.5"/>
+<text class="svg-t" x="350" y="98" text-anchor="middle" fill="#F4A259">Exchange</text>
+<text class="svg-s" x="350" y="116" text-anchor="middle" fill="#F4A259">shuffle</text>
+<path class="svg-line" d="M270 83 H310"/>
+<rect x="410" y="30" width="286" height="150" rx="4" fill="#182A2A" stroke="#4FD1C5" stroke-dasharray="4 3"/>
+<text class="svg-s" x="422" y="50" fill="#4FD1C5">STAGE 2 &mdash; after redistribution</text>
+<rect class="svg-box" x="430" y="66" width="80" height="34" rx="3"/>
+<rect class="svg-box" x="530" y="66" width="80" height="34" rx="3"/>
+<rect class="svg-box" x="626" y="66" width="56" height="34" rx="3"/>
+<text class="svg-l" x="470" y="87" text-anchor="middle">aggregate</text>
+<text class="svg-l" x="570" y="87" text-anchor="middle">sort</text>
+<text class="svg-l" x="654" y="87" text-anchor="middle">write</text>
+<path class="svg-line" d="M510 83 H530"/><path class="svg-line" d="M610 83 H626"/>
+<path class="svg-line" d="M390 83 H410"/>
+<text class="svg-s" x="430" y="130">every output partition may need</text>
+<text class="svg-s" x="430" y="146">records from every input partition</text>
+<text class="svg-s" x="4" y="212">a stage boundary exists exactly where a record must move to a different partition</text>
+</svg><figcaption><b>Stages and the boundary between them</b>Narrow operations fuse into a single stage because each output partition reads exactly one input partition. The Exchange is the only place data crosses the network, and it is where essentially all the cost lives.</figcaption></figure></section>
+<section><h2>What a shuffle physically does</h2>
+<p>This is the question behind the question. Be able to narrate it as a sequence of disk and network events, not as a diagram.</p>
+<ol>
+<li><strong>Map side.</strong> Each task partitions its output by hash of the shuffle key into as many buckets as there will be reduce partitions. It sorts/spills these to <em>local disk</em> as shuffle files. If the in-memory buffer fills, it spills early &mdash; this is shuffle spill, and it is the single most common cause of a slow stage.</li>
+<li><strong>The boundary.</strong> The stage completes. Nothing proceeds until every map task has written its files, which is why one straggler task blocks an entire stage.</li>
+<li><strong>Reduce side.</strong> Each reduce task fetches its bucket from every map task's local disk across the network, merges the streams, and applies the aggregation or join.</li>
+</ol>
+<p>So a shuffle is: serialize &rarr; write to local disk &rarr; N&times;M network fetches &rarr; merge. It is disk-bound and network-bound, and it scales with the product of partition counts on both sides.</p>
+<h3>Why <code>reduceByKey</code> beats <code>groupByKey</code></h3>
+<p><code>groupByKey</code> shuffles every record. <code>reduceByKey</code> (and <code>agg</code> on a DataFrame) applies a <em>map-side combine</em> first &mdash; it pre-aggregates within each partition, so only one partial result per key crosses the network. On a high-cardinality key with many records per key, that is often an order of magnitude less shuffle. The DataFrame API does this for you; the point of knowing it is diagnosing why a hand-rolled UDF-based aggregation is slow.</p>
+<div class="fp"><b class="hdr">From first principles</b><p>You can derive the whole cost model from two facts. First, a network round trip is roughly a thousand times slower than a memory access, and disk sits in between. Second, the receiving task cannot begin until it knows every sender has finished &mdash; because it has no way to know whether more records for its key are still coming.</p><p>Those two facts force the design. Data must be <em>materialised</em> somewhere before it moves, because the receiver isn't ready to consume it in real time; local disk is the cheapest durable place. And the barrier must be global, because partial knowledge of a key is useless for an aggregation.</p><p>Everything else follows: the shuffle is expensive because it is bounded by disk and network rather than CPU; one slow map task blocks everything because the barrier is global; and map-side combine helps enormously because it reduces the bytes that must cross the slow layer, not the work done at either end.</p></div>
+<figure><svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Shuffle mechanics: map-side bucket write to local disk then all-to-all fetch">
+<text class="svg-s" x="4" y="18">1 &mdash; map side: partition by hash, sort, write to LOCAL DISK</text>
+<g>
+<rect class="svg-box" x="4" y="30" width="90" height="56" rx="3"/>
+<rect class="svg-box" x="110" y="30" width="90" height="56" rx="3"/>
+<rect class="svg-box" x="216" y="30" width="90" height="56" rx="3"/>
+<text class="svg-l" x="49" y="52" text-anchor="middle">map task 1</text>
+<text class="svg-l" x="155" y="52" text-anchor="middle">map task 2</text>
+<text class="svg-l" x="261" y="52" text-anchor="middle">map task 3</text>
+<rect x="14" y="60" width="22" height="16" fill="#182A2A" stroke="#4FD1C5"/>
+<rect x="42" y="60" width="22" height="16" fill="#241C13" stroke="#F4A259"/>
+<rect x="120" y="60" width="22" height="16" fill="#182A2A" stroke="#4FD1C5"/>
+<rect x="148" y="60" width="22" height="16" fill="#241C13" stroke="#F4A259"/>
+<rect x="226" y="60" width="22" height="16" fill="#182A2A" stroke="#4FD1C5"/>
+<rect x="254" y="60" width="22" height="16" fill="#241C13" stroke="#F4A259"/>
+</g>
+<text class="svg-s" x="330" y="72">buckets, one per reduce partition</text>
+<path class="svg-dash" d="M4 100 H696"/>
+<text class="svg-s" x="4" y="120" fill="#F4A259">STAGE BOUNDARY &mdash; nothing proceeds until the slowest map task finishes</text>
+<text class="svg-s" x="4" y="150">2 &mdash; reduce side: fetch your bucket from EVERY map task (all-to-all), merge</text>
+<g>
+<rect x="60" y="162" width="120" height="50" rx="3" fill="#182A2A" stroke="#4FD1C5"/>
+<rect x="230" y="162" width="120" height="50" rx="3" fill="#241C13" stroke="#F4A259"/>
+<text class="svg-l" x="120" y="192" text-anchor="middle">reduce 1</text>
+<text class="svg-l" x="290" y="192" text-anchor="middle">reduce 2</text>
+<path class="svg-cool" d="M25 78 C25 130 110 130 118 160"/>
+<path class="svg-cool" d="M131 78 C131 130 122 130 120 160"/>
+<path class="svg-cool" d="M237 78 C237 130 130 130 124 160"/>
+<path class="svg-hot" d="M53 78 C53 130 280 130 288 160"/>
+<path class="svg-hot" d="M159 78 C159 130 286 130 290 160"/>
+<path class="svg-hot" d="M265 78 C265 130 292 130 292 160"/>
+</g>
+<text class="svg-s" x="400" y="186">cost scales with</text>
+<text class="svg-s" x="400" y="202">mappers &times; reducers</text>
+<text class="svg-s" x="4" y="240">disk write + network fetch + merge &mdash; this is why wide operations dominate runtime</text>
+</svg><figcaption><b>What a shuffle physically does</b>Serialise, write buckets to local disk, then all-to-all fetch and merge. Two consequences worth stating unprompted: nothing in the next stage starts until the slowest map task finishes, and losing an executor loses its shuffle files.</figcaption></figure></section>
+<section><h2>Join strategies and how Catalyst chooses</h2>
+<table>
+<tr><th>Strategy</th><th>Mechanism</th><th>Use when</th><th>Fails when</th></tr>
+<tr><td>Broadcast hash join</td><td>Small side shipped whole to every executor; no shuffle of the large side</td><td>One side fits comfortably in executor memory (default threshold ~10&nbsp;MB, commonly raised)</td><td>Small side is bigger than you thought &rarr; driver OOM or executor OOM</td></tr>
+<tr><td>Sort-merge join</td><td>Both sides shuffled on the join key, sorted, merged</td><td>Two large tables; the default for big-to-big</td><td>Skewed keys &rarr; one reduce task gets everything</td></tr>
+<tr><td>Shuffle hash join</td><td>Both shuffled; one side built into a hash table per partition</td><td>One side much smaller but still too big to broadcast, and not pre-sorted</td><td>Build side doesn't fit in a partition's memory</td></tr>
+</table>
+<p><strong>Bucketing</strong> is the way to avoid the shuffle entirely: if both tables are pre-bucketed on the join key with the same bucket count, matching keys are already co-located and the join becomes narrow. It is the right answer when you join the same two large tables repeatedly, and the wrong answer for a one-off.</p>
+<div class="k"><b>Adaptive query execution</b><p>AQE re-plans at runtime using actual shuffle statistics. It coalesces too-many small post-shuffle partitions, converts a sort-merge join to a broadcast join when it discovers a side is small, and splits skewed partitions. Know it &mdash; but do not let it be your whole answer. AQE handles skew it can detect after the fact; it does not fix a badly chosen partition key.</p></div></section>
+<section><h2>Skew: the interview's favourite failure</h2>
+<p>Skew is when the distribution of your shuffle key is uneven, so one reduce task receives disproportionately many records. In adtech this is guaranteed: a handful of campaigns or publishers or a null device ID carry a huge fraction of rows.</p>
+<h3>Detecting it</h3>
+<ul>
+<li>Task duration distribution within one stage: 199 tasks finish in 30s, one runs for 40 minutes.</li>
+<li>Shuffle read size per task, same shape.</li>
+<li>Spill metrics concentrated on one or two tasks.</li>
+<li>Offline: <code>SELECT key, count(*) ... ORDER BY 2 DESC LIMIT 20</code> on the join key. Do this before designing, not after failing.</li>
+</ul>
+<h3>Fixing it</h3>
+<ul>
+<li><strong>Salting.</strong> Append a random suffix <code>0..N</code> to the hot key on the large side; explode the small side into N copies, one per salt. Turns one huge partition into N moderate ones. Cost: N&times; the small side.</li>
+<li><strong>Isolate hot keys.</strong> Split the job: broadcast-join the top-k hot keys separately, sort-merge the long tail, union the results. Often cleaner than salting because it doesn't inflate anything.</li>
+<li><strong>Filter the garbage.</strong> A large fraction of real-world skew is a null or sentinel ID (<code>0000-0000</code>, empty string). Those rows usually should not be joined at all.</li>
+<li><strong>Pre-aggregate.</strong> If the downstream need is a count, aggregate before the join so the hot key carries one row instead of a billion.</li>
+<li><strong>AQE skew join</strong> for the cases it can catch automatically.</li>
+</ul>
+<figure><svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Task duration distribution showing one straggler task">
+<path class="svg-line" d="M60 160 H690"/>
+<path class="svg-line" d="M60 20 V160"/>
+<text class="svg-s" x="4" y="30">task</text>
+<text class="svg-s" x="4" y="44">duration</text>
+<g fill="#1E2733" stroke="#2E3545">
+<rect x="72" y="146" width="20" height="14"/><rect x="100" y="144" width="20" height="16"/>
+<rect x="128" y="147" width="20" height="13"/><rect x="156" y="145" width="20" height="15"/>
+<rect x="184" y="146" width="20" height="14"/><rect x="212" y="143" width="20" height="17"/>
+<rect x="240" y="147" width="20" height="13"/><rect x="268" y="145" width="20" height="15"/>
+<rect x="296" y="146" width="20" height="14"/><rect x="324" y="144" width="20" height="16"/>
+<rect x="352" y="147" width="20" height="13"/><rect x="380" y="146" width="20" height="14"/>
+<rect x="408" y="145" width="20" height="15"/><rect x="436" y="147" width="20" height="13"/>
+<rect x="464" y="144" width="20" height="16"/><rect x="492" y="146" width="20" height="14"/>
+<rect x="520" y="145" width="20" height="15"/><rect x="548" y="147" width="20" height="13"/>
+<rect x="576" y="146" width="20" height="14"/>
+</g>
+<rect x="620" y="32" width="20" height="128" fill="#241C13" stroke="#F4A259" stroke-width="1.5"/>
+<text class="svg-s" x="656" y="46" fill="#F4A259">one task,</text>
+<text class="svg-s" x="656" y="60" fill="#F4A259">50&times; median</text>
+<path class="svg-dash" d="M60 145 H690"/>
+<text class="svg-s" x="64" y="140">median</text>
+<text class="svg-s" x="60" y="182">the whole stage waits for the tallest bar &mdash; more executors do not help</text>
+</svg><figcaption><b>Skew, as it appears in the UI</b>The stage summary metrics table shows min/median/max per task. A max far above the median is skew, quantitatively and immediately. Adding executors does not help &mdash; the bottleneck is one task on one core.</figcaption></figure></section>
+<section><h2>Partitioning and the small-files problem</h2>
+<p>Two different meanings of "partition" and interviewers will test whether you conflate them.</p>
+<p><strong>In-memory partitions</strong> are units of parallelism. Too few and you underuse the cluster and risk OOM; too many and scheduling overhead dominates. <code>spark.sql.shuffle.partitions</code> defaults to 200, which is wrong for almost every real workload &mdash; a rough target is 2&ndash;4&times; total executor cores, with each task handling something in the low hundreds of MB.</p>
+<p><strong>On-disk partitions</strong> are directory layout, e.g. <code>/dt=2026-08-09/hour=14/</code>. These enable partition pruning: a query filtered on <code>dt</code> reads only matching directories.</p>
+<p><code>repartition(n)</code> does a full shuffle and gives even partitions. <code>coalesce(n)</code> avoids a shuffle by merging adjacent partitions, so it is cheap but can leave you with uneven sizes &mdash; and pushing <code>coalesce(1)</code> up the plan can collapse the parallelism of the entire upstream stage. That last point is the one people miss.</p>
+<div class="k"><b>Small files</b><p>Writing hourly partitions from a 2000-partition job yields 2000 tiny files per hour. Every downstream reader then pays per-file open cost and the metastore or listing call becomes the bottleneck. Fix with a repartition before write sized to your target file (128&ndash;512&nbsp;MB), or a scheduled compaction job.</p></div>
+<div class="fp"><b class="hdr">From first principles</b><p>Why should partition count track executor cores rather than data size? Because a partition is the unit of work handed to one core, so the question is really: how many pieces should the work be cut into?</p><p>Too few pieces and cores sit idle &mdash; with 200 partitions on 500 cores, 300 cores do nothing. Too many and per-task scheduling overhead, which is fixed per task, starts to dominate the useful work in each. The optimum is a small multiple of core count: enough pieces that every core stays busy and stragglers can be absorbed, few enough that overhead stays negligible.</p><p>The data-size constraint enters separately: whatever the count, each partition must fit in the memory available to one task, or it spills. So you take the larger of the two requirements.</p></div></section>
+<section><h2>Reading a slow job backwards</h2>
+<p>Rehearse this as a decision procedure, because you will be handed a symptom.</p>
+<table>
+<tr><th>Symptom</th><th>Likely cause</th><th>First move</th></tr>
+<tr><td>One task in a stage runs 50&times; longer</td><td>Key skew</td><td>Count the join key distribution; salt or isolate</td></tr>
+<tr><td>Whole stage slow, high spill metrics</td><td>Partitions too large for executor memory</td><td>Raise partition count; check for a wide row explosion upstream</td></tr>
+<tr><td>Long GC time per executor</td><td>Memory pressure, object churn, oversized broadcast</td><td>Check broadcast size, reduce per-task data, consider fewer cores per executor</td></tr>
+<tr><td>Job spends minutes before any task starts</td><td>File listing / metastore on millions of small files</td><td>Compaction; a table format with manifests instead of directory listing</td></tr>
+<tr><td>Many stages, each fast, total slow</td><td>Unnecessary shuffles &mdash; repeated repartition, non-fused UDFs</td><td>Read the plan, count <code>Exchange</code> nodes, cache the reused branch</td></tr>
+<tr><td>Fast in dev, times out in prod</td><td>Data volume changed the join strategy, or broadcast threshold exceeded</td><td>Compare physical plans across environments</td></tr>
+</table>
+<p>Say <em>"I'd open the Spark UI and look at the stage's task duration distribution first"</em> early. It signals you have actually debugged a cluster rather than read about one.</p></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Your job has a <code>groupBy</code> on <code>campaign_id</code> over 10 billion impression rows and it takes four hours. What is your first hypothesis and how do you confirm it?</div>
+    <div class="hint">They are testing whether you jump to a fix or to a diagnosis.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>Lead with diagnosis, not remedies. First hypothesis is <strong>skew on <code>campaign_id</code></strong>, because ad campaign volume is heavy-tailed by nature &mdash; a handful of campaigns dominate delivery.</p>
+<p>Confirm in two ways. In the Spark UI, look at the aggregating stage's task duration and shuffle-read distributions; skew shows as a small number of tasks with vastly larger read sizes. Independently, run a cheap frequency count on the key over a sample to see the actual distribution and identify the top keys.</p>
+<p>Only then choose. If it is a few hot campaigns, isolate them and process separately. If it is a null or sentinel campaign ID, filter it. If the aggregation is associative (counts, sums), confirm map-side combine is happening &mdash; a Python UDF-based aggregate would defeat it and shuffle raw rows.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Suppose the distribution is fine &mdash; roughly uniform. Now what?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Then the cost is volume, not imbalance, and I shift to the other levers. Check partition count against cluster cores &mdash; a default of 200 on 10B rows means each task handles tens of millions of rows and almost certainly spills. Check spill metrics to confirm. Check whether the full row width is being shuffled when only a few columns are needed; projecting early cuts shuffle bytes directly. Check whether the source scan is reading all columns and all partitions, or pruning. And question the framing: if this aggregate is recomputed daily over the same historical data, the real fix is incremental aggregation over the new partition rather than a full recompute.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">You said you would broadcast the smaller table. It is 800&nbsp;MB. Defend that.</div>
+    <div class="hint">The honest answer is that you probably shouldn't.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>I would not broadcast 800&nbsp;MB by default. Broadcast means the driver collects the table and ships a full copy to <em>every</em> executor, so the real cost is 800&nbsp;MB &times; executor count in memory, plus driver pressure while it is assembled. On a 50-executor cluster that is 40&nbsp;GB of duplicated data competing with execution memory.</p>
+<p>What I would do instead: check whether 800&nbsp;MB is the actual join-relevant size. If I only need two columns from that table, project first &mdash; that might land at 60&nbsp;MB, which is comfortably broadcastable. If it genuinely needs to be that wide, sort-merge join, or bucket both tables on the key if this join is recurring.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Your teammate raised <code>autoBroadcastJoinThreshold</code> to 1&nbsp;GB and the job got faster. Were they wrong?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Faster today, fragile tomorrow. They optimised for the current data size and cluster shape without a guardrail. The failure mode is silent: the dimension table grows 30% next quarter, the broadcast now exceeds executor memory, and you get an OOM in a job that had been stable for months &mdash; and the stack trace won't obviously say 'your reference table grew'. If we want that behaviour, I'd rather rely on AQE converting the join at runtime based on real statistics, or set the threshold deliberately with a monitored size check on the dimension table so it fails loudly at the right place.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Explain why <code>coalesce(1)</code> before writing a report table brought down a job that previously worked.</div>
+    <div class="hint">The trap is thinking coalesce is always the cheap option.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>Because <code>coalesce</code> does not insert a shuffle, the reduced partition count propagates <em>backwards</em> through the stage. It doesn't merge 200 computed partitions at the end &mdash; it makes the whole preceding stage run with a single task, so all the upstream computation collapses onto one core and one executor's memory. That is both a massive loss of parallelism and a likely OOM.</p>
+<p>If the goal is genuinely one output file, use <code>repartition(1)</code>, which forces a shuffle and preserves upstream parallelism, at the cost of the shuffle itself. Better still, question the requirement: needing exactly one file is usually a downstream consumer limitation worth fixing rather than accommodating.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">So is coalesce ever the right call?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>Yes &mdash; when reducing partition count <em>after</em> a filter that removed most rows, and where the reduction is modest. Going from 2000 partitions to 500 after filtering 95% of data avoids writing 2000 near-empty files, and the parallelism you give up is parallelism you no longer need. The rule of thumb: coalesce is safe when you are shrinking modestly and the upstream work is already cheap; it is dangerous when the ratio is extreme or the upstream work is heavy.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">Walk me through what happens between the last task of stage 3 finishing and the first task of stage 4 starting.</div>
+    <div class="hint">They want the physical events, in order.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>Stage 3's tasks have each been writing shuffle output to local disk on their executor, partitioned by hash of the shuffle key into one bucket per stage-4 partition, with an index file so any bucket can be located. When the final stage-3 task completes, it registers its map output location with the driver's shuffle tracker.</p>
+<p>The driver now has the complete map-output registry and schedules stage 4. Each stage-4 task queries where its bucket lives, then issues fetch requests to every executor that ran a stage-3 task &mdash; so the fetch pattern is all-to-all, M reducers &times; N mappers. Fetched blocks are merged, spilling to disk if they exceed the reducer's memory, and only then does the actual aggregation or join logic run.</p>
+<p>Two consequences worth naming: nothing in stage 4 can start until the <em>slowest</em> stage-3 task finishes, and if an executor is lost after writing shuffle files, those map outputs are gone and the corresponding stage-3 tasks must be recomputed.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">How does Spark recover if an executor dies mid-way through stage 4?</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>It recomputes from lineage. The driver knows the DAG, so it reschedules the lost stage-4 tasks on surviving executors &mdash; those can re-fetch from the still-intact shuffle files. The expensive case is losing an executor that held <em>stage-3</em> shuffle output, because that output is not replicated: Spark must re-run those map tasks to regenerate it, which can cascade backwards. This is exactly what checkpointing addresses &mdash; truncating lineage by materialising to reliable storage so recovery doesn't replay the whole chain. For very long pipelines, a deliberate checkpoint after an expensive wide stage is cheap insurance.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb5">
+  <div class="q"><div class="n">05</div><div>
+    <div class="qt">The pipeline runs in 40 minutes on Monday and 6 hours on Tuesday. Same code. Go.</div>
+    <div class="hint">Don't guess a single cause &mdash; show a search strategy.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(5,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(5,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv5">
+      <div class="lab">What a strong answer covers</div>
+      <p>Same code means something in the data or environment changed, so I'd bisect rather than speculate.</p>
+<ul>
+<li><strong>Data volume and shape.</strong> Compare input row counts and per-key distributions across the two days. A single advertiser launching a huge campaign turns a balanced join into a skewed one overnight.</li>
+<li><strong>Plan change.</strong> Pull the physical plan for both runs. A dimension table crossing the broadcast threshold silently flips a broadcast join to sort-merge &mdash; same code, entirely different execution.</li>
+<li><strong>File layout.</strong> An upstream producer changing its write pattern can turn 200 files into 200,000, and now the job spends its time listing.</li>
+<li><strong>Cluster.</strong> Fewer executors granted, noisy neighbours, spot reclamation causing recomputation.</li>
+<li><strong>Late-arriving data</strong> triggering a wider backfill window than usual.</li>
+</ul>
+<p>The Spark UI comparison between the two runs answers most of this in minutes: same stage count or not, where the time moved to.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">You have no access to Monday's Spark UI &mdash; the history server only retains 24 hours. What now?</p>
+        <button class="ghost" id="eb5" onclick="esc(5)">Reveal</button>
+        <div class="ans" id="es5"><p>Then I work from what persists. Input file counts and sizes are still on storage, so I can compare the physical footprint of both days directly. Table statistics or a cheap count per key gives me the distribution comparison. Job-level metrics in whatever scheduler ran it (Airflow duration history, cluster autoscaling logs) tell me whether the resource envelope changed. And this is the moment to say the systemic thing: retaining only 24 hours of history is the actual bug here. I'd want event logs persisted to object storage and a few job-level metrics &mdash; input rows, shuffle bytes, max task duration &mdash; emitted to our metrics system on every run, so the next occurrence is a chart rather than an investigation.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb6">
+  <div class="q"><div class="n">06</div><div>
+    <div class="qt">Why not just use a bigger cluster?</div>
+    <div class="hint">A cost-and-judgment question wearing a technical costume.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(6,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(6,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv6">
+      <div class="lab">What a strong answer covers</div>
+      <p>Sometimes that is the right answer, and I'd say so rather than reflexively optimising. If a job runs monthly and adding nodes for twenty minutes costs less than a day of engineering time, scale it up and move on.</p>
+<p>But it doesn't help for the failure modes that matter most. Skew doesn't improve with more nodes &mdash; the bottleneck is one task on one core, so extra executors sit idle. Small-file listing overhead doesn't improve; that is driver-side. And a job that shuffles far more than it needs to will shuffle proportionally more on a bigger cluster, so cost scales with the waste.</p>
+<p>The judgment is: scale up for volume problems, fix the plan for imbalance and layout problems.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">How would you decide, concretely, whether this job is worth optimising?</p>
+        <button class="ghost" id="eb6" onclick="esc(6)">Reveal</button>
+        <div class="ans" id="es6"><p>Compare marginal cost against marginal engineering time, with frequency as the multiplier. Cluster cost per run &times; runs per month gives an annual figure. If a job costs a few hundred dollars a year, optimising it is a poor use of an engineer regardless of how ugly it is. If it is tens of thousands, or if its runtime sits on the critical path for a downstream SLA &mdash; a reporting deadline, a model refresh &mdash; then latency has a business cost beyond compute and the calculation changes. I'd also weight fragility: a job that is currently cheap but one data-growth increment away from OOM is worth fixing before it pages someone.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>A stage boundary is where records must move between partitions. That movement is the shuffle: partition by hash, write to local disk, fetch all-to-all, merge.</li>
+    <li>Narrow ops fuse into one stage; wide ops (join, groupBy, distinct, window) force a shuffle.</li>
+    <li>Broadcast when one side is genuinely small after projection; sort-merge for big-to-big; bucket if the same join recurs.</li>
+    <li>Skew shows as one task 50&times; slower. Fix by isolating hot keys, salting, filtering sentinels, or pre-aggregating.</li>
+    <li>Partition count should track executor cores, not the default 200. <code>coalesce</code> propagates backwards; <code>repartition</code> shuffles.</li>
+    <li>Debug order: task duration distribution, then spill, then plan diff, then file layout.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Describing Spark as "in-memory so it's fast" &mdash; a decade out of date and signals no operational experience.</li>
+    <li>Reaching for a fix before naming a diagnosis.</li>
+    <li>Answering every performance question with "enable AQE" or "add executors".</li>
+    <li>Confusing in-memory partitions with on-disk partition directories.</li>
+    <li>Not mentioning the Spark UI at all &mdash; it's the first thing a practitioner opens.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="roku-platform.html"><span>Previous</span>What makes Roku's data different</a>
+<a class="nx" href="spark-performance.html"><span>Next</span>Memory, executors, and the knobs that matter</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

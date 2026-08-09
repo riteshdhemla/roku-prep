@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Driving the room when the question is vague &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">18</div><div class="kicker">Interview craft</div></div>
+  <h1>Driving the room when the question is vague</h1>
+  <p class="why">Panel 1 lists "translating ambiguous product requirements into clear technical designs" and Panel 2 lists explaining decisions and trade-offs clearly. Those are graded skills with their own technique, independent of what you know.</p>
+  <div class="tags"><span class="tag">Both panels</span><span class="tag">Communication</span><span class="tag">Run this last</span></div>
+</header>
+<section><h2>The skeleton, and why the first three minutes matter most</h2>
+<p>Use the same structure every time so you never stall, and so the interviewer can follow you.</p>
+<ol>
+<li><strong>Clarify and scope (2&ndash;3 min).</strong> Who uses it, what decision it drives, scale numbers, latency and freshness requirements, what's explicitly out of scope. <em>Write the answers down where they can see.</em></li>
+<li><strong>Estimate (1&ndash;2 min).</strong> Events per day, bytes per event, storage, QPS. These anchor every later choice and let you say "so this needs to be batch" with a reason.</li>
+<li><strong>High-level design (5 min).</strong> Boxes and arrows, ingest to serve. Keep it coarse; resist detailing the first component you think of.</li>
+<li><strong>Deep dive (the bulk).</strong> One or two hard parts. Offer a choice: "the interesting parts here are identity resolution and the serving path &mdash; which would you like me to go into?" That invitation is well received and ensures you spend time where they're grading.</li>
+<li><strong>Trade-offs, failure modes, and what breaks at 10&times; (always).</strong> Never let the interviewer be the one to raise these.</li>
+</ol>
+<div class="k"><b>The scoping questions that always earn their time</b><p>What decision does this output drive? How fresh does it need to be? What's the read pattern versus the write pattern? What happens if it's wrong &mdash; and wrong in which direction? What's explicitly not in scope?</p></div></section>
+<section><h2>Handling deliberate ambiguity</h2>
+<p>Vague prompts are not laziness &mdash; ambiguity handling is the thing being tested. "Build a system for audience analytics" is a test of whether you'll invent requirements or elicit them.</p>
+<p><strong>The move is to state assumptions explicitly and make them falsifiable.</strong> "I'll assume this serves internal analysts rather than an external API, which means seconds of latency is fine and I'd design around a warehouse rather than a low-latency store. Tell me if that's wrong." You've now made progress <em>and</em> given them a cheap way to redirect you.</p>
+<p>What not to do: ask fifteen questions in a row (you look unable to proceed), or ask none and design for a scale nobody mentioned (you look like you're reciting).</p>
+<p><strong>When requirements conflict</strong> &mdash; real-time and perfectly accurate and cheap &mdash; name the conflict rather than quietly picking. "Those three are in tension; typically you'd relax accuracy with approximate aggregation, or relax freshness with batch. Which matters most here?" That's the senior response, and it's the same conversation you'd have with a PM.</p>
+<p><strong>When they change the requirements mid-answer</strong>, which they will: treat it as new information and say what it changes. "If it's 100&times; that volume, the per-user store I proposed doesn't hold &mdash; I'd move to sketches and accept approximate reach." Adapting visibly is the point of the exercise.</p></section>
+<section><h2>Making trade-offs audible</h2>
+<p>A design stated without trade-offs sounds like recitation. The pattern is: <em>choice &rarr; what it costs &rarr; what would change your mind.</em></p>
+<p>"I'd store an HLL sketch per campaign-day rather than exact device sets. That costs about 1% error on reach, and it buys mergeability so any date range is a cheap merge instead of a rescan. If this fed billing rather than reporting, I'd want the exact path instead and accept the cost."</p>
+<p>Three sentences, and it demonstrates the decision, the cost, and the boundary condition. Practise compressing your choices into that shape.</p>
+<p><strong>Say the numbers.</strong> "That's roughly 10 billion events a day at 500 bytes, so 5&nbsp;TB daily, 150&nbsp;TB a month before compression" turns hand-waving into engineering, and it makes the subsequent design decisions obviously motivated.</p>
+<p><strong>Volunteer what breaks.</strong> "This falls over if a single campaign carries 40% of volume &mdash; the join skews and one task stalls. I'd handle that by isolating hot keys." Naming your own failure modes before being asked is the single most reliable seniority signal in a design interview.</p></section>
+<section><h2>Talking about your own work</h2>
+<p>Both panels will pull from your background. Prepare a two-minute version of each project as <em>problem &rarr; design &rarr; a trade-off you made &rarr; result</em>, and pre-decide the one hard trade-off you'll volunteer for each.</p>
+<ul>
+<li><strong>CTV impression forecasting</strong> (TFT + AutoGluon quantile ensemble). Lead with why quantiles rather than a point forecast, and the asymmetric cost that motivated it. Trade-off to volunteer: model complexity against operability, and how you justified it against a baseline.</li>
+<li><strong>LLM post-campaign reporting.</strong> Lead with the reliability wrapper, not the model &mdash; deterministic metrics, validation of every figure, human gate. Trade-off: what you chose not to let the model do.</li>
+<li><strong>The agentic tooling.</strong> Use for depth when they push on making agents trustworthy: the bounded loop, the budget governor, the machine-plus-human output contract.</li>
+</ul>
+<p><strong>Be precise about contribution.</strong> "I designed and owned X; the team built Y" reads as confident, where uniform "we" invites probing and uniform "I" reads as overclaiming.</p>
+<p><strong>Have the failure story.</strong> Something that went wrong, what you did, what changed structurally afterwards. The structural change is the part that matters &mdash; it demonstrates you convert incidents into systems rather than into heroics.</p></section>
+<section><h2>Recovering when you don't know</h2>
+<p>You will hit something you don't know. The recovery is graded, and the good version has a shape.</p>
+<p><strong>Say so plainly, then reason from what you do know.</strong> "I haven't used that specific system. From the description it sounds like it's solving the same problem as X &mdash; if so I'd expect the trade-off to be around Y. Is that roughly right?" That demonstrates transferable reasoning and invites them to teach you, which most interviewers enjoy.</p>
+<p>What fails: bluffing (they'll follow up and it collapses), or shutting down entirely.</p>
+<p><strong>If you realise mid-answer that you were wrong</strong>, say it and correct. "Actually, I take that back &mdash; that only works if the aggregate is associative, and median isn't, so I'd need a different approach." Self-correction reads as rigour, not weakness. Silently continuing down a path you know is wrong is much worse.</p>
+<p><strong>If you're stuck</strong>, narrate the stuckness productively: "I can see two approaches and I'm weighing them &mdash; let me talk through both." Silence is the only genuinely bad option, because the interviewer can't grade thinking they can't hear.</p></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">"Design a system for audience analytics." That's the whole prompt. Your first ninety seconds.</div>
+    <div class="hint">Scope, then commit to an interpretation.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>I'd ask three or four targeted questions and then commit rather than continue interrogating.</p>
+<p>"A few things to pin down. First, who consumes this &mdash; internal planners exploring segments, or an external advertiser-facing API? That drives the latency requirement more than anything else. Second, is this about <em>describing</em> audiences we've reached, or <em>building</em> audiences for targeting? Those are different systems. Third, roughly what scale &mdash; impressions per day and number of segments?"</p>
+<p>Then, whatever they answer or don't: "I'll assume internal planners and audience description, at CTV scale &mdash; call it 10 billion impressions a day, tens of thousands of segments, seconds-level query latency acceptable. That points me at a warehouse with precomputed sketches rather than a real-time serving system. Stop me if that's the wrong branch."</p>
+<p>The reason to commit rather than keep asking: they're evaluating whether I can make progress under ambiguity. Perpetual clarification is its own failure mode.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">They say: "you decide, that's part of the exercise."</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Then I'd pick the interpretation that's most interesting to design and say why I picked it, because the choice itself is now being assessed.</p><p>"Then I'll take the harder version: an advertiser-facing API with sub-second latency, because that forces the interesting decisions &mdash; precomputation strategy, how to support arbitrary date ranges without rescanning, and what we approximate. If it were internal batch analytics, most of that collapses into 'query the warehouse' and there's less to talk about."</p><p>That does two things. It shows I understand which version of the problem contains the engineering, rather than picking the easy one. And it keeps the assumption explicit and revisable &mdash; I'd still return to it if the design starts depending heavily on it.</p><p>I'd also state what I'm deliberately excluding, since scope discipline is part of what's being graded: "I'm going to treat identity resolution as an upstream input rather than designing it here, unless you want to go there &mdash; it's a system in itself." That signals I know it's non-trivial without derailing into it uninvited.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">You're twenty minutes in and the interviewer says "actually, assume 100x the volume." Respond.</div>
+    <div class="hint">Don't defend the old design. Diff it.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>I'd treat it as new information and walk the design forward rather than defend what I'd already said.</p>
+<p>"Let me work through what breaks. At 100&times;, the per-device state I proposed is no longer viable &mdash; that's now hundreds of billions of rows a day, so the exact per-device frequency table becomes impractical and I'd move to sketches, accepting approximate reach and losing the ability to drill to individual devices."</p>
+<p>"The single-writer serving store also stops holding, so I'd shard by campaign. And the daily batch window gets tight &mdash; at that volume I'd need incremental aggregation rather than full recompute, which means the pipeline has to be strictly append-only and idempotent per partition."</p>
+<p>"What doesn't change: the layered architecture and the metric definitions. The interfaces hold; the implementations behind two of them change."</p>
+<p>That last sentence is the one I'd want to land &mdash; showing that a good design degrades gracefully under scale changes rather than needing a rewrite.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">And now assume you have a tenth of the budget.</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Then I'd go back through the same design asking what we're paying for and what we can stop paying for, in cost order rather than architecture order.</p><p>The big levers: <strong>retention</strong> &mdash; do we need three years of raw at full fidelity, or would 30 days hot plus sampled history serve every real query? That's usually the largest line. <strong>Sampling</strong> &mdash; bid requests at 1% preserve nearly all analytical value at 1% of the cost. <strong>Precompute versus query</strong> &mdash; if most precomputed aggregates are rarely read, we're paying to maintain tables nobody queries; that inverts to on-demand. And <strong>freshness</strong>, which is expensive: moving from hourly to daily removes an entire streaming path.</p><p>I'd also say plainly that a tenth of the budget means giving something up, and the useful conversation is which thing. If it's freshness, the design simplifies a lot. If it's completeness, we sample. If neither can move, the honest answer is that the requirements and the budget are inconsistent and someone needs to choose &mdash; which is a legitimate thing to say to a stakeholder and, I'd argue, a better answer than quietly building something that fails.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Tell me about a time your design was wrong.</div>
+    <div class="hint">Structural change is the payload, not the mistake.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>The shape that works: brief context, the specific wrong decision, how it surfaced, what you did immediately, and &mdash; the part that matters &mdash; what changed structurally so the class of error can't recur.</p>
+<p>Choose something with real consequence but bounded blast radius, where you owned the decision. Avoid the disguised humblebrag ("I cared too much about quality"), and avoid anything where the fix was purely "I was more careful afterwards" &mdash; that's not a fix, it's an intention.</p>
+<p>Strong material from your own work: a forecast or pipeline assumption that held in development and broke on real data distribution; a case where an aggregate was defined one way in one system and differently in another and the discrepancy surfaced downstream; a model or job that was correct but operationally fragile.</p>
+<p>The closing sentence should be the systemic change: a validation gate added, an invariant enforced in the pipeline rather than the runbook, a metric definition moved into one shared place. That converts "I made a mistake" into "I improved the system", which is what they're listening for.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">What would you do differently if you designed it today?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>This is an invitation to show growth, and the answer that lands is specific rather than general &mdash; "I'd add more monitoring" is what everyone says.</p><p>I'd aim for something that names a principle I've since internalised and applies it concretely: for instance, that I'd have made the failure mode loud rather than silent from the start &mdash; enforcing the invariant in the pipeline so a violation blocks the partition, instead of computing it correctly and trusting it to stay correct. Or that I'd have kept the simpler baseline running alongside for longer, because I over-trusted the offline comparison and it would have caught the regression in days rather than weeks.</p><p>I'd also be willing to say what I'd keep, because a candidate who repudiates their whole design reads as either exaggerating the failure or lacking judgment about what actually went wrong. The useful version is narrow: this specific decision was wrong, for this reason, and here's the general lesson &mdash; the rest held up.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Scope &rarr; estimate &rarr; high-level &rarr; deep dive on one or two hard parts &rarr; trade-offs and failure modes. Same skeleton every time.</li>
+    <li>Under ambiguity, state a falsifiable assumption and proceed &mdash; don't interrogate indefinitely or invent silently.</li>
+    <li>Name conflicting requirements out loud rather than quietly resolving them.</li>
+    <li>Trade-offs in three sentences: the choice, what it costs, what would change your mind.</li>
+    <li>Volunteer your own failure modes and what breaks at 10&times; before you're asked.</li>
+    <li>When you don't know: say so, reason from an analogous system, invite correction. Self-correct visibly.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Designing before scoping.</li>
+    <li>No numbers anywhere in the design.</li>
+    <li>Waiting for the interviewer to raise trade-offs and failure modes.</li>
+    <li>Defending an earlier design after requirements change instead of diffing it.</li>
+    <li>Bluffing on something unfamiliar.</li>
+    <li>Uniform "we" when describing your own projects.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="coding-patterns.html"><span>Previous</span>The eight problems, in their data-shaped form</a>
+<a class="nx" href="index.html"><span>Done</span>All stages</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

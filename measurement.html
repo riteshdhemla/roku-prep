@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Numbers someone will argue with &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">16</div><div class="kicker">Measurement &amp; experimentation</div></div>
+  <h1>Numbers someone will argue with</h1>
+  <p class="why">Panel 1 names performance analytics and experimentation. The technical content is modest; what's graded is whether you know which numbers are descriptive, which are causal, and which are conventions people mistake for measurement.</p>
+  <div class="tags"><span class="tag">Panel 1 core</span><span class="tag">Partly in ml-viz</span><span class="tag">ML fundamentals</span></div>
+</header>
+<section><h2>The metric vocabulary, stated precisely</h2>
+<ul>
+<li><strong>Impressions</strong> &mdash; ads served. <strong>Viewable impressions</strong> &mdash; those meeting a viewability standard, a much smaller and more contested number.</li>
+<li><strong>Reach</strong> &mdash; distinct people (or households, or devices &mdash; specify which) exposed at least once. Not summable across periods.</li>
+<li><strong>Frequency</strong> &mdash; impressions divided by reach. Averages hide everything; the distribution is what matters, because a mean of 3 can be everyone seeing 3 or most seeing 1 and a few seeing 40.</li>
+<li><strong>CPM</strong> &mdash; cost per thousand impressions. <strong>CPC</strong>, <strong>CPA</strong> &mdash; per click, per acquisition.</li>
+<li><strong>Fill rate</strong>, <strong>win rate</strong> &mdash; supply and auction-side health.</li>
+<li><strong>Incrementality</strong> &mdash; conversions that would not have happened without the ad. The only genuinely causal quantity in the list.</li>
+</ul>
+<div class="k"><b>The distinction to hold onto</b><p>Reach, frequency and CPM are <em>descriptive</em> &mdash; counts of what happened. Attribution is a <em>convention</em> &mdash; an agreed rule for assigning credit. Incrementality is <em>causal</em> &mdash; and it requires an experiment. Conflating the second and third is the most common analytical error in the industry, and being able to name it clearly is a senior signal.</p></div></section>
+<section><h2>Attribution and why it isn't measurement</h2>
+<p>Attribution rules assign credit for a conversion among prior touchpoints. Last-touch gives everything to the final touch; first-touch to the first; linear splits evenly; time-decay weights recency; position-based front- and back-loads.</p>
+<p>All of them share the same flaw: <strong>they condition on conversion</strong>. They describe the touch history of people who converted, which is not the same as identifying what caused conversion. The pathological case is retargeting &mdash; it shows ads to people already intending to buy, so last-touch attribution credits it enormously while its true incremental contribution may be near zero.</p>
+<p>Data-driven attribution &mdash; fitting a model to touch sequences &mdash; is more sophisticated and does not fix this, because the underlying data is still observational and selection into exposure is not random.</p>
+<p>So the honest framing: attribution is useful for <em>allocation within an agreed convention</em> and for operational reporting. It should not be used to answer "does this channel work". That question requires an experiment.</p></section>
+<section><h2>Experiment design</h2>
+<p><strong>The randomisation unit must match the interference structure.</strong> Randomise by user and you get power but risk spillover between household members sharing a screen. Randomise by household or geography and you eliminate spillover at the cost of far fewer units and much less power. For CTV specifically, household or geo is often the honest choice because the screen is shared &mdash; and noticing this unprompted is a strong signal.</p>
+<p><strong>Ghost ads / PSA holdout.</strong> The clean design for ad incrementality: in the control group, run the auction and record who <em>would</em> have been shown the ad, then show something else. This gives you a control group matched on the same targeting and auction dynamics, avoiding the selection bias of comparing exposed to unexposed users.</p>
+<p><strong>Guardrail metrics</strong> alongside the primary metric &mdash; you want to know if you won on conversions while damaging retention or user experience.</p>
+<p><strong>Common validity threats:</strong> peeking at results and stopping when significant (inflates false positives &mdash; use sequential testing if you want to look early); novelty effects that fade; seasonality; sample ratio mismatch, which is the single best early indicator that your assignment is broken and should be checked before any analysis; and multiple comparisons across many metrics.</p></section>
+<section><h2>A/B or bandit</h2>
+<p>A worthwhile question because the right answer is contingent, not doctrinal.</p>
+<table>
+<tr><th></th><th>Fixed A/B</th><th>Multi-armed bandit</th></tr>
+<tr><td>Goal</td><td>Estimate the effect precisely</td><td>Maximise reward while learning</td></tr>
+<tr><td>Allocation</td><td>Fixed through the test</td><td>Shifts toward winners</td></tr>
+<tr><td>Best when</td><td>Decision is durable, you need a defensible number, few arms</td><td>Many arms, short-lived content, opportunity cost of showing losers is high</td></tr>
+<tr><td>Weakness</td><td>Wastes traffic on known losers</td><td>Biased effect estimates; struggles with delayed feedback and non-stationarity</td></tr>
+</table>
+<p><strong>Creative selection</strong> is the natural bandit case: dozens of creatives, short flights, and every impression on a losing creative is wasted money. <strong>A pricing or algorithm change</strong> is the natural A/B case: you need a defensible estimate of the effect to justify a durable decision, and biased estimates from adaptive allocation are a real cost.</p>
+<p><strong>Contextual bandits</strong> extend this by conditioning the arm choice on features &mdash; the bridge between experimentation and personalisation, and where this connects to recommendation systems.</p>
+<p>The complication worth raising unprompted: <strong>delayed feedback</strong>. A bandit needs a reward signal to update on, and conversions can take days. Optimising on clicks because they're immediate is how you end up with a system that maximises exactly the wrong thing.</p></section>
+<section><h2>Evaluating the forecasting model itself</h2>
+<p>Adjacent to your production work and a likely probe, since your background is quantile forecasting.</p>
+<p><strong>Validation must respect time.</strong> Random k-fold on time series leaks the future into training. Use walk-forward / rolling-origin validation, where each fold trains on the past and tests on the subsequent window, matching the real forecasting horizon.</p>
+<p><strong>Metric choice.</strong> MAPE breaks on values near zero and penalises over- and under-forecasting asymmetrically; sMAPE and MASE are usually better; and for quantile forecasts, <strong>pinball loss</strong> is the coherent choice because it's the loss the model is actually optimising.</p>
+<p><strong>Calibration over point accuracy.</strong> For a quantile model, the question isn't only how close the median is &mdash; it's whether the 90th percentile is exceeded about 10% of the time. A well-calibrated interval is what makes a forecast usable for a delivery guarantee, and it's the property a business consumer implicitly relies on.</p>
+<p><strong>Baselines.</strong> Always report against a naive baseline (seasonal naive, last week's value). A deep model that barely beats seasonal naive is a finding, not a failure to hide &mdash; and volunteering it reads as intellectual honesty rather than weakness.</p>
+<p><strong>Drift monitoring:</strong> feature drift (PSI or KS on input distributions), prediction drift, and actual error once labels arrive. Note the lag &mdash; you detect input drift immediately and error much later, which is precisely why input monitoring matters.</p></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Marketing says the retargeting campaign has a 12x ROAS and wants to triple the budget. Do you agree?</div>
+    <div class="hint">The number is real and the conclusion doesn't follow.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>I wouldn't dispute the number, I'd dispute what it measures. A 12&times; ROAS from attributed conversions tells us people who saw the retargeting ad converted at high rates. It doesn't tell us the ad caused those conversions.</p>
+<p>Retargeting selects for people who already visited the site and showed intent, so it is showing ads to the population most likely to convert anyway. Last-touch attribution then credits the final ad. That's a selection effect, and the more precisely you target intent, the more inflated the attributed ROAS becomes &mdash; the metric rewards the bias.</p>
+<p>What I'd propose: a holdout experiment. Randomly withhold retargeting from a subset of the eligible audience &mdash; ideally with ghost ads so the control is matched on auction dynamics &mdash; and compare conversion rates. That gives incremental ROAS, which is the number the budget decision actually needs.</p>
+<p>My prior is that incremental will be materially lower than 12&times;, but the point is that neither of us knows, and tripling spend on an uncontrolled number is a large bet on an assumption.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">They don't want to withhold ads from real customers. What's your alternative?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>That's a legitimate objection and I'd take it seriously rather than insist on the ideal design. A few options, with honest limitations.</p><p><strong>Geo-based holdout:</strong> suppress in a set of matched markets rather than for individuals. Less precise and needs more spend to power, but no individual customer is singled out and it's often more palatable organisationally.</p><p><strong>Start with a small holdout</strong> &mdash; 5% for a few weeks. The revenue at risk is bounded and quantifiable, and I'd frame it explicitly as the cost of information: if we're about to commit a large budget increase, spending a fraction of that to know whether it works is cheap.</p><p><strong>Exploit natural variation</strong> &mdash; budget exhaustion, delivery gaps, or a staged rollout create quasi-experimental comparisons. Weaker inference, but sometimes it's what's available, and it's better than nothing.</p><p>What I'd want to avoid is the outcome where we can never measure incrementality because measuring it always costs something. That's a decision to permanently not know, and it should at least be made consciously.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Design the experiment to measure whether a new creative format lifts conversions on CTV.</div>
+    <div class="hint">The randomisation unit is the whole question.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>The critical decision is the randomisation unit, and CTV forces it: the screen is shared, so randomising by individual viewer profile leaks &mdash; one household member sees the treatment, another the control, and any conversion is attributable to either. <strong>Randomise by household.</strong></p>
+<p>Design: eligible households randomly assigned to treatment or control on a stable hash of household ID so assignment persists across the flight. Control sees the existing format &mdash; not nothing, or we're measuring the ad rather than the format. Ghost-ad style logging so we know which control households <em>would</em> have been served, giving comparable populations.</p>
+<p>Primary metric: conversion rate per household within an agreed window. Guardrails: completion rate, frequency, and any brand-perception measure that exists.</p>
+<p>Power: computed up front from baseline conversion rate, expected lift, and household count &mdash; and if the answer is that we can't detect a plausible effect size with available inventory, that's worth knowing before running rather than after. Household-level randomisation costs power relative to user-level, so this check matters more here than usual.</p>
+<p>Before analysis: check sample ratio mismatch. If assignment is broken, nothing downstream is worth reading.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Two weeks in, you're up 4% and it's significant. Ship it?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Not on that basis. If we're looking because we set a fixed horizon and reached it, fine. If we're looking because we're checking daily and this is the day it crossed the threshold, then the p-value is not what it appears &mdash; repeated peeking with a fixed threshold substantially inflates the false-positive rate, and "it became significant" is exactly what you'd expect to see eventually under a null effect.</p><p>So my first question is whether the analysis plan was fixed in advance. If we want the ability to stop early, the correct approach is sequential testing or an alpha-spending function chosen beforehand, not an unadjusted look.</p><p>Beyond the statistics: two weeks is short enough that a new creative format could be showing a novelty effect that decays. And I'd want to see the guardrails &mdash; a 4% conversion lift that comes with a meaningful drop in completion rate is a different decision. If the cost of running the full duration is low, I'd run it. If there's real urgency, I'd say plainly that we're accepting a higher false-positive risk to move faster, which is a legitimate choice when it's made knowingly.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Your forecasting model's MAPE improved from 18% to 12%. Are you happy?</div>
+    <div class="hint">Ask what got worse and what the baseline is.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>Cautiously, and I'd want three things before celebrating.</p>
+<p><strong>What's the baseline?</strong> If seasonal naive gets 14%, then 12% is a marginal return on a complex model, and the honest conclusion might be that the complexity isn't earning its maintenance cost.</p>
+<p><strong>How was it validated?</strong> If that improvement came from random k-fold on time-series data, it's leakage and the number is meaningless. Only rolling-origin validation matching the real forecast horizon tells us anything.</p>
+<p><strong>Is MAPE the right metric here?</strong> It's asymmetric &mdash; it penalises over-forecasting more than under-forecasting &mdash; and it blows up on low-volume series. If the model improved MAPE by systematically under-forecasting, we've made the business outcome worse while improving the number. For a quantile model, pinball loss and calibration are the metrics I'd actually want.</p>
+<p>And the business question underneath: if this forecast backs delivery guarantees, calibration of the intervals matters more than the accuracy of the median. A better point forecast with worse-calibrated intervals could easily be a net loss.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Calibration is worse &mdash; the 90th percentile is now exceeded 20% of the time. Does that change your recommendation?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>Yes, and I'd argue against shipping it. If the 90th percentile is exceeded twice as often as it should be, the intervals are systematically too narrow, and anyone using them for capacity or a delivery commitment is under-provisioned in a way they can't see. That's worse than a slightly less accurate median, because it converts a visible error into a hidden one.</p><p>Practically, if the point forecast genuinely is better, I'd try to keep it and fix the intervals rather than discard the work &mdash; recalibrate post-hoc using conformal methods or an isotonic adjustment on the quantile outputs, and re-check on held-out data. That's often a small change with a large effect.</p><p>The general position I'd want to convey: for a forecast that backs a commitment, the interval is the product. The median is what people look at; the interval is what they rely on. Improving one while quietly degrading the other is a regression, and the fact that the headline metric improved is precisely why it would ship unnoticed if we weren't checking.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">How would you explain to an advertiser why our reach number differs from theirs?</div>
+    <div class="hint">Communication is a graded focus area. Structure the answer.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>I'd separate the possible causes rather than defend our number, because the credibility comes from being able to enumerate where two honest systems diverge.</p>
+<ul>
+<li><strong>Different units.</strong> We may count households, they may count individuals or logged-in users. On CTV these differ by a factor of two or more, and this is the most common cause.</li>
+<li><strong>Different identity resolution.</strong> If our graph merges devices they treat separately, our reach is lower and neither is wrong &mdash; they're different definitions.</li>
+<li><strong>Different filtering.</strong> Invalid traffic, bot exclusion, viewability standards &mdash; each removes a different slice.</li>
+<li><strong>Different boundaries.</strong> Time zone, day cutoff, campaign start and end.</li>
+<li><strong>Estimation error.</strong> If we use sketches, roughly 1&ndash;2% &mdash; which explains a small gap and never a large one, and I'd say so rather than let it be a catch-all excuse.</li>
+</ul>
+<p>The productive move is to propose reconciling on a specific slice &mdash; one campaign, one day &mdash; where we can trace the difference concretely, rather than arguing about aggregates. In my experience it's almost always definitional, and the durable fix is an agreed metric definition rather than a better calculation.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">They're threatening not to pay. Now what?</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>Then it stops being an analytical conversation and I'd be clear about what I can and can't do. What I can do is provide the audit trail: exactly what we counted, under what definition, from which immutable log, with the ability to reproduce the number. That's why exact, auditable billing calculations matter separately from fast approximate reporting &mdash; and it's the concrete reason I'd have argued for two pipelines earlier.</p><p>What I'd want to avoid is negotiating the number, which sets a precedent that our measurement is adjustable. If our methodology is defensible, we defend it and show the working. If the reconciliation reveals we're actually wrong, we fix it and say so quickly &mdash; that's far cheaper than discovering it later.</p><p>And I'd escalate rather than handle it alone. A payment dispute involves commercial and legal considerations that aren't mine to decide; my job is to make sure whoever handles it has an accurate, reproducible technical account rather than a confident summary.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Reach and frequency are descriptive; attribution is a convention; incrementality is causal and needs an experiment.</li>
+    <li>Attribution conditions on conversion, so it flatters retargeting and any intent-selected channel.</li>
+    <li>Match the randomisation unit to the interference structure &mdash; households for CTV, because the screen is shared.</li>
+    <li>Ghost ads give a control matched on targeting and auction dynamics.</li>
+    <li>Bandits for many short-lived arms; fixed A/B when you need a defensible effect estimate. Watch delayed feedback.</li>
+    <li>Time-series validation must be walk-forward. For quantile forecasts, pinball loss and calibration beat MAPE.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Treating attributed ROAS as evidence a channel works.</li>
+    <li>Randomising by user on a shared-screen medium without noticing.</li>
+    <li>Peeking at experiment results and stopping when significant.</li>
+    <li>Reporting average frequency with no distribution.</li>
+    <li>Random k-fold cross-validation on time series.</li>
+    <li>Reporting a model improvement with no naive baseline.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="agentic-systems.html"><span>Previous</span>Agents that someone has to trust on Monday</a>
+<a class="nx" href="coding-patterns.html"><span>Next</span>The eight problems, in their data-shaped form</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

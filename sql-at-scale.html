@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL that survives ten billion rows &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">06</div><div class="kicker">Query design</div></div>
+  <h1>SQL that survives ten billion rows</h1>
+  <p class="why">Neither of your repos contains any SQL, and a data-heavy panel will very plausibly ask you to write some live. The patterns below are the ones adtech questions actually reduce to.</p>
+  <div class="tags"><span class="tag">Panel 2 core</span><span class="tag">Gap: not in ml-viz</span><span class="tag">Live-coding risk</span></div>
+</header>
+<section><h2>Window functions, the whole vocabulary</h2>
+<p>Almost every non-trivial analytics question is a window function question. Know the frame syntax cold, because hesitating here is very visible.</p>
+<pre><code>&lt;fn&gt; OVER (
+  PARTITION BY campaign_id      -- reset the calculation per group
+  ORDER BY event_time            -- ordering within the group
+  ROWS BETWEEN 6 PRECEDING AND CURRENT ROW   -- the frame
+)</code></pre>
+<ul>
+<li><code>ROW_NUMBER()</code> &mdash; unique sequential, ties broken arbitrarily. The dedup workhorse.</li>
+<li><code>RANK()</code> / <code>DENSE_RANK()</code> &mdash; ties share a value; RANK leaves gaps, DENSE_RANK doesn't.</li>
+<li><code>LAG(col, n)</code> / <code>LEAD(col, n)</code> &mdash; previous/next row's value. Sessionization and gap detection.</li>
+<li><code>SUM(x) OVER (... ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)</code> &mdash; running total.</li>
+<li><code>FIRST_VALUE</code> / <code>LAST_VALUE</code> &mdash; watch the frame; <code>LAST_VALUE</code> defaults to a frame ending at the current row, which surprises people.</li>
+</ul>
+<div class="k"><b>ROWS vs RANGE</b><p><code>ROWS</code> counts physical rows; <code>RANGE</code> counts logical values of the ORDER BY expression, so tied values collapse into the same frame. Getting a rolling 7-day average wrong because of this is a classic silent bug.</p></div></section>
+<section><h2>Deduplication</h2>
+<p>Impression logs arrive with duplicates from retries, at-least-once delivery, and client-side double-fires. The canonical pattern:</p>
+<pre><code>WITH ranked AS (
+  SELECT *,
+         ROW_NUMBER() OVER (
+           PARTITION BY event_id
+           ORDER BY ingest_time ASC
+         ) AS rn
+  FROM impressions
+  WHERE event_date = DATE '2026-08-09'
+)
+SELECT * EXCEPT(rn) FROM ranked WHERE rn = 1;</code></pre>
+<p>Points to volunteer:</p>
+<ul>
+<li><strong>Pick the earliest deliberately.</strong> Keeping the first arrival is idempotent under replay; keeping the latest is not, because a re-run can change the answer.</li>
+<li><strong>If there is no <code>event_id</code></strong>, construct a deterministic key from the fields that define identity &mdash; device, campaign, creative, and a truncated timestamp. Say out loud that this is a heuristic and can collapse genuine rapid repeat impressions, which is a real cost.</li>
+<li><strong>Window boundaries leak.</strong> Deduplicating within a single day's partition misses a duplicate that arrived just after midnight. Either dedup over a trailing window wider than your expected retry delay, or keep a persistent seen-set (Bloom + exact check) across boundaries.</li>
+</ul></section>
+<section><h2>Sessionization</h2>
+<p>Group a user's events into sessions separated by an inactivity gap. This is the most-asked SQL pattern in this space, and it is worth being able to write without thinking.</p>
+<pre><code>WITH gaps AS (
+  SELECT device_id, event_time,
+         CASE WHEN event_time - LAG(event_time) OVER (
+                     PARTITION BY device_id ORDER BY event_time
+                   ) &gt; INTERVAL '30' MINUTE
+              OR LAG(event_time) OVER (
+                     PARTITION BY device_id ORDER BY event_time
+                   ) IS NULL
+              THEN 1 ELSE 0 END AS is_new_session
+  FROM events
+),
+marked AS (
+  SELECT *,
+         SUM(is_new_session) OVER (
+           PARTITION BY device_id ORDER BY event_time
+           ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+         ) AS session_seq
+  FROM gaps
+)
+SELECT device_id, session_seq,
+       MIN(event_time) AS started_at,
+       MAX(event_time) AS ended_at,
+       COUNT(*)        AS events
+FROM marked
+GROUP BY device_id, session_seq;</code></pre>
+<p>The idea worth naming: <strong>a running sum over a boolean gap-flag becomes a session identifier</strong>. That trick generalises to any "group consecutive runs" problem.</p></section>
+<section><h2>Attribution and the last-touch join</h2>
+<p>Given conversions and a history of touchpoints, credit the conversion to a prior touch within a lookback window.</p>
+<pre><code>SELECT c.conversion_id, c.device_id, c.converted_at,
+       t.campaign_id, t.touched_at
+FROM conversions c
+LEFT JOIN LATERAL (
+  SELECT campaign_id, touched_at
+  FROM touchpoints t
+  WHERE t.device_id = c.device_id
+    AND t.touched_at &lt;= c.converted_at
+    AND t.touched_at &gt;= c.converted_at - INTERVAL '7' DAY
+  ORDER BY t.touched_at DESC
+  LIMIT 1
+) t ON TRUE;</code></pre>
+<p>Where engines don't support lateral joins, the portable form is a range join followed by <code>ROW_NUMBER() ... ORDER BY touched_at DESC</code> and filtering to 1.</p>
+<div class="k"><b>The performance trap</b><p>An inequality join on <code>touched_at</code> has no equality predicate to hash on, so the engine may fall back to a nested loop or a range partition. Always co-partition on <code>device_id</code> first so the inequality is evaluated within a small group, and bound the window tightly &mdash; a 7-day window is 7 times cheaper than a 90-day one, and someone should be able to justify the number.</p></div></section>
+<section><h2>Handling skew inside SQL</h2>
+<p>Skew doesn't disappear because you wrote SQL instead of Spark code &mdash; the same shuffle happens underneath. Two patterns worth having ready:</p>
+<h3>Salting a skewed join</h3>
+<pre><code>-- large side: add a random salt to the hot key
+SELECT ..., campaign_id,
+       CASE WHEN campaign_id IN (SELECT campaign_id FROM hot_keys)
+            THEN CAST(FLOOR(RAND() * 16) AS INT) ELSE 0 END AS salt
+FROM impressions
+-- small side: replicate each hot row 16 times, one per salt
+-- then join ON (campaign_id, salt)</code></pre>
+<h3>Two-phase aggregation</h3>
+<p>Aggregate at a finer grain first (adding a random bucket to the group key), then aggregate the partials. Spreads a hot key across many tasks and only works for <em>associative</em> aggregates &mdash; sums and counts, not medians or distinct counts unless you carry a sketch.</p>
+<h3>General query hygiene at scale</h3>
+<ul>
+<li>Filter and project <em>before</em> joining, never after. Every column you drop early is shuffle bytes you don't pay for.</li>
+<li>Always bound on the partition column, even when it feels redundant &mdash; unless the table format supports hidden partitioning and derives it for you.</li>
+<li><code>COUNT(DISTINCT x)</code> across a large grouping is a shuffle-heavy operation and doesn't roll up. Reach for an approximate function or a stored sketch.</li>
+<li>Beware <code>SELECT DISTINCT</code> used to paper over a join that fans out &mdash; fix the join, don't dedupe the symptom.</li>
+</ul></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Write me the query for daily unique devices and impressions per campaign for the last 30 days. Talk me through it.</div>
+    <div class="hint">They'll interrupt with "now make it fast" &mdash; get ahead of it.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <pre><code>SELECT campaign_id, event_date,
+       COUNT(*)                        AS impressions,
+       APPROX_COUNT_DISTINCT(device_id) AS unique_devices
+FROM impressions
+WHERE event_date &gt;= CURRENT_DATE - INTERVAL '30' DAY
+GROUP BY campaign_id, event_date;</code></pre>
+<p>Narration worth giving alongside it: the partition filter comes first so we prune 30 directories instead of scanning history; only three columns are touched, so on a wide Parquet table we read a fraction of the bytes; and I've used the approximate distinct deliberately &mdash; exact <code>COUNT(DISTINCT)</code> requires shuffling every device ID and is the expensive part of this query.</p>
+<p>I'd then flag the thing the question doesn't say: <em>daily</em> uniques are not summable into a 30-day unique. If anyone downstream adds this column up they will get a wrong and inflated number. If a range-level unique is needed, this should be a stored HLL sketch per day rather than a count.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">It's still too slow for a dashboard that reloads every ten seconds.</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Then the query is the wrong layer to optimise &mdash; no scan over raw impressions belongs on a ten-second refresh path. I'd materialise this as a daily aggregate table written once by the batch pipeline, with the sketch stored rather than the count, and point the dashboard at that. It's a few hundred thousand rows instead of billions, and the query becomes a trivial range scan.</p><p>If the freshness requirement includes today's partial data, I'd layer: the materialised table for closed days, plus a small streaming aggregate for the current day, unioned at read time. That's the standard shape and it's worth naming as such. What I'd want to avoid is caching the slow query, which papers over the architecture and gives you a stale-cache incident later.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Your sessionization query works on a sample and OOMs on the full table. Why?</div>
+    <div class="hint">Look at the window definition, not the logic.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>The window is <code>PARTITION BY device_id ORDER BY event_time</code>, so the engine shuffles all of a device's events to one task and sorts them. Two things break at scale.</p>
+<p>First, <strong>skew</strong>: a bot, a test device, or a null device ID can have hundreds of millions of events, and that entire group must fit in one task's memory to be sorted. Second, if <code>device_id</code> is null or a sentinel for a meaningful fraction of rows, every one of those rows lands in a single partition.</p>
+<p>Fixes, in order of what I'd try: filter null and sentinel device IDs before the window &mdash; they can't be sessionized meaningfully anyway; cap or separate abnormally high-volume devices and handle them apart; ensure the input is bounded to one day rather than all history; and raise the partition count so ordinary devices spread further, which helps the general case even though it doesn't help the single hot device.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">You can't filter them &mdash; the bot traffic detection team needs those rows.</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Then I'd separate the workload rather than force one query to serve both. Route high-volume devices &mdash; identified cheaply by a count threshold, or a Count-Min pass &mdash; into their own job where sessionization can be done with a different strategy or skipped entirely, since a device with a hundred million events doesn't have meaningful sessions in the product sense anyway. The normal-traffic path then runs clean.</p><p>I'd also question whether sessionization is what bot detection actually wants from those rows. Usually it wants the raw event stream and its own features, not sessions. Establishing that lets us stop paying a sessionization cost for rows where the output is meaningless &mdash; which is a better outcome than making the expensive query survive.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Give me the multi-touch attribution version of that last-touch query.</div>
+    <div class="hint">The SQL is a fan-out plus a weighting. The interesting part is the model choice.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>Structurally: instead of taking the single most recent touch, take all touches in the window and distribute fractional credit that sums to 1 per conversion.</p>
+<pre><code>WITH touches AS (
+  SELECT c.conversion_id, t.campaign_id, t.touched_at,
+         ROW_NUMBER() OVER (PARTITION BY c.conversion_id
+                            ORDER BY t.touched_at) AS pos,
+         COUNT(*)    OVER (PARTITION BY c.conversion_id) AS n
+  FROM conversions c
+  JOIN touchpoints t
+    ON t.device_id = c.device_id
+   AND t.touched_at BETWEEN c.converted_at - INTERVAL '7' DAY
+                        AND c.converted_at
+)
+SELECT conversion_id, campaign_id,
+       1.0 / n AS credit          -- linear
+FROM touches;</code></pre>
+<p>Swap the credit expression for the model: position-based (40/20/40), time-decay (<code>exp(-lambda * hours_before)</code> normalised per conversion), or U-shaped.</p>
+<p>The point I'd make unprompted: every one of these weightings is a <em>convention</em>, not a measurement. None of them establishes that the touch caused the conversion. If the question is which channel actually drove incremental conversions, MTA is the wrong instrument and the answer is a holdout experiment &mdash; that's stage 08.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">The join fans out badly &mdash; some conversions have thousands of touches. How do you make it not explode?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>Bound the fan-out explicitly rather than let the data decide. Practical measures: cap touches per conversion to the most recent k, which for most attribution models beyond the top few positions changes the answer negligibly while cutting the intermediate result dramatically; tighten the lookback window and make someone justify its length; and pre-aggregate touchpoints to one row per (device, campaign, day) before the join, since most models don't distinguish two impressions of the same campaign an hour apart.</p><p>Mechanically I'd also make sure the join is co-partitioned on <code>device_id</code> so the range condition is evaluated within small groups rather than driving a broadcast nested loop. And I'd check whether the thousand-touch conversions are real &mdash; a device with a thousand touches in seven days is often a bot or an identity over-merge, which loops back to stage 03.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">When would you write this in SQL rather than in Spark's DataFrame API?</div>
+    <div class="hint">A judgment question about maintainability, not syntax.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>Almost always SQL, for anything that is fundamentally a transformation over tables. It is readable by analysts as well as engineers, it is portable across engines, it's easier to review in a pull request, and the optimiser sees the whole statement rather than a chain of opaque calls.</p>
+<p>I'd reach for the DataFrame API when the logic is genuinely programmatic: constructing a query dynamically from configuration, iterating a graph algorithm, applying a Python model in a UDF, or unit-testing composable transformation functions in isolation. Those are cases where SQL becomes string manipulation, and string-built SQL is worse than either option.</p>
+<p>The honest answer is that the two compile to the same plan, so this is a maintainability decision and not a performance one &mdash; and saying that explicitly is usually what the question is checking.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Our team writes everything as Python UDFs. What's your view?</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>I'd want to understand why before criticising it, since there's often a real constraint behind it. But my honest view is that it's a performance and observability problem worth addressing. A Python UDF forces serialisation of each row out of the JVM into a Python process and back, defeats Catalyst's ability to optimise across the operation, and blocks predicate and projection pushdown through it. It's frequently the single largest cost in a job.</p><p>Where a UDF is genuinely needed, vectorised (pandas/Arrow) UDFs recover a large fraction of the cost by batching. And a lot of UDFs in practice reimplement something the built-in functions already do &mdash; string parsing, date arithmetic, JSON extraction &mdash; so an audit usually finds easy wins. I'd frame it to the team as a measured comparison on one representative job rather than a style objection, because that's the version that actually changes behaviour.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Window functions: know PARTITION BY / ORDER BY / frame, and know ROWS vs RANGE.</li>
+    <li>Dedup with ROW_NUMBER over a stable event key, keeping the earliest so replays are idempotent; watch partition-boundary leakage.</li>
+    <li>Sessionize with LAG to flag gaps, then a running SUM of the flag as the session ID.</li>
+    <li>Attribution is a bounded range join; co-partition on device and bound the window tightly or it degenerates into a nested loop.</li>
+    <li>Filter and project before joining; bound on the partition column; avoid exact COUNT(DISTINCT) at scale.</li>
+    <li>Salting and two-phase aggregation are the SQL-level answers to skew; two-phase only works for associative aggregates.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Writing correct SQL but never mentioning what the engine does underneath.</li>
+    <li>Using COUNT(DISTINCT) over a huge grouping without flagging the cost.</li>
+    <li>Summing daily uniques into a period unique.</li>
+    <li>Presenting multi-touch attribution as if it measures causation.</li>
+    <li>SELECT * on a wide event table.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="spark-streaming.html"><span>Previous</span>Streaming impressions without lying about time</a>
+<a class="nx" href="sql-ctv-cookbook.html"><span>Next</span>The CTV query cookbook</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

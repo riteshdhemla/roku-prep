@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resolving who is who, at a billion edges &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">10</div><div class="kicker">Identity &amp; privacy</div></div>
+  <h1>Resolving who is who, at a billion edges</h1>
+  <p class="why">Both panels name identity explicitly. The algorithm is the easy half &mdash; interviewers push on the judgment: what counts as evidence, what happens when a merge is wrong, and what you are legally allowed to join in the first place.</p>
+  <div class="tags"><span class="tag">Panel 1 core</span><span class="tag">Panel 2 core</span><span class="tag">Gap: not in ml-viz</span><span class="tag">Adtech domain</span></div>
+</header>
+<section><h2>What the graph actually is</h2>
+<p>An identity graph is a set of <strong>identifiers as nodes</strong> &mdash; cookies, mobile ad IDs, CTV device IDs, hashed emails, account IDs, IP+user-agent fingerprints &mdash; and <strong>edges as observed co-occurrence</strong>: two identifiers seen in the same authenticated session, the same household, the same login.</p>
+<p>A connected component is then a <em>person</em> or a <em>household</em>, depending on which edge types you admit. That distinction is the first thing to clarify in any design question, because the whole system changes: household resolution tolerates IP-based edges, person resolution cannot.</p>
+<p>Edges are not equal, and the biggest modeling mistake is treating them as boolean. Give each edge a <strong>type, a confidence, and a timestamp</strong>:</p>
+<table>
+<tr><th>Evidence</th><th>Type</th><th>Confidence</th><th>Failure mode</th></tr>
+<tr><td>Same logged-in account on two devices</td><td>Deterministic</td><td>Very high</td><td>Shared family account</td></tr>
+<tr><td>Same hashed email supplied to two publishers</td><td>Deterministic</td><td>High</td><td>Stale &mdash; email reassigned or abandoned</td></tr>
+<tr><td>Same residential IP over time</td><td>Probabilistic</td><td>Medium (household)</td><td>Carrier-grade NAT, coffee shop, VPN</td></tr>
+<tr><td>Behavioural / device fingerprint similarity</td><td>Probabilistic</td><td>Low&ndash;medium</td><td>Coincidence at scale; drifts</td></tr>
+</table></section>
+<section><h2>Computing components at scale</h2>
+<p>The naive approach &mdash; repeatedly self-join the edge table until nothing changes &mdash; is the wrong answer, and knowing <em>why</em> is the point. Each iteration is a full shuffle of a growing edge set, the number of iterations scales with graph diameter, and hub nodes make the intermediate join explode.</p>
+<h3>Two workable approaches</h3>
+<p><strong>Iterative label propagation</strong> (what GraphFrames' connected components does): each node starts labelled with its own ID; each iteration, every node adopts the minimum label among its neighbours; repeat until stable. Cost is one shuffle per iteration, and iteration count scales with diameter &mdash; which is why you use large-star/small-star style optimisations that shrink diameter faster than one hop per round.</p>
+<p><strong>Union-find with path compression</strong>, which is near-linear on a single machine. Viable when the edge set fits, or when you partition the problem &mdash; resolve within shards, then reconcile cross-shard components. Worth knowing because it's the right answer at moderate scale and interviewers like the contrast.</p>
+<h3>Incremental, not full recompute</h3>
+<p>A daily full recompute over the whole history is the design most candidates reach for and the one you should argue against. Better: maintain the components and process only new edges. A new edge either lands inside an existing component (no-op), links a new identifier to one (cheap attach), or <strong>merges two existing components</strong> &mdash; the only expensive case, and the one that needs care.</p>
+<div class="k"><b>Cap component size</b><p>This is the detail that separates people who have run one of these from people who have read about them. A single bad edge &mdash; a shared public IP, a test account, a bot &mdash; can merge two large components, and the merges cascade. Left unchecked you get one component containing millions of devices, which is worthless for targeting and dangerous for privacy. Enforce a maximum size, reject or quarantine merges that breach it, and alert.</p></div>
+<figure><svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Two identity components merged by one weak shared-IP edge">
+<text class="svg-s" x="4" y="18">two genuine households</text>
+<g>
+<circle cx="70" cy="70" r="16" fill="#182A2A" stroke="#4FD1C5"/>
+<circle cx="140" cy="50" r="16" fill="#182A2A" stroke="#4FD1C5"/>
+<circle cx="140" cy="110" r="16" fill="#182A2A" stroke="#4FD1C5"/>
+<text class="svg-s" x="70" y="74" text-anchor="middle">TV</text>
+<text class="svg-s" x="140" y="54" text-anchor="middle">phone</text>
+<text class="svg-s" x="140" y="114" text-anchor="middle">tablet</text>
+<path class="svg-cool" d="M85 64 L125 54"/><path class="svg-cool" d="M83 80 L126 105"/>
+<text class="svg-s" x="86" y="42" fill="#4FD1C5">account</text>
+</g>
+<g>
+<circle cx="480" cy="70" r="16" fill="#182A2A" stroke="#4FD1C5"/>
+<circle cx="550" cy="50" r="16" fill="#182A2A" stroke="#4FD1C5"/>
+<circle cx="550" cy="110" r="16" fill="#182A2A" stroke="#4FD1C5"/>
+<text class="svg-s" x="480" y="74" text-anchor="middle">TV</text>
+<text class="svg-s" x="550" y="54" text-anchor="middle">phone</text>
+<text class="svg-s" x="550" y="114" text-anchor="middle">tablet</text>
+<path class="svg-cool" d="M495 64 L535 54"/><path class="svg-cool" d="M493 80 L536 105"/>
+</g>
+<path class="svg-hot" stroke-dasharray="4 3" d="M156 80 C260 140 340 140 464 80"/>
+<text class="svg-s" x="310" y="150" text-anchor="middle" fill="#F4A259">one shared-IP edge (CGNAT, VPN, SSAI stitcher)</text>
+<rect x="30" y="26" width="640" height="110" rx="8" fill="none" stroke="#F4A259" stroke-dasharray="5 4"/>
+<text class="svg-s" x="350" y="192" text-anchor="middle" fill="#F4A259">&rarr; one component. Frequency capping breaks. Targeting leaks across households.</text>
+<text class="svg-s" x="4" y="228">merges cascade: this component now shares an IP with a third, and so on &mdash; hence the size cap</text>
+</svg><figcaption><b>How one bad edge merges the world</b>Every teal edge here is deterministic and trustworthy. The single amber edge is a shared public IP &mdash; and it fuses two unrelated households into one component. Because merges cascade, this is how you get a component with four million devices.</figcaption></figure></section>
+<section><h2>Precision, recall, and who pays for each error</h2>
+<p>There is no ground truth, so you cannot report accuracy in the usual way. Frame it as two asymmetric costs.</p>
+<p><strong>Over-merging (false positive edge).</strong> Two people become one identity. Consequences: frequency capping fails because you think one person saw 3 ads when two people saw 3 each; targeting leaks across people in a household; and in the worst case you expose one person's inferred attributes to another. Privacy-relevant and hard to detect.</p>
+<p><strong>Under-merging (missed edge).</strong> One person appears as several. Consequences: reach is overstated, frequency understated, budget wasted re-reaching the same person. Economically costly but privacy-safe.</p>
+<p>Because the costs are asymmetric, the usual posture is <strong>precision-favouring</strong>: admit deterministic edges freely, admit probabilistic edges only above a confidence threshold, and tune the threshold per use case &mdash; a suppression list (don't show this ad to existing customers) demands far higher precision than a broad awareness campaign.</p>
+<h3>How you evaluate without labels</h3>
+<ul>
+<li><strong>Holdout deterministic edges.</strong> Withhold a subset of known-true links and measure whether the graph recovers them. Gives a recall estimate against the only ground truth you have.</li>
+<li><strong>Panel data</strong> or a small labelled sample where household composition is genuinely known.</li>
+<li><strong>Distributional monitoring.</strong> Component size histogram, devices per component, merge rate per day. A sudden shift in the tail is your alarm long before anyone complains.</li>
+<li><strong>Downstream proxies.</strong> Frequency distribution shape &mdash; if capping at 3 and you see many users at 6, you are under-merging.</li>
+</ul>
+<div class="fp"><b class="hdr">From first principles</b><p>Why favour precision when there is no ground truth to measure against? Work from the consequences rather than from the metric.</p><p>An under-merge means you treat one person as two. The failure is arithmetic: reach is overstated, frequency understated, some budget is wasted. It is bounded, measurable in money, and correctable later once better evidence arrives.</p><p>An over-merge means you treat two people as one. Now one person's inferred attributes govern what another sees, frequency capping silently fails, and in the worst case you have disclosed something across a boundary that should have held. That is not arithmetic &mdash; it is a privacy event, it is hard to detect from aggregates, and you cannot un-show an ad.</p><p>Two errors, one recoverable and one not. Where the costs are asymmetric like that, the threshold should be too &mdash; which is the whole argument for precision-favouring matching, without needing a labelled test set to justify it.</p></div></section>
+<section><h2>Decay, drift, and the fact that identity expires</h2>
+<p>Identifiers are recycled and relationships end. Phones are sold, IPs are reassigned, people move out of households. A graph built on all history is worse than one built on a trailing window.</p>
+<p>Practical mechanisms: <strong>time-decayed edge confidence</strong> so old evidence weakens; a <strong>trailing window</strong> for probabilistic edge types (e.g. IP co-occurrence only within 90 days) while deterministic edges persist longer; and <strong>re-validation</strong>, where an edge unrefreshed for N days drops below threshold and stops contributing.</p>
+<p>Design consequence: because edges expire, components can <em>split</em>, not just merge. Splitting is harder than merging in most implementations, which is a genuine argument for periodic full recompute alongside incremental updates &mdash; a hybrid where increments handle the day and a weekly rebuild handles decay.</p></section>
+<section><h2>The privacy layer, and the current state of it</h2>
+<p>An identity design that ignores consent is not a senior design, and this is a live area where a lot of prep material is out of date.</p>
+<p><strong>Where signal loss actually comes from now.</strong> Safari, Firefox and Brave block third-party cookies by default, so a meaningful share of web traffic has been cookieless for years regardless of Chrome. Google reversed its Chrome deprecation plan in 2025 and retired most of the Privacy Sandbox APIs it had built as replacements, so the industry answer is not a single successor technology &mdash; it is authenticated first-party data, universal IDs built on hashed emails (UID2 and similar), contextual targeting, and aggregated measurement. If you describe cookies as "going away", you will sound a year behind; the accurate framing is fragmented signal plus consent-gated usage.</p>
+<p><strong>What that means for the design.</strong></p>
+<ul>
+<li><strong>Consent must be a first-class field</strong>, carried with the identifier and enforced at query time, not bolted on. An identifier without a lawful basis should not participate in the graph at all.</li>
+<li><strong>Purpose limitation.</strong> The same edge may be usable for measurement but not for targeting. Model purpose as an attribute of the join, not a policy document.</li>
+<li><strong>Deletion.</strong> A right-to-erasure request must remove the node, its edges, and its contribution to derived aggregates &mdash; which is why crypto-shredding and row-level deletes matter (stage 02).</li>
+<li><strong>Clean rooms.</strong> When two parties want to join audiences without exposing user-level data, the join happens in a controlled environment that returns only aggregates above a minimum threshold, with query limits to prevent differencing attacks. Know the shape of this: it is how CTV and retail-media partnerships actually work.</li>
+<li><strong>Aggregation thresholds and noise.</strong> Suppressing small cells, or adding calibrated noise, to prevent re-identification from repeated queries.</li>
+</ul></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Design the identity graph for CTV. Ten billion new edges a day, and it has to support a real-time audience lookup.</div>
+    <div class="hint">Notice the two very different workloads in one sentence.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>First, split the workload, because batch resolution and real-time lookup are different systems.</p>
+<p><strong>Resolution (batch/incremental).</strong> Edges land in an append-only Iceberg table with type, confidence, and timestamp. An incremental job processes new edges against maintained component state: no-op if internal, attach if one side is new, merge if it links two components &mdash; with a size cap and a quarantine queue for breaching merges. A weekly full recompute handles decay-driven splits.</p>
+<p><strong>Serving (real-time).</strong> The output is a flat mapping from identifier to stable <code>person_id</code> or <code>household_id</code>, plus that entity's segment memberships, pushed to a low-latency key-value store. The lookup path never touches the graph &mdash; it is a single key read. This is the important architectural point: you resolve in batch and serve a materialised projection.</p>
+<p><strong>Stability.</strong> The <code>person_id</code> must not churn when components merge, or every downstream system's history breaks. Keep a durable ID assigned at first creation and a mapping that records merges, so old IDs resolve forward.</p>
+<p>Then I'd clarify: person or household? CTV is shared-screen by nature, so household is often the honest unit and I'd want to know which the product needs.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">A merge happens at 2pm. The serving store still has the old mapping. Does that matter?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>It depends on the use case, and I'd want to name the tolerance rather than assume it. For frequency capping, staleness means we briefly treat one household as two and may over-deliver &mdash; usually acceptable for hours, not for days. For a suppression list, staleness means we might show an ad to someone we promised not to, which is a compliance issue and needs tighter freshness. For broad targeting, hours of staleness is invisible.</p><p>So I'd set the refresh cadence by the strictest consumer, and consider a fast path: merges are rare relative to total edges, so I can stream merge events to the serving store within minutes even if the full projection rebuilds hourly. And I'd make the staleness observable &mdash; a lag metric on the serving store &mdash; rather than assuming the pipeline is current.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Your graph produced a component with four million devices in it. What happened, and what do you do in the next hour?</div>
+    <div class="hint">Incident response, not theory.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>Almost certainly a hub node admitted a bad edge type at scale. The usual suspects: a carrier-grade NAT or corporate IP treated as a household signal; a null, empty, or sentinel identifier (all-zeros device ID) joining to itself across millions of rows; a shared test or QA account; or a bot farm.</p>
+<p><strong>Next hour, in order:</strong></p>
+<ol>
+<li><strong>Contain.</strong> Quarantine the component so it stops being served &mdash; do not let it reach targeting or suppression while we investigate. Better a gap than a wrong merge.</li>
+<li><strong>Find the articulation point.</strong> Look for the highest-degree nodes in the component; the culprit is nearly always visible immediately by degree.</li>
+<li><strong>Confirm the edge type</strong> that introduced it, and check whether it's a data bug (upstream now sending nulls) or a modeling gap (IP type never should have been admitted at this confidence).</li>
+<li><strong>Roll back</strong> to the prior snapshot if the blast radius is wide &mdash; this is one of the concrete reasons for time travel on the edge table.</li>
+</ol>
+<p>Then the durable fixes: a component size cap that rejects the merge rather than performing it, a denylist for sentinel identifiers, and a degree cap on nodes participating in probabilistic edges.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">How do you make sure this never gets to production again?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>I'd resist promising it never happens and instead shorten the detection loop, because the space of bad edge sources is open-ended. Three layers: a <strong>pre-merge invariant</strong> &mdash; reject any merge producing a component above threshold, alert instead of proceeding, which converts a silent corruption into a page; <strong>distributional monitoring</strong> on component size percentiles and daily merge counts, so a drift shows up before the tail explodes; and <strong>input validation</strong> at ingest, rejecting sentinel and null identifiers and capping node degree per edge type.</p><p>I'd also want the graph build to run against a canary before the production swap, comparing size distribution to the previous run and failing the deploy on a large divergence. The general principle is that the invariant belongs in the pipeline, not in a runbook &mdash; a runbook only helps someone who already knows to look.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Why not just use probabilistic matching everywhere? It gives you much better coverage.</div>
+    <div class="hint">They're inviting you to trade precision for reach. Decline, with reasons.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>Because the two error types have very different costs and only one of them is recoverable. Under-merging wastes budget &mdash; measurable, bounded, and fixable later. Over-merging conflates people, which breaks frequency capping, leaks targeting across household members, and in the case of sensitive segments can constitute a real privacy harm. You can't un-show an ad.</p>
+<p>So the posture is tiered rather than uniform: deterministic edges admitted freely; probabilistic edges admitted above a confidence threshold that is <em>set per use case</em>. A brand awareness campaign can tolerate loose matching for reach. A suppression list or anything touching a sensitive category demands deterministic-only.</p>
+<p>I'd also push back on "better coverage" as the metric. Coverage of a graph that is 20% wrong is not coverage &mdash; it's confident error, and it degrades every downstream measurement in a way that's hard to attribute.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Sales says our competitor claims 95% match rates and we're losing deals. What do you say to them?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>I'd take it seriously rather than dismiss it, because it's a real commercial problem, but I'd want to interrogate the number before matching it. Match rate is not a standardised metric &mdash; it depends on the denominator, the identifier types counted, and whether it's measured against a favourable population. Asking what exactly their 95% is measured over usually deflates it substantially.</p><p>Then I'd propose competing on something defensible: report match rate <em>alongside</em> an accuracy estimate from our deterministic holdout, and offer tiered matching so a client who wants maximum reach can opt into looser thresholds knowingly. That converts an unwinnable number-matching contest into a differentiator, and it means we're not silently degrading precision for clients who never asked for it. The thing I wouldn't do is quietly loosen the global threshold to make a slide look better &mdash; that shows up months later as unexplainable measurement drift.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">Walk me through what happens to this system when a user exercises their right to be deleted.</div>
+    <div class="hint">Follow the data all the way through, including derived artifacts.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>The request arrives keyed on some identifier, so step one is resolving it to the entity &mdash; the component &mdash; because deletion applies to the person, not one cookie.</p>
+<p>Then, in scope: the identifier nodes and their edges in the edge table (row-level deletes in the table format, with compaction to physically remove and snapshot expiry so time travel doesn't resurrect them); the serving projection entry; any segment membership lists; and the raw event rows tied to those identifiers.</p>
+<p>The harder part is <strong>derived artifacts</strong>: aggregates, sketches, and trained models that already absorbed the data. My position would be that aggregates above a reasonable threshold, and sketches which are not invertible to individuals, generally don't require rebuilding &mdash; but that is a legal determination, not mine to make unilaterally, and I'd want it written down rather than assumed.</p>
+<p>Architecturally, the design that makes this tractable is <strong>crypto-shredding</strong>: encrypt the identifier with a per-user key and delete the key, rendering the rows unreadable without rewriting petabytes. I'd pair it with real deletes on the small serving-side stores where physical removal is cheap.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Your model was trained on data that included this user. Do you retrain?</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>My default answer is no, and I'd give the reasoning rather than just the conclusion. A model trained on millions of users doesn't store an individual's records; it stores aggregate statistical structure, and most regulatory guidance to date has not treated a trained model as personal data in the way a database row is. Retraining on every deletion request is also operationally impossible at any real request volume.</p><p>But I'd flag two caveats honestly. First, this is contested and jurisdiction-dependent, so it's a decision for legal with engineering input, not an engineering decision. Second, it's not universally true &mdash; models can memorise, particularly large models on sparse data, and if we had a model that could regurgitate individual-level information, the analysis changes. The practical middle ground is a scheduled retrain cadence on data that already has deletions applied, so the user's contribution ages out within a bounded window without requiring on-demand retraining.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb5">
+  <div class="q"><div class="n">05</div><div>
+    <div class="qt">Two companies want to measure overlap between their audiences without either seeing the other's users. How?</div>
+    <div class="hint">This is the clean room question. Name the mechanism and its attack surface.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(5,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(5,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv5">
+      <div class="lab">What a strong answer covers</div>
+      <p>A <strong>data clean room</strong>: both parties load data into an environment neither fully controls, where only pre-approved query types can run and only aggregate results above a minimum cell size are returned. Neither side can export user-level rows.</p>
+<p>Mechanically, the join key is a common hashed and salted identifier &mdash; typically a normalised, hashed email or a universal ID &mdash; so raw identifiers are never exchanged. For overlap specifically, you don't even need a row-level join: exchange HyperLogLog sketches and compute the union, then derive intersection by inclusion-exclusion. That gives an overlap estimate with no per-user data crossing at all.</p>
+<p><strong>The attack surface to name unprompted:</strong> repeated differencing. If I can query overlap for arbitrary segments, I can define two segments differing by one person and subtract the results to learn about that individual. Defences are a minimum aggregation threshold, a query budget, logging and review of query patterns, and calibrated noise &mdash; the differential-privacy-flavoured answer.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">They want to use the result to build a lookalike model. Does that change your answer?</p>
+        <button class="ghost" id="eb5" onclick="esc(5)">Reveal</button>
+        <div class="ans" id="es5"><p>Yes, substantially, because training pulls far more information out of the environment than a count does. An aggregate answers one question; a model trained inside the clean room and exported can encode a great deal about the other party's users, and it's much harder to reason about what it has learned.</p><p>The workable version is that training happens <em>inside</em> the clean room and what leaves is constrained: scores applied to a party's own audience, or a model whose outputs are audited, rather than raw parameters. I'd also want limits on the feature space, since a model with enough high-cardinality features starts to function as a lookup table for the training set. And I'd say plainly that this is where I'd want privacy engineering and legal in the room &mdash; the engineering question of whether it's possible and the governance question of whether it's permitted come apart here, and pretending otherwise is how companies end up in the news.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Nodes are identifiers, edges are observed co-occurrence, components are people or households &mdash; clarify which before designing.</li>
+    <li>Edges carry type, confidence, and timestamp. Deterministic and probabilistic are not interchangeable.</li>
+    <li>Resolve incrementally with maintained components; the expensive case is a merge. Full recompute periodically to handle decay-driven splits.</li>
+    <li>Cap component size &mdash; one bad edge merges the world, and it's silent.</li>
+    <li>Over-merging is a privacy harm; under-merging is a budget cost. Favour precision and tier the threshold by use case.</li>
+    <li>Consent and purpose are fields in the model, not a policy document. Clean rooms with aggregation thresholds are how cross-party joins actually happen.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Answering "connected components" and stopping &mdash; that's the easy half.</li>
+    <li>Treating all edges as equally trustworthy booleans.</li>
+    <li>No mention of what happens when a merge is wrong.</li>
+    <li>Proposing a full graph recompute daily with no discussion of incrementality.</li>
+    <li>Saying "third-party cookies are being deprecated" as a present-tense fact.</li>
+    <li>Designing a person-level graph for CTV without noticing the screen is shared.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="storage-and-modeling.html"><span>Previous</span>Files, formats, and tables at ten billion rows a day</a>
+<a class="nx" href="sketches.html"><span>Next</span>Counting without counting</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

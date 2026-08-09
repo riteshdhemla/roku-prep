@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>From raw beacons to a served feature &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">14</div><div class="kicker">End-to-end systems</div></div>
+  <h1>From raw beacons to a served feature</h1>
+  <p class="why">Panel 2 asks explicitly for end-to-end pipelines supporting ML and Gen-AI, including feature generation and downstream consumption. This is where storage, Spark, streaming, and ML meet &mdash; and where training/serving skew is born.</p>
+  <div class="tags"><span class="tag">Panel 2 core</span><span class="tag">Panel 1 relevant</span><span class="tag">Integration stage</span></div>
+</header>
+<section><h2>The layered pipeline</h2>
+<p>Have one reference architecture you can draw in ninety seconds and then adapt.</p>
+<ol>
+<li><strong>Ingest.</strong> Beacons and auction logs into Kafka; raw landing in object storage. Immutable, append-only, with <code>event_time</code> and <code>ingest_time</code> both preserved.</li>
+<li><strong>Bronze &rarr; silver.</strong> Parse, validate, deduplicate, conform types, resolve identity. Output is a clean, typed impression table &mdash; the one everything downstream trusts.</li>
+<li><strong>Gold / aggregates.</strong> Business-grain tables: daily campaign metrics with sketches, delivery state, segment membership.</li>
+<li><strong>Feature generation.</strong> Offline features computed in batch over silver/gold; streaming features computed over the live stream. Both written to a feature store with the entity key and a feature timestamp.</li>
+<li><strong>Training.</strong> Point-in-time joins against the feature store to build a training set; model artifact versioned alongside the feature set version.</li>
+<li><strong>Serving.</strong> Online store for low-latency lookup; the model reads the same feature definitions.</li>
+<li><strong>Monitoring.</strong> Data quality at each hop, drift on features, error on predictions once labels land.</li>
+</ol>
+<div class="k"><b>The one-sentence version</b><p>"Raw immutable log, a cleaned conformed layer everyone shares, aggregates and features derived from it, offline and online paths built from the <em>same</em> definitions, and quality gates between each hop."</p></div></section>
+<section><h2>Training/serving skew and how it actually happens</h2>
+<p>Skew is when the feature value at training differs from the value at serving for the same logical feature. It doesn't show up offline, so it is discovered as an unexplained production gap.</p>
+<p><strong>The four mechanisms:</strong></p>
+<ul>
+<li><strong>Two implementations.</strong> The offline feature is written in Spark SQL and the online one in the serving service's Java. They drift on an edge case &mdash; null handling, rounding, timezone &mdash; and nobody notices.</li>
+<li><strong>Different data.</strong> Offline features are computed over the settled table including late data; online features see only what has arrived. The offline version is systematically more complete.</li>
+<li><strong>Different timing.</strong> Offline joins the feature as of the label's day; online reads whatever the store holds at request time, which may be hours stale.</li>
+<li><strong>Backfill artifacts.</strong> A feature backfilled over history using logic that didn't exist then.</li>
+</ul>
+<p><strong>Mitigations, in order of strength:</strong> a <em>single</em> feature definition executed in both modes (the core promise of a feature store); <strong>logging features at serving time</strong> and training on those exact logged values, which sidesteps the problem entirely by making the served value the ground truth; and, failing both, an automated comparison job that samples entities and diffs offline against online values daily, alerting on divergence.</p></section>
+<section><h2>Point-in-time correctness, concretely</h2>
+<p>For each training row with a label at time <em>t</em>, every feature must be the value that was knowable strictly before <em>t</em>. The mechanics are an as-of join:</p>
+<pre><code>SELECT l.impression_id, l.label_time, l.completed,
+       f.device_7d_impressions, f.device_completion_rate
+FROM labels l
+JOIN LATERAL (
+  SELECT device_7d_impressions, device_completion_rate
+  FROM device_features
+  WHERE device_id = l.device_id
+    AND feature_time &lt;= l.label_time
+  ORDER BY feature_time DESC
+  LIMIT 1
+) f ON TRUE;</code></pre>
+<p>Requirements this imposes upstream: feature tables must be <strong>versioned by time rather than overwritten</strong>, and the feature timestamp must reflect when the value became <em>available</em>, not when the underlying events happened. A feature computed from yesterday's data but only materialised at 6am today is not available for a 3am prediction &mdash; and encoding that correctly is what separates a correct pipeline from a subtly optimistic one.</p>
+<p><strong>Label timing</strong> is the mirror problem. A conversion label may land days after the impression, so a training set built too soon has false negatives &mdash; conversions that hadn't happened yet. Define an explicit label maturity window and exclude rows younger than it.</p></section>
+<section><h2>Backfills, reprocessing, and idempotency</h2>
+<p>Every pipeline gets rebuilt. Design for it rather than treating it as an incident.</p>
+<ul>
+<li><strong>Partition-parameterised jobs.</strong> The job takes the date as an argument, reads only that partition, and <em>overwrites</em> its output partition. Re-running produces identical output. No wall-clock dependence anywhere in the logic &mdash; <code>CURRENT_DATE</code> inside a transformation makes a job unbackfillable.</li>
+<li><strong>Versioned logic.</strong> Record which code version produced each partition, so when you fix a bug you know precisely what needs reprocessing.</li>
+<li><strong>Bounded blast radius.</strong> Backfill into a shadow table and swap, or use table-format snapshots so a bad backfill is one rollback rather than a restore from backup.</li>
+<li><strong>Ordering.</strong> Backfills must respect dependencies &mdash; regenerating features before the silver table they read is a classic way to produce confidently wrong data.</li>
+<li><strong>Throttling.</strong> A 3-year backfill launched at full parallelism will starve production jobs on a shared cluster. Chunk it and rate-limit.</li>
+</ul>
+<p><strong>Late data</strong> interacts with this directly: if a partition can still receive events for 48 hours, then "yesterday" isn't final. Either delay downstream consumption, or reprocess a trailing window every run and accept that recent numbers move.</p></section>
+<section><h2>Data quality as a gate, not a dashboard</h2>
+<p>A dashboard someone might look at is not a control. Quality checks should <em>block</em> promotion of a partition.</p>
+<p><strong>What to check, by hop:</strong> row counts against expected range; null rates on required fields; distribution shift on key columns; referential integrity (every impression has an auction); uniqueness on the supposed primary key; freshness (did the partition arrive at all); and business invariants (impressions ≤ auctions ≤ requests, spend ≤ budget).</p>
+<p><strong>Where they belong:</strong> after ingest, so bad data never enters silver; after feature generation, so a broken feature never reaches training or serving; and before model promotion.</p>
+<p><strong>What to do on failure:</strong> distinguish <em>fail</em> (block the partition, page someone) from <em>warn</em> (annotate and continue). Getting this wrong in either direction is costly &mdash; failing on soft checks trains people to ignore alerts, warning on hard checks lets corrupt data through.</p>
+<div class="k"><b>The invariant worth stating</b><p>"A partition is not visible to consumers until it has passed its checks." That single property &mdash; publish-after-validate rather than validate-after-publish &mdash; prevents most downstream data incidents, and it's a design choice, not a tooling choice.</p></div></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Design the feature pipeline for a model that predicts whether an impression will complete. Offline training, online serving at bid time.</div>
+    <div class="hint">The latency budget at bid time constrains everything.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>I'd start from the serving constraint, because it eliminates most designs: a bid response has single-digit milliseconds, so any feature requiring computation at request time is out. Everything must be a precomputed lookup.</p>
+<p><strong>Feature groups by entity and freshness:</strong></p>
+<ul>
+<li><em>Device/household</em> &mdash; trailing 7-day impression count, historical completion rate, daypart pattern. Batch-computed daily, low churn, tolerant of staleness.</li>
+<li><em>Creative</em> &mdash; duration, historical completion rate by position, age. Batch daily.</li>
+<li><em>Publisher/app/content</em> &mdash; historical completion by pod position. Batch daily.</li>
+<li><em>Request context</em> &mdash; pod position, break duration, daypart, device type. Available in the bid request itself, no lookup at all.</li>
+<li><em>Near-real-time</em> &mdash; impressions to this device in the last hour, for frequency effects. Streaming, if the latency budget allows one more lookup.</li>
+</ul>
+<p><strong>Offline:</strong> Spark job over silver impressions writes feature rows keyed by entity with a feature timestamp, into the offline store. <strong>Online:</strong> the same rows pushed to a key-value store keyed by entity ID. <strong>Training:</strong> point-in-time join of labels to offline features.</p>
+<p><strong>Skew control:</strong> one definition executed both ways, plus logging the served feature vector with each prediction so we can train on exactly what serving saw.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">You've got three lookups on the bid path &mdash; device, creative, publisher. That's your entire latency budget. Cut it.</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>A few options, and I'd want to know the measured per-lookup latency before choosing, since the answer differs if it's 1ms or 4ms.</p><p><strong>Batch the lookups into one round trip</strong> &mdash; a multi-get against the same store, so we pay one network hop instead of three. Usually the easiest large win and it doesn't change the feature set.</p><p><strong>Denormalise into a single key.</strong> Precompute a combined row keyed on the most selective entity, embedding the creative and publisher features. Costs storage and makes updates fan out, but reduces to one lookup.</p><p><strong>Cache the low-cardinality features in process.</strong> Creative and publisher features change daily and there are relatively few of them &mdash; hold them in memory in the bidder, refreshed periodically. That eliminates two lookups entirely and leaves only the device lookup, which is genuinely high-cardinality.</p><p>That last one is where I'd start: it exploits the actual cardinality asymmetry rather than trading storage for latency. The trade-off to state is staleness &mdash; an in-process cache refreshed hourly means a new creative isn't scored correctly for up to an hour, so it needs a cold-start default and I'd want to check how often creatives launch mid-day.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Model performance dropped 15% in production last Tuesday. Walk me through the investigation.</div>
+    <div class="hint">Data before model. Almost always data.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>I'd work outward from the most common causes, and the first question is whether the model changed at all &mdash; if there was no deploy, it's data or environment, which narrows things immediately.</p>
+<ol>
+<li><strong>Is it real?</strong> Check whether the metric drop is a measurement artifact &mdash; a labelling pipeline delay makes recent performance look bad because labels haven't landed. Very common and worth ruling out in five minutes.</li>
+<li><strong>Input data.</strong> Compare feature distributions Tuesday versus the prior week. A feature that suddenly nulls out or shifts is the modal cause &mdash; an upstream schema change, a publisher integration change, a failed job leaving a partition partial.</li>
+<li><strong>Feature freshness.</strong> Did the batch feature job run? A stale online store serving last week's device features produces exactly this.</li>
+<li><strong>Skew.</strong> Compare logged serving features against offline recomputation for the same entities. Divergence points at an implementation split.</li>
+<li><strong>Population shift.</strong> Did the traffic mix change &mdash; a large new publisher, a new device type, a campaign targeting an unusual segment? The model may be fine and simply operating outside its training distribution.</li>
+<li><strong>The model itself.</strong> Only after the above: a deploy, a dependency version change, a feature-order mismatch in serialisation.</li>
+</ol>
+<p>The segment breakdown usually localises it fastest &mdash; if the drop is entirely within one publisher, that's a very different investigation from a uniform decline.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Feature distributions are unchanged, no deploy, labels are complete. Now what?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Then the inputs and the model are both stable, so I'd look at what sits between them and at what the model's outputs are being used for.</p><p><strong>Feature ordering or encoding.</strong> Distributions can be individually unchanged while the vector assembled at serving is wrong &mdash; a column reordering, a category-encoding map regenerated with different indices. This is invisible to per-feature distribution checks and is worth testing directly by scoring known inputs and comparing to expected outputs.</p><p><strong>A feedback loop.</strong> If the model's decisions shape the data it sees, performance can degrade with no external change. A completion model that throttles low-scoring inventory stops observing those outcomes, retrains on a censored distribution, and drifts.</p><p><strong>Something downstream changed how the score is used.</strong> A threshold adjustment, a bidding logic change, or another system's change that alters the population the model is applied to &mdash; the model is performing identically and the measured outcome moved.</p><p><strong>Genuine concept drift</strong> &mdash; the relationship between features and outcome changed, perhaps a seasonal content shift or a new ad format. Same inputs, different meaning.</p><p>I'd test the ordering hypothesis first since it's cheap and mechanical, then look hard at whether anything <em>consuming</em> the score changed, because "no deploy" usually means no deploy to <em>our</em> service.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">You need to backfill a new feature across three years. Go.</div>
+    <div class="hint">They want to hear idempotency, ordering, and blast radius.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>Before running anything: <strong>validate the logic on a sample</strong> &mdash; one week from an old period and one recent &mdash; and eyeball the distribution. Discovering the definition was wrong after three years of compute is expensive and avoidable.</p>
+<p><strong>Structure the job</strong> to take a date partition as a parameter, read only that partition's inputs, and overwrite its output. Re-runnable to identical output, so a failure resumes rather than restarts.</p>
+<p><strong>Check the inputs exist historically.</strong> A feature depending on a field added eighteen months ago cannot be computed before that, and the honest output is nulls with a documented start date &mdash; not a silently different definition for the early period, which would poison any model trained across the boundary.</p>
+<p><strong>Write to a shadow table</strong> and swap, or rely on snapshot rollback, so a bad backfill is reversible.</p>
+<p><strong>Chunk and throttle</strong> &mdash; run in date batches with bounded parallelism so it doesn't starve production jobs. Run oldest-first so partial progress is contiguous and usable.</p>
+<p><strong>Record the code version</strong> on each partition, and reconcile at the end: row counts and null rates per partition against expectations, so silent partial failures surface.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Halfway through, you realise the feature definition was subtly wrong. What's the damage and what do you do?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>The damage depends entirely on whether anything has consumed it yet, so that's my first question, not my first fix.</p><p>If it's still in the shadow table and nothing reads it: cheap. Fix, re-run, no consumer ever saw it. This is the argument for shadow-write-then-swap in one sentence.</p><p>If it's been swapped in and a model has trained on it, the blast radius includes that model, and I'd want to know whether it's serving. Then: stop the backfill immediately rather than completing a run I know is wrong; determine the exact partition range affected using the recorded code version; and decide whether the model needs retraining or rollback based on whether the feature materially influenced it &mdash; a feature with low importance may not warrant a rollback.</p><p>The process lesson I'd draw, and state, is that the sample validation should have caught it and evidently wasn't thorough enough. The specific improvement is comparing the backfilled feature against an independently computed version on a sample, rather than just checking that the distribution looks plausible &mdash; plausible-looking wrong values are exactly the failure mode here. I'd want that as a standard step before any backfill, not just this one.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Raw immutable &rarr; cleaned silver &rarr; aggregates &rarr; features (offline + online from one definition) &rarr; training via point-in-time join &rarr; serving &rarr; monitoring.</li>
+    <li>Skew arises from two implementations, different data completeness, different timing, or backfill artifacts.</li>
+    <li>Log the served feature vector and train on it &mdash; the strongest skew defence available.</li>
+    <li>Feature timestamp means availability time, not event time. Label maturity windows prevent false negatives.</li>
+    <li>Backfill = partition-parameterised, overwrite-not-append, no wall-clock in logic, versioned, shadow-write, throttled.</li>
+    <li>Quality checks gate publication: a partition isn't visible until it passes.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>One feature pipeline for training and a separately written one for serving, with no reconciliation.</li>
+    <li>No mention of point-in-time correctness.</li>
+    <li>Backfill jobs that append rather than overwrite.</li>
+    <li>Data quality as a dashboard rather than a gate.</li>
+    <li>Debugging a production drop by looking at the model first.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="ml-fundamentals.html"><span>Previous</span>ML fundamentals as trade-offs, not definitions</a>
+<a class="nx" href="agentic-systems.html"><span>Next</span>Agents that someone has to trust on Monday</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

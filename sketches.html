@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Counting without counting &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">11</div><div class="kicker">Approximate aggregation</div></div>
+  <h1>Counting without counting</h1>
+  <p class="why">Reach, frequency capping, top-k, and percentiles are the four numbers advertising runs on, and all four are infeasible exactly at scale. Sketches are the expected answer &mdash; and the follow-up is always about the error you just accepted.</p>
+  <div class="tags"><span class="tag">Panel 1 core</span><span class="tag">Panel 2 core</span><span class="tag">Partly in ml-viz wiki</span><span class="tag">Adtech domain</span></div>
+</header>
+<section><h2>Why exact counting breaks</h2>
+<p>Exact distinct counting requires remembering every element you've seen. For 500 million devices that is tens of gigabytes of state per grouping key &mdash; and you need it per campaign, per day, per segment, which multiplies out to something you cannot hold or ship.</p>
+<p>Worse, exact distinct counts are <strong>not additive</strong>. Daily uniques for 30 days cannot be summed into monthly uniques, because you don't know the overlap. So exact counting forces a re-scan of the raw data for every new time range anyone asks about &mdash; which is why the naive design ends up recomputing 30 days of impressions to answer one dashboard query.</p>
+<div class="k"><b>The property that matters is mergeability</b><p>The reason to use a sketch is not primarily memory. It is that sketches <em>compose</em>: you can store one per day and union them for any range. That turns an O(data) query into an O(days) query, which is what buys you the two-second dashboard.</p></div>
+<div class="fp"><b class="hdr">From first principles</b><p>Why is exact distinct counting hard when exact summing is trivial? Because sum is <em>decomposable</em> and distinct-count is not.</p><p>To add two subtotals you need one number from each side. To combine two distinct counts you need to know the overlap &mdash; and the only way to know the overlap is to have retained the identities. So exactness forces you to keep every element, and the state grows with the data rather than staying constant.</p><p>This is also why daily uniques cannot be summed into monthly uniques, which trips up a lot of dashboards. And it explains what a sketch actually buys: not compression for its own sake, but a <em>summary that is decomposable</em>. Once combining two summaries requires only the summaries, storing one per day and merging becomes possible, and a 30-day query stops being a 30-day scan.</p></div></section>
+<section><h2>HyperLogLog &mdash; distinct counts</h2>
+<p><strong>What it does:</strong> estimates cardinality of a multiset in fixed, tiny memory.</p>
+<p><strong>Intuition:</strong> hash each element to a uniform bit string. In a random stream, seeing a hash with many leading zeros is rare and implies you've seen many distinct items &mdash; observing a 10-leading-zero hash suggests roughly 2<sup>10</sup> distinct elements. Using one observation is wildly noisy, so HLL splits the hash space into <em>m</em> registers, tracks the maximum leading-zero count in each, and takes a harmonic mean across registers to control variance.</p>
+<p><strong>Cost and error:</strong> standard error is approximately 1.04/&radic;m. With m = 16384 registers (about 12&nbsp;KB) that is roughly 0.8%; the commonly quoted ~1.6% figure corresponds to a smaller register count. The key shape: memory grows with the square of the precision you want, and it is independent of how many elements you count.</p>
+<p><strong>Merging:</strong> the union of two HLLs is the element-wise maximum of their registers. Exact, lossless, and this is why the whole architecture works.</p>
+<p><strong>What it cannot do:</strong> intersection. You can derive it via inclusion-exclusion &mdash; |A&cap;B| = |A| + |B| &minus; |A&cup;B| &mdash; but the errors compound, and when the intersection is small relative to the sets, the estimate can be catastrophically bad or negative. Say this before they ask; it's the standard trap.</p>
+<figure><svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="HyperLogLog: hashing to bitstrings, counting leading zeros per register">
+<text class="svg-s" x="4" y="18">hash each device id to a uniform bitstring</text>
+<g font-family="var(--mono)" font-size="11">
+<text class="svg-l" x="4" y="42">device_a &rarr;</text><text class="svg-l" x="90" y="42" fill="#4FD1C5">0</text><text class="svg-l" x="99" y="42">1101001...</text>
+<text class="svg-s" x="220" y="42">1 leading zero</text>
+<text class="svg-l" x="4" y="62">device_b &rarr;</text><text class="svg-l" x="90" y="62" fill="#4FD1C5">000</text><text class="svg-l" x="117" y="62">10110...</text>
+<text class="svg-s" x="220" y="62">3 leading zeros</text>
+<text class="svg-l" x="4" y="82">device_c &rarr;</text><text class="svg-l" x="90" y="82" fill="#4FD1C5">0000000</text><text class="svg-l" x="153" y="82">10...</text>
+<text class="svg-s" x="220" y="82" fill="#A08CF0">7 leading zeros &rarr; rare &rarr; implies ~2&#8311; distinct</text>
+</g>
+<path class="svg-dash" d="M4 100 H696"/>
+<text class="svg-s" x="4" y="122">one observation is far too noisy, so split the hash space into m registers and keep each max</text>
+<g>
+<rect class="svg-box" x="4" y="134" width="52" height="30" rx="2"/>
+<rect class="svg-box" x="62" y="134" width="52" height="30" rx="2"/>
+<rect class="svg-box" x="120" y="134" width="52" height="30" rx="2"/>
+<rect class="svg-box" x="178" y="134" width="52" height="30" rx="2"/>
+<rect class="svg-box" x="236" y="134" width="52" height="30" rx="2"/>
+<text class="svg-l" x="30" y="154" text-anchor="middle">3</text>
+<text class="svg-l" x="88" y="154" text-anchor="middle">1</text>
+<text class="svg-l" x="146" y="154" text-anchor="middle">7</text>
+<text class="svg-l" x="204" y="154" text-anchor="middle">2</text>
+<text class="svg-l" x="262" y="154" text-anchor="middle">4</text>
+<text class="svg-s" x="300" y="154">... m = 16384 registers, ~12 KB total</text>
+</g>
+<text class="svg-s" x="4" y="192" fill="#4FD1C5">merging two sketches = element-wise max of registers &mdash; exact, lossless, order-independent</text>
+<text class="svg-s" x="4" y="214">that property, not the memory saving, is why the whole architecture works</text>
+</svg><figcaption><b>HyperLogLog, from the coin-flip intuition</b>Rare hash patterns imply many distinct inputs. Registers plus a harmonic mean control the variance. The property that matters operationally is the last line: merging is element-wise max, so daily sketches combine into any date range.</figcaption></figure></section>
+<section><h2>Count-Min Sketch &mdash; frequencies and heavy hitters</h2>
+<p><strong>What it does:</strong> estimates the count of any individual key in sublinear space.</p>
+<p><strong>Intuition:</strong> a 2-D array of counters, <em>d</em> rows &times; <em>w</em> columns, with an independent hash per row. To increment a key, increment one counter per row. To query, take the <em>minimum</em> across those d counters &mdash; because collisions only ever inflate a counter, the minimum is the least-contaminated estimate.</p>
+<p><strong>Error:</strong> one-sided. It never underestimates; it may overestimate by an amount bounded relative to total stream volume with probability tuned by <em>d</em>. That asymmetry is exactly right for frequency capping: you may occasionally under-deliver, never over-deliver.</p>
+<p><strong>Use cases:</strong> frequency capping per user, heavy-hitter detection (which campaigns or publishers dominate traffic), and skew detection before a join &mdash; a Count-Min pass over the join key tells you your hot keys cheaply.</p>
+<p><strong>Weakness:</strong> low-frequency keys are proportionally most distorted, since the collision noise is a large fraction of a small true count. It is a heavy-hitters instrument, not a general counter.</p>
+<figure><svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Count-Min Sketch grid with per-row hashes and minimum readout">
+<text class="svg-s" x="4" y="18">increment: one counter per row, chosen by that row's hash</text>
+<g>
+<text class="svg-s" x="4" y="52">h&#8321;</text><text class="svg-s" x="4" y="82">h&#8322;</text><text class="svg-s" x="4" y="112">h&#8323;</text>
+<g fill="#1E2733" stroke="#2E3545">
+<rect x="30" y="36" width="46" height="22"/><rect x="80" y="36" width="46" height="22"/>
+<rect x="180" y="36" width="46" height="22"/><rect x="230" y="36" width="46" height="22"/>
+<rect x="280" y="36" width="46" height="22"/>
+<rect x="30" y="66" width="46" height="22"/><rect x="130" y="66" width="46" height="22"/>
+<rect x="180" y="66" width="46" height="22"/><rect x="230" y="66" width="46" height="22"/>
+<rect x="280" y="66" width="46" height="22"/>
+<rect x="30" y="96" width="46" height="22"/><rect x="80" y="96" width="46" height="22"/>
+<rect x="130" y="96" width="46" height="22"/><rect x="230" y="96" width="46" height="22"/>
+<rect x="280" y="96" width="46" height="22"/>
+</g>
+<rect x="130" y="36" width="46" height="22" fill="#182A2A" stroke="#4FD1C5" stroke-width="1.5"/>
+<rect x="80" y="66" width="46" height="22" fill="#182A2A" stroke="#4FD1C5" stroke-width="1.5"/>
+<rect x="180" y="96" width="46" height="22" fill="#182A2A" stroke="#4FD1C5" stroke-width="1.5"/>
+<text class="svg-s" x="153" y="51" text-anchor="middle">14</text>
+<text class="svg-s" x="103" y="81" text-anchor="middle">9</text>
+<text class="svg-s" x="203" y="111" text-anchor="middle">23</text>
+</g>
+<text class="svg-s" x="350" y="52">collisions only ever ADD to a counter</text>
+<text class="svg-s" x="350" y="72" fill="#4FD1C5">so the minimum is the least contaminated</text>
+<text class="svg-s" x="350" y="92">estimate: min(14, 9, 23) = 9</text>
+<text class="svg-s" x="350" y="112" fill="#A08CF0">never underestimates &mdash; one-sided error</text>
+<path class="svg-dash" d="M4 140 H696"/>
+<text class="svg-s" x="4" y="164">that asymmetry is exactly right for frequency capping: you may under-deliver, never over-deliver</text>
+<text class="svg-s" x="4" y="190">and exactly wrong for rare keys, where collision noise dwarfs the true count</text>
+</svg><figcaption><b>Count-Min Sketch</b>Because hash collisions can only inflate a counter, the minimum across rows is the tightest available estimate and the error is strictly one-sided. That direction is what makes it right for frequency capping and wrong for rare keys.</figcaption></figure></section>
+<section><h2>Bloom filters &mdash; membership</h2>
+<p><strong>What it does:</strong> answers "have I seen this before?" with no false negatives and a tunable false-positive rate.</p>
+<p><strong>Intuition:</strong> a bit array plus k hashes; insert sets k bits, query checks k bits. If any bit is unset, the element is definitively absent. If all are set, it is probably present.</p>
+<p><strong>Where it belongs:</strong> as a cheap pre-filter in front of an expensive exact check. Impression dedup is the canonical case &mdash; the filter rejects the vast majority of genuinely-new events without a lookup, and only possible-duplicates pay for the exact check. Also used in storage engines to skip files that certainly don't contain a key.</p>
+<p><strong>Trade-offs to name:</strong> false-positive rate is a function of bits-per-element and hash count; you must size it for the expected cardinality in advance, and it degrades badly if you exceed that. Standard Bloom filters don't support deletion &mdash; use a counting Bloom filter or a rotating window of filters if elements must expire, which they do in any real dedup window.</p></section>
+<section><h2>Quantile sketches and windowed counting</h2>
+<p><strong>t-digest / KLL</strong> estimate quantiles &mdash; p50, p95, p99 &mdash; in small mergeable state. The averages people usually report hide exactly the behaviour that matters; a mergeable quantile sketch lets you store per-minute state and answer p99 over any range. t-digest is notable for being more accurate at the extreme tails than in the middle, which matches what people actually ask about latency and bid distributions.</p>
+<p><strong>DGIM</strong> solves counting over a sliding window in sublinear space &mdash; maintaining a count of events in the last N without storing all N &mdash; by bucketing timestamps with exponentially growing bucket sizes. Relevant whenever the question is "in the last hour" rather than "since the beginning".</p>
+<h3>Choosing, quickly</h3>
+<table>
+<tr><th>Question</th><th>Instrument</th><th>Error shape</th></tr>
+<tr><td>How many unique people?</td><td>HyperLogLog</td><td>~1% relative, two-sided</td></tr>
+<tr><td>How many times did this one person see it?</td><td>Count-Min</td><td>Never under, may over</td></tr>
+<tr><td>Have I already processed this event?</td><td>Bloom</td><td>Never miss, may false-alarm</td></tr>
+<tr><td>What's the p99?</td><td>t-digest / KLL</td><td>Tight at tails</td></tr>
+<tr><td>How many in the last hour?</td><td>DGIM</td><td>Bounded relative</td></tr>
+</table></section>
+<section><h2>Frequency distribution, the composite problem</h2>
+<p>Reach is one HLL. <strong>Reach at frequency N</strong> &mdash; how many people saw the ad at least 3 times &mdash; is the question that exposes whether you actually understand the tools, because a single sketch can't answer it.</p>
+<p>Three approaches, with honest trade-offs:</p>
+<ul>
+<li><strong>Bucketed HLLs.</strong> Maintain one HLL per frequency bucket (saw 1, 2, 3, 4&ndash;5, 6&ndash;10, 10+). Requires knowing each user's running count as you insert, so it needs a per-user counter upstream &mdash; but the result is mergeable across days only if buckets are computed on the final period count, which they are not incrementally. This is the subtlety: frequency buckets don't merge across time the way plain reach does.</li>
+<li><strong>Exact per-device counts</strong> in a compact table (device, campaign, day, count), rolled up as needed. Not sublinear, but the table is far smaller than raw impressions and is exactly summable across days. Often the right practical answer.</li>
+<li><strong>Sampling.</strong> Compute the full frequency distribution on a deterministic hash-based sample of devices and scale up. Cheap, and the accuracy is usually fine for a distribution shape &mdash; and being able to propose sampling as a deliberate choice, with its error understood, is itself a senior signal.</li>
+</ul></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Give me unique reach across a campaign for any date range in under a second, over 500 million devices.</div>
+    <div class="hint">Say the architecture, then say the error.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>Precompute one HyperLogLog sketch per <code>(campaign_id, date)</code> in the batch pipeline, storing the serialised sketch alongside the impression count. That table is tiny &mdash; number of campaigns &times; days &mdash; and lives in a low-latency store.</p>
+<p>A range query fetches the relevant daily sketches and unions them by taking element-wise maximum of registers, then estimates. Thirty days is thirty small merges: sub-millisecond of compute, and the latency is dominated by the fetch.</p>
+<p>I'd state the error up front rather than wait to be asked: roughly 1% relative at typical precision, which is well within the tolerance for reach reporting but is <em>not</em> acceptable for billing, and I'd make sure that distinction is agreed with whoever consumes the number.</p>
+<p>The property doing all the work here is that sketches merge losslessly. A stored exact distinct count per day could not be combined into a range without rescanning raw data.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Finance wants to bill on this number.</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Then it isn't the right number, and I'd say that plainly rather than tune the precision until it looks acceptable. Billing needs exactness and auditability &mdash; a 1% error on a large spend is real money in both directions, and "approximately" is not a defensible position in a contract dispute.</p><p>So I'd run two paths and be explicit that they will not match: the sketch-based path for interactive reporting where speed matters and 1% doesn't, and an exact, reconciled batch computation for billing, run once per period against the immutable raw log, with lineage you can audit. The important part is not the second pipeline &mdash; it's making sure nobody assumes the dashboard number and the invoice number are the same number, because that assumption is how you get an angry advertiser and no explanation.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Frequency cap at 3 impressions per user per day. Do you use a sketch?</div>
+    <div class="hint">Notice which direction the error runs, and who cares.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>Count-Min is a reasonable fit precisely because its error is one-sided: it never underestimates a count. So a user might be capped slightly early, never late. For frequency capping the asymmetry is exactly the one you want &mdash; over-delivery is the failure that upsets advertisers and users.</p>
+<p>But I'd interrogate the requirement before reaching for it. At a cap of 3, we're dealing with very small counts, and Count-Min's relative error is worst for low-frequency keys, so the sketch may over-count meaningfully. And the state here isn't that large: a per-user daily counter for active users, in a key-value store with a TTL to midnight, is very tractable and exact.</p>
+<p>So my answer is: exact counters in a fast store for the capping decision itself, and Count-Min where I need cheap aggregate frequency insight across the whole population without per-user state. The sketch is the better tool for the analytics question and the worse tool for the enforcement question.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Ad serving is distributed across five regions with no shared state. Now how do you cap?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Then exactness is off the table regardless of instrument, and I'd say so rather than pretend a sketch solves it &mdash; the problem is now consistency, not counting. Options, roughly in order of what I'd propose: <strong>partition by user</strong> so a given user's requests route to one region and the counter is locally exact, which works if the routing is stable; or <strong>local caps with a global budget</strong>, where each region gets a share of the cap and the sum can slightly exceed &mdash; simple and bounded; or <strong>asynchronous reconciliation</strong>, where regions publish counts on a short interval and converge, accepting a window of over-delivery equal to the sync lag.</p><p>The thing I'd want to establish is what the cap actually means to the business. If it's a hard contractual ceiling, we need the routing solution. If it's a user-experience guideline, a small overshoot at region boundaries is a much cheaper problem than global coordination on every ad request, and I'd rather spend the latency budget elsewhere.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">You said HyperLogLog can't do intersections. But I need overlap between two audience segments. Solve it.</div>
+    <div class="hint">Give the honest limits of the cheap method, then the real one.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>The inclusion-exclusion route exists: |A&cap;B| = |A| + |B| &minus; |A&cup;B|, and the union is exact to merge. But the errors on three separate estimates compound into the difference, and when the intersection is small relative to the sets, you are subtracting two large approximate numbers to get a small one &mdash; the relative error can exceed 100%, and the estimate can come out negative. So it is usable when segments overlap heavily, and misleading exactly when overlap is the interesting question.</p>
+<p>Better options: <strong>MinHash</strong> or a k-minimum-values sketch, which estimate Jaccard similarity directly and therefore handle intersection natively &mdash; that's the right instrument if overlap is a first-class product feature. Or, if the number of segment pairs is small, compute the intersection exactly in batch, since it's a straightforward join and the result is small.</p>
+<p>The framing I'd offer: choose the sketch by the question, not the other way round. HLL is a cardinality instrument that happens to union; it is not an all-purpose set structure.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">How much error is acceptable here? Give me a number.</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>I'd push back gently on being the one to pick it, because it's a product decision informed by an engineering constraint rather than a purely technical one. What I'd bring to that conversation is the shape of the trade-off: what error we get at each memory tier, and where the estimate becomes unreliable &mdash; specifically that inclusion-exclusion degrades sharply once the intersection is below roughly a few percent of the union, which is a concrete boundary rather than a vague caveat.</p><p>Then I'd anchor on decisions rather than tolerances. If the number drives whether a marketer picks segment A or B, and those differ by 30%, then 5% error is irrelevant. If it drives a pricing decision at the margin, we need much better, and probably an exact path. Asking "what will change based on this number" gets a more useful answer than asking "how accurate does it need to be", because people always answer the second question with "very".</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb4">
+  <div class="q"><div class="n">04</div><div>
+    <div class="qt">Explain HyperLogLog to a product manager in thirty seconds.</div>
+    <div class="hint">They are testing communication, which Panel 2 grades explicitly.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(4,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(4,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv4">
+      <div class="lab">What a strong answer covers</div>
+      <p>Something close to: "If you flip a coin repeatedly and the longest run of heads you've ever seen is ten, you've probably been flipping for a while &mdash; about a thousand flips. HyperLogLog does that with people. It hashes each device into something coin-flip-like, remembers only the longest run it's seen, and works backwards to how many distinct devices must have passed through. It keeps a few thousand of these little counters and averages them, so instead of storing 500 million device IDs, we store about twelve kilobytes. The catch is it's an estimate &mdash; within about one percent &mdash; and it's an estimate we can add together across days, which is what makes the dashboard instant."</p>
+<p>Two things make this work as an answer: a concrete analogy rather than a definition, and closing on the <em>business</em> property (mergeability &rarr; instant dashboard) rather than the mathematical one.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">They ask: "so is the number wrong?"</p>
+        <button class="ghost" id="eb4" onclick="esc(4)">Reveal</button>
+        <div class="ans" id="es4"><p>"It's approximate, not wrong &mdash; and it's approximate in a way we can quantify, which is different from being unreliable. If it says 10 million, the true number is almost certainly between about 9.9 and 10.1 million. For questions like 'did this campaign reach more people than that one', that's plenty. For anything we bill on, we use a separate exact calculation, and those two numbers will differ slightly &mdash; that's expected, not a bug."</p><p>The move worth internalising is naming the divergence before they discover it. A PM who learns from a dashboard discrepancy that two numbers disagree loses trust in both; a PM who was told upfront treats it as a known property.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb5">
+  <div class="q"><div class="n">05</div><div>
+    <div class="qt">Design skew detection for a Spark job using a sketch. Why is this better than a count?</div>
+    <div class="hint">Ties stage 01 to stage 04 &mdash; a connection worth making unprompted.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(5,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(5,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv5">
+      <div class="lab">What a strong answer covers</div>
+      <p>Run a Count-Min sketch over the join key during a cheap pass, or maintain it as part of the upstream write, then query the top keys. That gives you the heavy hitters in a single pass with fixed memory and no shuffle.</p>
+<p>Why it beats <code>GROUP BY key ORDER BY count DESC</code>: the exact version is itself a full shuffle over the data you were trying to avoid shuffling badly &mdash; you pay the expensive operation to find out the expensive operation will be expensive. The sketch is a streaming, map-side operation with no data movement.</p>
+<p>The payoff is that skew handling becomes <em>adaptive</em> rather than hard-coded: read the top-k from the sketch, broadcast-join those keys separately, sort-merge the remainder, union. When yesterday's hot campaign is different from today's, the job adjusts without a code change &mdash; which is the actual maintenance problem with hand-salted joins.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">AQE already handles skew. Why build this?</p>
+        <button class="ghost" id="eb5" onclick="esc(5)">Reveal</button>
+        <div class="ans" id="es5"><p>AQE is genuinely good and I'd enable it first &mdash; I wouldn't build this if AQE were sufficient. Where it falls short is that it reacts <em>after</em> the shuffle has been written: it can split an oversized partition it observes, but the map-side write already happened at full cost, and it can't restructure the job into a broadcast path for hot keys plus a sort-merge path for the tail. It also can't help with skew that manifests upstream of the shuffle it's observing.</p><p>So the honest framing is layered: AQE for the common case with no engineering effort, and a sketch-driven adaptive plan only for the specific jobs where skew is severe, recurring, and expensive enough to justify the complexity. I wouldn't propose building this speculatively &mdash; it's a response to a job that's demonstrably suffering, and I'd want the before-and-after numbers to justify keeping it.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Sketches earn their place through mergeability, not just memory &mdash; that's what makes range queries O(days) instead of O(data).</li>
+    <li>HLL: distinct counts, ~1% error, unions losslessly by register max, cannot do intersection reliably.</li>
+    <li>Count-Min: per-key frequency, never underestimates, best for heavy hitters, worst for rare keys.</li>
+    <li>Bloom: membership pre-filter, no false negatives, must be sized in advance, no deletes without a counting or rotating variant.</li>
+    <li>t-digest for p95/p99 that merges; DGIM for sliding-window counts.</li>
+    <li>Reach is one sketch; reach-at-frequency isn't &mdash; it needs bucketed sketches, compact exact counts, or deliberate sampling.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Naming HyperLogLog with no error figure and no mention of what it can't do.</li>
+    <li>Using a sketch where exactness is required (billing) without flagging the mismatch.</li>
+    <li>Proposing inclusion-exclusion for intersection without noting the error blowup.</li>
+    <li>Treating memory as the only reason sketches exist.</li>
+    <li>Not connecting sketch choice to which direction the error runs and who is harmed by it.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="identity-graphs.html"><span>Previous</span>Resolving who is who, at a billion edges</a>
+<a class="nx" href="concurrency-reliability.html"><span>Next</span>Two kinds of concurrency, one kind of failure</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

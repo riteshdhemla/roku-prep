@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The CTV query cookbook &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">07</div><div class="kicker">SQL, deeper</div></div>
+  <h1>The CTV query cookbook</h1>
+  <p class="why">These are the queries a CTV analytics panel actually asks for. Each one has a shape worth memorising, and each has a scale trap that turns a correct query into a four-hour job.</p>
+  <div class="tags"><span class="tag">Panel 2 core</span><span class="tag">Live-coding risk</span><span class="tag">CTV domain</span></div>
+</header>
+<section><h2>The delivery funnel</h2>
+<p>The first thing anyone asks of CTV logs: where does the opportunity go? Request &rarr; bid &rarr; win &rarr; impression &rarr; completion.</p>
+<pre><code>WITH req AS (
+  SELECT request_id, publisher_id, device_id
+  FROM bid_requests
+  WHERE event_date = DATE '2026-08-09'
+),
+bid AS (
+  SELECT DISTINCT request_id FROM bid_responses
+  WHERE event_date = DATE '2026-08-09' AND bid_price IS NOT NULL
+),
+won AS (
+  SELECT request_id, clearing_price FROM auctions
+  WHERE event_date = DATE '2026-08-09' AND winner_id = 'us'
+),
+imp AS (
+  SELECT DISTINCT request_id FROM impressions
+  WHERE event_date = DATE '2026-08-09'
+),
+comp AS (
+  SELECT DISTINCT request_id FROM ad_events
+  WHERE event_date = DATE '2026-08-09' AND event_type = 'complete'
+)
+SELECT r.publisher_id,
+       COUNT(*)                                  AS requests,
+       COUNT(b.request_id)                       AS bid,
+       COUNT(w.request_id)                       AS won,
+       COUNT(i.request_id)                       AS impressions,
+       COUNT(c.request_id)                       AS completions,
+       COUNT(w.request_id) * 1.0
+         / NULLIF(COUNT(b.request_id), 0)        AS win_rate,
+       COUNT(c.request_id) * 1.0
+         / NULLIF(COUNT(i.request_id), 0)        AS completion_rate
+FROM req r
+LEFT JOIN bid  b USING (request_id)
+LEFT JOIN won  w USING (request_id)
+LEFT JOIN imp  i USING (request_id)
+LEFT JOIN comp c USING (request_id)
+GROUP BY r.publisher_id;</code></pre>
+<div class="k"><b>The traps</b><p>Every stage needs <code>DISTINCT</code> or a dedup, or a fan-out at one stage silently multiplies the counts downstream. <code>NULLIF</code> guards the division. And a chain of left joins off the largest table in the warehouse is the expensive part &mdash; at real volume, compute each stage as a pre-aggregated count by publisher and join five small results, rather than joining five large ones.</p></div></section>
+<section><h2>Reach, frequency, and the frequency distribution</h2>
+<p>Reach is distinct devices. Frequency is impressions over reach. The <em>distribution</em> is what people actually need, and it is a two-step aggregation.</p>
+<pre><code>WITH per_device AS (
+  SELECT campaign_id, device_id, COUNT(*) AS imps
+  FROM impressions
+  WHERE event_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-09'
+    AND device_id IS NOT NULL
+    AND device_id NOT IN (SELECT device_id FROM device_denylist)
+  GROUP BY campaign_id, device_id
+)
+SELECT campaign_id,
+       CASE WHEN imps = 1 THEN '1'
+            WHEN imps = 2 THEN '2'
+            WHEN imps = 3 THEN '3'
+            WHEN imps BETWEEN 4 AND 5   THEN '4-5'
+            WHEN imps BETWEEN 6 AND 10  THEN '6-10'
+            ELSE '10+' END              AS freq_bucket,
+       COUNT(*)                         AS devices,
+       SUM(imps)                        AS impressions
+FROM per_device
+GROUP BY campaign_id, 2
+ORDER BY campaign_id, MIN(imps);</code></pre>
+<p><strong>Reach curve</strong> &mdash; cumulative reach by day, the thing planners want &mdash; needs first-exposure logic, because a device reached on day 1 must not be counted again on day 3:</p>
+<pre><code>WITH first_seen AS (
+  SELECT campaign_id, device_id, MIN(event_date) AS first_date
+  FROM impressions
+  WHERE event_date BETWEEN DATE '2026-08-01' AND DATE '2026-08-09'
+  GROUP BY campaign_id, device_id
+)
+SELECT campaign_id, first_date,
+       COUNT(*) AS newly_reached,
+       SUM(COUNT(*)) OVER (PARTITION BY campaign_id
+                           ORDER BY first_date
+                           ROWS UNBOUNDED PRECEDING) AS cumulative_reach
+FROM first_seen
+GROUP BY campaign_id, first_date;</code></pre>
+<p>Note the aggregate inside a window &mdash; <code>SUM(COUNT(*)) OVER (...)</code> &mdash; which is the compact idiom for a running total over grouped data and worth having ready.</p></section>
+<section><h2>Pods: position, separation, and per-break checks</h2>
+<p>Pod-aware queries are the CTV-specific thing a generic SQL candidate won't write.</p>
+<p><strong>Performance by pod position</strong> &mdash; comparing slot 1 to slot 5 is a routine ask:</p>
+<pre><code>SELECT pod_position,
+       COUNT(*)                                        AS impressions,
+       SUM(CASE WHEN completed THEN 1 ELSE 0 END)*1.0
+         / COUNT(*)                                    AS completion_rate
+FROM impressions
+WHERE event_date = DATE '2026-08-09'
+GROUP BY pod_position
+ORDER BY pod_position;</code></pre>
+<p><strong>Detecting a separation violation</strong> &mdash; the same advertiser twice in one break &mdash; is a self-join-free window problem:</p>
+<pre><code>SELECT session_id, break_id, advertiser_id, COUNT(*) AS slots
+FROM impressions
+WHERE event_date = DATE '2026-08-09'
+GROUP BY session_id, break_id, advertiser_id
+HAVING COUNT(*) &gt; 1;</code></pre>
+<p><strong>Pod fill rate</strong> requires knowing the slots offered, which lives on the request rather than the impression &mdash; so this is one of the few places a join back to the request side is unavoidable:</p>
+<pre><code>SELECT r.publisher_id,
+       SUM(i.filled)     AS filled_slots,
+       SUM(r.pod_slots)  AS offered_slots,
+       SUM(i.filled) * 1.0 / NULLIF(SUM(r.pod_slots), 0) AS fill_rate
+FROM (SELECT request_id, publisher_id, pod_slots
+      FROM bid_requests WHERE event_date = DATE '2026-08-09') r
+LEFT JOIN (SELECT request_id, COUNT(*) AS filled
+           FROM impressions WHERE event_date = DATE '2026-08-09'
+           GROUP BY request_id) i USING (request_id)
+GROUP BY r.publisher_id;</code></pre></section>
+<section><h2>Gaps and islands, and pacing</h2>
+<p><strong>Gaps and islands</strong> is the pattern family behind sessionization, continuous-viewing detection, and delivery-outage detection. The trick is always the same: mark a boundary, then take a running sum of the boundary flag as a group ID.</p>
+<p>Detecting hours where a campaign delivered nothing &mdash; a pacing alert query:</p>
+<pre><code>WITH hours AS (   -- a date spine; without it, missing hours are invisible
+  SELECT campaign_id, h AS hour_ts
+  FROM campaigns
+  CROSS JOIN UNNEST(SEQUENCE(
+      TIMESTAMP '2026-08-09 00:00:00',
+      TIMESTAMP '2026-08-09 23:00:00',
+      INTERVAL '1' HOUR)) AS t(h)
+),
+delivered AS (
+  SELECT campaign_id, DATE_TRUNC('hour', event_time) AS hour_ts,
+         COUNT(*) AS imps
+  FROM impressions
+  WHERE event_date = DATE '2026-08-09'
+  GROUP BY 1, 2
+)
+SELECT h.campaign_id, h.hour_ts, COALESCE(d.imps, 0) AS imps
+FROM hours h
+LEFT JOIN delivered d USING (campaign_id, hour_ts)
+WHERE COALESCE(d.imps, 0) = 0;</code></pre>
+<div class="k"><b>The date-spine point is worth volunteering</b><p>Aggregating a log tells you about hours that <em>had</em> events. A zero-delivery hour produces no row, so it cannot appear in the result. Generating the complete time grid and left-joining is the only way to see absences &mdash; and absence is exactly what a pacing or outage alert is looking for.</p></div>
+<p><strong>Pacing versus plan</strong> then follows naturally: cumulative delivery over the flight against the linear (or front-loaded) target.</p>
+<pre><code>SELECT campaign_id, event_date,
+       SUM(imps) OVER (PARTITION BY campaign_id ORDER BY event_date
+                       ROWS UNBOUNDED PRECEDING) AS delivered_to_date,
+       goal_impressions
+         * (DATE_DIFF('day', flight_start, event_date) + 1)
+         / NULLIF(DATE_DIFF('day', flight_start, flight_end) + 1, 0)
+                                                 AS target_to_date
+FROM daily_delivery JOIN campaigns USING (campaign_id);</code></pre></section>
+<section><h2>Nested payloads, top-N per group, and sampling</h2>
+<p><strong>Bid requests are nested.</strong> Deals, impressions array, device object, extensions. Know the two operations:</p>
+<pre><code>-- explode an array of deals into rows
+SELECT r.request_id, d.deal_id, d.bid_floor
+FROM bid_requests r
+CROSS JOIN UNNEST(r.deals) AS d;
+
+-- reach into a struct / JSON blob
+SELECT request_id,
+       device.ifa                              AS device_id,
+       device.geo.country                      AS country,
+       JSON_EXTRACT_SCALAR(ext, '$.ssai.vendor') AS ssai_vendor
+FROM bid_requests;</code></pre>
+<p>The trap: <code>UNNEST</code> multiplies rows. Any count after an unnest counts deal-rows, not requests. Aggregate back, or count <code>DISTINCT request_id</code>.</p>
+<p><strong>Top-N per group</strong> &mdash; top 5 creatives per campaign by completion rate:</p>
+<pre><code>SELECT * FROM (
+  SELECT campaign_id, creative_id, completion_rate,
+         ROW_NUMBER() OVER (PARTITION BY campaign_id
+                            ORDER BY completion_rate DESC) AS rn
+  FROM creative_daily
+) WHERE rn &lt;= 5;</code></pre>
+<p><strong>Deterministic sampling</strong> &mdash; essential on bid requests, and it must be stable across reruns and joinable across tables:</p>
+<pre><code>WHERE ABS(FROM_BIG_ENDIAN_64(XXHASH64(CAST(device_id AS VARBINARY)))) % 100 = 0</code></pre>
+<p>Hash on the <em>entity</em> (device or request), never <code>RAND()</code>. A random sample changes on rerun, can't be joined to another sampled table, and breaks any per-device aggregation because you'd have partial histories.</p></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Write me reach and average frequency for a campaign over its flight. Then I'll break it.</div>
+    <div class="hint">Anticipate the break: the naive answer double-counts or doesn't roll up.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <pre><code>SELECT campaign_id,
+       COUNT(*)                          AS impressions,
+       APPROX_COUNT_DISTINCT(device_id)  AS reach,
+       COUNT(*) * 1.0
+         / NULLIF(APPROX_COUNT_DISTINCT(device_id), 0) AS avg_frequency
+FROM impressions
+WHERE campaign_id = :cid
+  AND event_date BETWEEN :start AND :end
+  AND device_id IS NOT NULL
+GROUP BY campaign_id;</code></pre>
+<p>Points I'd make while writing it. The partition filter is first so we prune. Nulls are excluded explicitly, because a null device ID would otherwise either collapse into one phantom device or inflate the count depending on the engine. Approximate distinct is deliberate &mdash; exact <code>COUNT(DISTINCT)</code> shuffles every device ID.</p>
+<p>And I'd flag the thing that will break: <strong>this cannot be computed from a daily aggregate table by summing.</strong> Daily reach doesn't add up to flight reach. If this needs to be fast, the daily table must store an HLL sketch rather than a count, and the query merges sketches.</p>
+<p>I'd also note that average frequency is a weak statistic here &mdash; a mean of 3 is consistent with everyone seeing 3 or most seeing 1 and a few seeing 40 &mdash; so I'd normally return the distribution alongside it.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Now do it for the last 90 days, for all 40,000 active campaigns, refreshed hourly.</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>That changes it from a query problem to a pipeline problem, and I'd say so rather than try to make the query fast.</p><p>The batch pipeline maintains a daily table at <code>(campaign_id, event_date)</code> holding impressions and a serialised HLL sketch of device IDs. That's 40,000 &times; 90 &asymp; 3.6 million rows &mdash; trivial. The hourly refresh only recomputes today's partition; closed days are immutable and never recomputed.</p><p>The query then merges 90 sketches per campaign, which is microseconds of work, and reach for any sub-range is free because sketches merge over any subset of days.</p><p>Two caveats I'd raise. Merging sketches gives correct union reach, but frequency distribution doesn't decompose that way &mdash; per-device counts across 90 days can't be reconstructed from daily sketches, so if the distribution is needed over the full range I'd keep a compact per-(campaign, device) running count table instead, or accept a sampled estimate. And the sketch error compounds slightly on merge, so I'd state the expected error at 90-day range rather than quote the single-day figure.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Find every household that saw the same creative more than twice in a single ad break.</div>
+    <div class="hint">The grain is the whole question.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <pre><code>SELECT household_id, session_id, break_id, creative_id,
+       COUNT(*) AS times_in_break
+FROM impressions i
+JOIN identity_map m ON i.device_id = m.device_id
+WHERE i.event_date = DATE '2026-08-09'
+GROUP BY household_id, session_id, break_id, creative_id
+HAVING COUNT(*) &gt; 2;</code></pre>
+<p>The reasoning I'd narrate: the grain of a violation is the break, so the group key is <code>(session, break, creative)</code> &mdash; grouping by day would answer a different question. Household rather than device requires the identity mapping, because two TVs in one home could each show the creative and that may or may not count as a violation depending on the product definition &mdash; which I'd ask about rather than assume.</p>
+<p>Scale notes: this is a single grouped aggregation over one partition, no self-join, so it's cheap. The join to the identity map is the risk &mdash; that table is large, so I'd want it broadcast if it fits after projecting to two columns, or bucketed on device ID if this join is routine.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">There's no break_id in the log. Only session_id and event_time.</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Then breaks have to be inferred from timing, which is a gaps-and-islands problem &mdash; impressions within a session clustered tightly in time belong to the same break, and a gap of more than some threshold means content resumed.</p><pre><code>WITH flagged AS (
+  SELECT *, CASE WHEN event_time - LAG(event_time) OVER (
+              PARTITION BY session_id ORDER BY event_time)
+            &gt; INTERVAL '2' MINUTE OR LAG(event_time) OVER (
+              PARTITION BY session_id ORDER BY event_time) IS NULL
+       THEN 1 ELSE 0 END AS new_break
+  FROM impressions WHERE event_date = DATE '2026-08-09'
+),
+breaks AS (
+  SELECT *, SUM(new_break) OVER (PARTITION BY session_id
+              ORDER BY event_time ROWS UNBOUNDED PRECEDING) AS break_seq
+  FROM flagged
+)
+SELECT session_id, break_seq, creative_id, COUNT(*) AS n
+FROM breaks GROUP BY 1,2,3 HAVING COUNT(*) &gt; 2;</code></pre><p>I'd flag that the threshold is a guess and should be validated against the actual inter-impression gap distribution &mdash; pods are typically 60&ndash;120 seconds, so a 2-minute gap is plausible but the data should confirm it. And I'd say plainly that inferring break boundaries is a workaround: the durable fix is getting the pod identifier passed through from the ad server, because every downstream pod analysis will otherwise re-derive this heuristic slightly differently.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">This query returns the right numbers on a sample and wrong numbers on the full table. It has three joins and a DISTINCT at the end. Diagnose.</div>
+    <div class="hint">The DISTINCT is the tell.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>The <code>DISTINCT</code> at the end is almost certainly hiding a fan-out, and on a sample the duplicates happened not to collide. Somewhere one of those joins is not on a unique key, so rows multiply, and the <code>DISTINCT</code> deduplicates the final row set while any aggregate computed before it &mdash; a <code>SUM</code>, a <code>COUNT</code> &mdash; has already been inflated.</p>
+<p>How I'd confirm: check the row count after each join incrementally. If joining to the deals table triples the count, that's the culprit. Then check whether the join key is genuinely unique on the right side with a quick group-and-having.</p>
+<p>Common CTV instances of this: joining to a deals or line-item table where a request matches several deals; joining impressions to ad_events where a single impression has four quartile rows; joining to a slowly-changing dimension without filtering to the version valid at event time, so one campaign matches three historical rows.</p>
+<p>The fix is to make the join one-to-one before it happens &mdash; pre-aggregate the right side to the grain you need, or add the validity predicate &mdash; not to deduplicate afterwards.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">The fan-out is from a type-2 dimension. Write the fix.</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>The join has to be constrained to the dimension version in effect at the event's timestamp, not merely matching on the key:</p><pre><code>SELECT i.impression_id, i.event_time, c.campaign_name, c.advertiser_id
+FROM impressions i
+JOIN campaign_dim c
+  ON i.campaign_id = c.campaign_id
+ AND i.event_time &gt;= c.valid_from
+ AND i.event_time &lt;  COALESCE(c.valid_to, TIMESTAMP '9999-12-31')
+WHERE i.event_date = DATE '2026-08-09';</code></pre><p>Two details that matter. <code>COALESCE</code> on the open-ended current row, because the live version typically has a null <code>valid_to</code> and a naive inequality would exclude it &mdash; silently dropping every event against currently-active campaigns, which is the worst kind of bug because the query still returns plausible results. And the half-open interval, <code>&gt;=</code> paired with <code>&lt;</code>, so an event exactly at a version boundary matches exactly one row rather than zero or two.</p><p>Performance-wise this is now an inequality join, so I'd want the equality on <code>campaign_id</code> doing the partitioning work and the dimension small enough to broadcast &mdash; which it usually is. And I'd add a uniqueness assertion on the dimension as a data-quality check, because overlapping validity ranges in a type-2 table produce exactly this fan-out and are invisible until someone counts.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Funnel: dedup each stage before joining, guard divisions with NULLIF, and pre-aggregate before joining at real volume.</li>
+    <li>Reach needs first-exposure logic for curves; frequency needs a two-step aggregation, per-device then bucketed.</li>
+    <li>Pod queries group on (session, break, position) &mdash; that's the CTV-specific grain.</li>
+    <li>Generate a date spine and left-join, or zero-delivery hours are invisible.</li>
+    <li>Gaps and islands: flag the boundary, running-sum the flag, group by the result.</li>
+    <li>UNNEST multiplies rows; sample by hashing the entity, never RAND().</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Summing daily reach into period reach.</li>
+    <li>A trailing DISTINCT covering an unexamined fan-out.</li>
+    <li>Joining a type-2 dimension without a validity predicate.</li>
+    <li>Reporting average frequency with no distribution.</li>
+    <li>Using RAND() to sample a table that will be joined or rerun.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="sql-at-scale.html"><span>Previous</span>SQL that survives ten billion rows</a>
+<a class="nx" href="query-performance.html"><span>Next</span>Reading the plan before blaming the warehouse</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

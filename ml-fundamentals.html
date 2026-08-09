@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ML fundamentals as trade-offs, not definitions &middot; Interview Stages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">13</div><div class="kicker">Applied ML</div></div>
+  <h1>ML fundamentals as trade-offs, not definitions</h1>
+  <p class="why">Both panels list ML fundamentals "as applied to real systems". Nobody will ask you to derive backpropagation. They will ask why you chose this loss, this validation scheme, this threshold &mdash; and whether you can tell when the metric improved and the system got worse.</p>
+  <div class="tags"><span class="tag">Both panels</span><span class="tag">ML depth</span><span class="tag">Ties to your forecasting work</span></div>
+</header>
+<section><h2>Framing the problem before the model</h2>
+<p>Most ML system design questions are won or lost in the first two minutes, on framing rather than architecture.</p>
+<ul>
+<li><strong>What is the prediction target, exactly?</strong> "Predict campaign performance" is not a target. Impressions delivered in the next hour? Probability of completing this ad? Expected clearing price? Each implies a different label, horizon, and evaluation.</li>
+<li><strong>What decision does it drive?</strong> A forecast that informs a guaranteed-delivery commitment needs calibrated intervals. One that ranks creatives needs correct ordering. Those are different objectives and the second doesn't need calibration at all.</li>
+<li><strong>What's the cost asymmetry?</strong> Under-forecasting inventory means unsold avails; over-forecasting means over-selling a guarantee and paying make-goods. Asymmetric costs mean an asymmetric loss, and quantile regression is the direct expression of that.</li>
+<li><strong>What's the baseline?</strong> Seasonal naive, last week's value, a simple ratio. If you can't beat it meaningfully, that's the finding.</li>
+<li><strong>What's the feedback loop?</strong> If the model's output changes what data you observe next &mdash; a delivery model that throttles a campaign then observes lower delivery &mdash; you have a feedback loop, and naive retraining will spiral.</li>
+</ul>
+<div class="k"><b>The sentence to have ready</b><p>"Before choosing a model I'd want to know what decision this drives and what it costs to be wrong in each direction, because that determines the loss function and the evaluation metric more than the data does."</p></div></section>
+<section><h2>Features: leakage, cardinality, and drift</h2>
+<p><strong>Leakage</strong> is the failure that looks like success. Three forms worth naming:</p>
+<ul>
+<li><strong>Temporal leakage</strong> &mdash; a feature computed from data after the prediction time. The fix is point-in-time correctness (next stage).</li>
+<li><strong>Target leakage</strong> &mdash; a feature that encodes the label. "Total impressions delivered this flight" when predicting delivery is the obvious version; "campaign status = completed" is the subtle one.</li>
+<li><strong>Group leakage</strong> &mdash; the same entity in both train and test. Random row splits on device-level data put the same household on both sides, and the model memorises rather than generalises. Split by entity, and by time.</li>
+</ul>
+<p><strong>High-cardinality categoricals</strong> are everywhere in adtech &mdash; campaign, creative, publisher, app, device model. Options and their costs: one-hot (explodes), hashing (collisions, no interpretability), target/mean encoding (powerful, leaks badly unless computed out-of-fold), learned embeddings (strong for deep models, needs volume), and frequency encoding (cheap, loses identity). Mean encoding computed on the full training set is one of the most common leakage bugs in production ML, and knowing to do it out-of-fold is a good signal.</p>
+<p><strong>Cold start</strong> is a permanent adtech condition: new campaigns and creatives have no history. Design for it explicitly with hierarchical fallbacks &mdash; creative &rarr; campaign &rarr; advertiser &rarr; vertical &mdash; rather than letting the model see an unknown category and produce noise.</p>
+<p><strong>Drift</strong>: monitor input distributions (PSI, KS) which you detect immediately, and prediction error which you detect only when labels arrive. That lag is exactly why input monitoring exists.</p></section>
+<section><h2>Loss, metrics, and the gap between them</h2>
+<p>The loss is what the model optimises; the metric is what you report; the objective is what the business wants. They differ, and being explicit about the differences is the senior move.</p>
+<table>
+<tr><th>Situation</th><th>Loss</th><th>Report</th></tr>
+<tr><td>Symmetric error cost</td><td>MSE / MAE</td><td>RMSE, MAE, MASE</td></tr>
+<tr><td>Asymmetric cost, need intervals</td><td>Pinball (quantile)</td><td>Pinball loss + coverage calibration</td></tr>
+<tr><td>Rare positive, ranking matters</td><td>Log loss</td><td>PR-AUC, not ROC-AUC</td></tr>
+<tr><td>Probability used as a number</td><td>Log loss</td><td>Calibration curve, Brier score</td></tr>
+<tr><td>Heavy-tailed counts</td><td>Poisson / Tweedie</td><td>MAE on original scale</td></tr>
+</table>
+<p><strong>ROC-AUC versus PR-AUC</strong> is a standard probe. With heavy class imbalance &mdash; conversion prediction at 0.1% positive &mdash; ROC-AUC is dominated by the abundant negatives and looks flatteringly high. PR-AUC reflects performance on the positives you actually care about.</p>
+<p><strong>Calibration</strong> matters whenever the probability is used arithmetically rather than for ranking. In bidding, expected value is probability &times; value, so a miscalibrated model bids wrong even if its ranking is perfect. Fix with Platt scaling or isotonic regression on a held-out set &mdash; and note that many boosted-tree models are poorly calibrated out of the box.</p></section>
+<section><h2>Validation that respects reality</h2>
+<p><strong>Time series must use rolling-origin (walk-forward) validation.</strong> Each fold trains on a contiguous past and tests on the subsequent window, matching the real forecast horizon. Random k-fold leaks the future and produces numbers that will not survive production. If asked why, the answer is that autocorrelation means neighbouring points carry each other's information, so a randomly held-out point is partly present in training.</p>
+<p><strong>Choose the fold horizon to match the decision.</strong> If the forecast informs a seven-day commitment, validate at a seven-day horizon, not one-step-ahead &mdash; one-step-ahead accuracy is far easier and systematically overstates usable performance.</p>
+<p><strong>Backtesting versus production reality:</strong> a backtest uses the data as it exists now, including late-arriving corrections. Production sees only what had arrived at prediction time. If your warehouse restates data, your backtest is optimistic. Reconstructing "as-of" state is tedious and is the honest way to do it.</p>
+<p><strong>Baselines, always.</strong> Seasonal naive for a forecast; majority class or a logistic regression on three features for a classifier. Report the lift over baseline, not just the absolute number.</p>
+<p><strong>Segment your evaluation.</strong> Aggregate metrics hide the failure that matters &mdash; a model can improve overall while degrading badly on new campaigns, small publishers, or a particular daypart. Report by segment, especially the segments that are commercially sensitive.</p></section>
+<section><h2>The classical models and when they're right</h2>
+<p>A quick map, since "why not deep learning" is a standard probe and the correct answer is usually about operations rather than accuracy.</p>
+<ul>
+<li><strong>Gradient-boosted trees</strong> (XGBoost, LightGBM) &mdash; the default for tabular. Handle mixed types and non-linearity, robust to unscaled features, fast to train. Weak on extrapolation, which matters for a growing time series, and poorly calibrated by default.</li>
+<li><strong>Linear / logistic with regularisation</strong> &mdash; fast, interpretable, extrapolates, an excellent baseline. L1 for sparsity and feature selection, L2 for correlated features.</li>
+<li><strong>Classical time series</strong> (ARIMA, ETS, Prophet) &mdash; good with limited data and clear seasonality; struggles with many related series and exogenous features.</li>
+<li><strong>Deep time series</strong> (TFT, N-BEATS, DeepAR) &mdash; earn their place with many related series, rich covariates, and a need for probabilistic multi-horizon output. Cost: training infrastructure, latency, and much harder debugging.</li>
+<li><strong>Ensembles</strong> &mdash; frequently the practical answer, and worth defending on variance reduction rather than raw accuracy.</li>
+</ul>
+<p>When asked to justify a complex model, the strong answer names what the simple one couldn't do: "quantile output across many correlated series with known future covariates" is a reason; "it performed better" is a result, not a reason.</p></section>
+<div class="pbhead"><div class="lab">Pushback</div>
+<h2>Now defend it</h2>
+<p>Each of these is a real interrupt. Commit to an answer before you reveal &mdash; reading the model answer without having tried is how you end up recognising the material but not being able to produce it.</p></div>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Why quantile regression for inventory forecasting instead of just predicting the mean?</div>
+    <div class="hint">Your own work. Lead with the cost asymmetry.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>Because the decision it feeds is asymmetric and a point forecast throws away the information the decision needs.</p>
+<p>For guaranteed delivery, committing above what we can deliver means make-goods or refunds; committing below means unsold inventory. Those costs aren't equal, and they aren't equal in a way that varies by deal. A mean forecast gives one number and implicitly assumes symmetric loss.</p>
+<p>Quantile regression optimises pinball loss, which directly encodes the asymmetry: predicting the 10th percentile means being penalised nine times more for over-prediction than under. So sales can commit against a conservative quantile for guaranteed deals while planning against the median for internal forecasting, from the same model.</p>
+<p>The second reason is that the interval <em>is</em> the product. Knowing inventory will be 10 million &plusmn; 500,000 supports a very different commitment than 10 million &plusmn; 5 million, and a point forecast can't distinguish them. That's why I'd evaluate on pinball loss and coverage calibration rather than MAPE &mdash; a model with a better median and badly calibrated intervals is a regression for this use case.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Your 90th percentile is exceeded 20% of the time. What do you do, and what do you tell the sales team this week?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Two separate responses, because the engineering fix takes longer than the business needs.</p><p><strong>This week:</strong> tell them plainly that the intervals are too narrow and the p90 is behaving like roughly a p80, so commitments made against it carry about twice the shortfall risk they assumed. Give them an interim adjustment &mdash; use the p75 output where they were using p90 &mdash; so they can keep working with a known correction rather than either stopping or relying on a number we know is wrong. Being specific and quantified is what makes this a manageable conversation instead of a credibility problem.</p><p><strong>The fix:</strong> recalibrate rather than retrain from scratch, since the ranking may be fine and only the spread is wrong. Conformal prediction or isotonic adjustment on the quantile outputs, fitted on a recent held-out period, then verify coverage on a further holdout. If miscalibration is concentrated in a segment &mdash; new campaigns, a particular daypart &mdash; that points at a data or feature problem rather than a calibration one, and I'd check that before applying a global correction that masks it.</p><p>And I'd add coverage to the monitoring, because the fact that we discovered this rather than being alerted to it is the more important defect.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Your completion-rate model has 0.94 AUC. Ship it?</div>
+    <div class="hint">Ask what the base rate is and what the number is used for.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>Not on that number alone, and I'd want three things.</p>
+<p><strong>The base rate.</strong> CTV completion rates are typically high &mdash; often 90%+ &mdash; so the classes are imbalanced toward positive. ROC-AUC on imbalanced data is easy to inflate; PR-AUC on the minority class (non-completions, which is what we probably care about) is the honest measure.</p>
+<p><strong>What the output is used for.</strong> If it ranks inventory, AUC is relevant. If the probability feeds a bid calculation or a delivery forecast, calibration matters more than discrimination &mdash; a model can rank perfectly and be systematically 15% too high, which produces wrong bids at every level.</p>
+<p><strong>The baseline and the segments.</strong> If predicting the base rate for everything gets 0.85, then 0.94 is a modest lift. And an aggregate 0.94 can hide poor performance on new creatives or a specific publisher, which is exactly where the model gets used for decisions.</p>
+<p>I'd also want to check for leakage, because 0.94 on a noisy behavioural outcome is high enough to be suspicious &mdash; specifically whether any feature encodes post-impression information.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">You find a feature called `quartiles_fired`. Ship it now?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>No &mdash; that's the leak, and it explains the number. Quartile beacons fire <em>during</em> playback, so <code>quartiles_fired</code> is essentially the label: an ad with four quartiles fired has completed. The model has learned an identity function, which is why performance looked implausibly good on a noisy target.</p><p>In production this feature is unavailable at prediction time, because we're predicting completion before the ad plays. So the model would either fail outright or receive a default value and produce garbage &mdash; and the offline metrics would have given us no warning.</p><p>Beyond removing it, I'd treat this as a process finding rather than a one-off bug. The systematic fix is a feature-availability contract: every feature declares the time at which it becomes available relative to the prediction, and the training pipeline mechanically rejects any feature whose availability time is after the prediction time. That catches this whole class of error rather than relying on someone noticing a suspicious column name.</p><p>I'd also audit the rest of the feature set immediately, since a pipeline that admitted this one probably admitted others &mdash; anything derived from the ad_events table deserves the same scrutiny.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Would a simpler model do? Justify the complexity.</div>
+    <div class="hint">Answer on capability, not accuracy.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>I'd want to answer that with a baseline comparison rather than an opinion, and I'd say that first &mdash; if a seasonal naive or a regularised linear model gets within a couple of percent, the complex model is not worth its operational cost.</p>
+<p>Where the complexity is genuinely earned, the justification should be a capability the simple model doesn't have:</p>
+<ul>
+<li><strong>Many related series with shared structure.</strong> Thousands of inventory segments forecast individually by ARIMA can't share information; a global model learns cross-series patterns and handles sparse series far better.</li>
+<li><strong>Known future covariates.</strong> Scheduled content, holidays, planned campaign flights &mdash; models that consume known-future inputs use them; most classical approaches don't.</li>
+<li><strong>Native probabilistic multi-horizon output</strong>, which is what the commitment decision needs.</li>
+<li><strong>High-cardinality categoricals</strong> handled through embeddings rather than manual encoding.</li>
+</ul>
+<p>And I'd name the costs honestly: training infrastructure, longer iteration cycles, harder debugging when a forecast is wrong, and a much larger surface for silent degradation. A complex model is a commitment to operating it.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Two years from now, someone inherits this. What did you leave them?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>This is the question I'd actually want to be asked, because the honest failure mode of a complex model isn't accuracy &mdash; it's that it becomes unmaintainable and everyone is afraid to touch it.</p><p>Concretely: the baseline comparison preserved and re-run on every retrain, so the successor can see at a glance whether the complexity is still earning its place &mdash; data changes, and a model that beat seasonal naive by 30% in 2026 might beat it by 3% now. Segment-level evaluation so degradation is visible where it starts. Feature definitions in one place with availability times declared. A documented decision record explaining what was tried, what was rejected, and why &mdash; especially the rejected simpler options, so nobody re-runs those experiments.</p><p>And the retraining path automated and tested, because the most common way these systems die is that retraining becomes a manual ritual only one person can perform, that person leaves, and the model quietly ages out of relevance while continuing to serve.</p><p>I'd also leave a clear statement of what the model is <em>not</em> valid for, since misapplication by a well-meaning successor is a real risk with a general-looking forecast.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="close">
+  <div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+    <li>Frame first: what's the target, what decision does it drive, what's the cost asymmetry, what's the baseline.</li>
+    <li>Leakage comes in temporal, target, and group forms; split by entity and by time.</li>
+    <li>High-cardinality categoricals need out-of-fold target encoding or embeddings, plus a cold-start fallback hierarchy.</li>
+    <li>Loss encodes the asymmetry (pinball for quantiles); report PR-AUC under imbalance and calibration when the probability is used arithmetically.</li>
+    <li>Rolling-origin validation at the decision's horizon; always report lift over a naive baseline and break results out by segment.</li>
+    <li>Justify a complex model by a capability the simple one lacks, not by a better number.</li>
+  </ol></div>
+  <div class="flags"><div class="lab">What a weak answer sounds like</div><ul>
+    <li>Naming a model architecture before naming the target and the decision.</li>
+    <li>Random k-fold on time series.</li>
+    <li>Reporting ROC-AUC on heavily imbalanced data with no PR-AUC.</li>
+    <li>No baseline comparison.</li>
+    <li>Aggregate metrics only, with no segment breakdown.</li>
+    <li>Missing an obvious leaky feature.</li>
+  </ul></div>
+</div>
+<nav class="pager">
+<a href="concurrency-reliability.html"><span>Previous</span>Two kinds of concurrency, one kind of failure</a>
+<a class="nx" href="feature-pipelines.html"><span>Next</span>From raw beacons to a served feature</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>
