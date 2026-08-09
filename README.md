@@ -50,7 +50,16 @@ offline.
 default branch, and can also be run manually from the Actions tab. All links are relative, so
 the site works served from the `/roku-prep/` subpath.
 
-The workflow enables Pages itself on its first successful run, so no manual Settings step is
-needed. Pages on a private repository requires a paid plan, though — on a free account, make
-the repo public first (**Settings → General → Change visibility**), then re-run the workflow.
+`configure-pages` runs with `enablement: true`, so it turns Pages on by itself once the
+repository is eligible — no manual Settings step.
+
+**The repository is not eligible yet.** It is private, and Pages on a private repository
+requires a paid plan, so the deploy currently fails at `configure-pages` with
+`Create Pages site failed: Resource not accessible by integration`. To publish, either:
+
+- make the repository public — **Settings → General → Danger Zone → Change visibility** — then
+  re-run the workflow from the Actions tab; or
+- upgrade the account to GitHub Pro and re-run.
+
+Once it succeeds the site is served at `https://riteshdhemla.github.io/roku-prep/`.
 
