@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL, in the order the engine runs it &middot; Interview Stages</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">P2</div><div class="kicker">Primer &middot; before stage 06</div></div>
+  <h1>SQL, in the order the engine runs it</h1>
+  <p class="why">Most SQL confusion comes from reading a query in the order it is written. The engine runs it in a different order, and once you can see that order the rules stop feeling arbitrary. Correctness first &mdash; grain, fan-out and NULLs &mdash; then speed.</p>
+  <div class="tags"><span class="tag">Primer</span><span class="tag">Read before 06&ndash;08</span><span class="tag">Correctness before speed</span></div>
+</header>
+
+<section><h2>The order you write is not the order it runs</h2>
+<p>Nearly every "why won't SQL let me do this" question dissolves once you know this. You write a query top to bottom starting with <code>SELECT</code>. The engine evaluates it in a completely different order, and <code>SELECT</code> is close to last.</p>
+<figure><svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Written order starts with SELECT; logical execution order starts with FROM and ends with LIMIT.">
+  <text class="svg-l" x="0" y="14">THE ORDER YOU WRITE IT</text>
+  <rect class="svg-box" x="0"   y="26" width="96" height="28"/><text class="svg-t" x="26" y="45">SELECT</text>
+  <rect class="svg-box" x="104" y="26" width="80" height="28"/><text class="svg-t" x="128" y="45">FROM</text>
+  <rect class="svg-box" x="192" y="26" width="88" height="28"/><text class="svg-t" x="216" y="45">WHERE</text>
+  <rect class="svg-box" x="288" y="26" width="106" height="28"/><text class="svg-t" x="304" y="45">GROUP BY</text>
+  <rect class="svg-box" x="402" y="26" width="96" height="28"/><text class="svg-t" x="422" y="45">HAVING</text>
+  <rect class="svg-box" x="506" y="26" width="102" height="28"/><text class="svg-t" x="522" y="45">ORDER BY</text>
+
+  <text class="svg-l" x="0" y="94">THE ORDER IT RUNS</text>
+  <rect class="svg-cool" x="0"   y="106" width="96" height="28"/><text class="svg-t" x="14" y="125">FROM / JOIN</text>
+  <path class="svg-line" d="M100 120 L110 120"/>
+  <rect class="svg-cool" x="114" y="106" width="76" height="28"/><text class="svg-t" x="132" y="125">WHERE</text>
+  <path class="svg-line" d="M194 120 L204 120"/>
+  <rect class="svg-cool" x="208" y="106" width="98" height="28"/><text class="svg-t" x="222" y="125">GROUP BY</text>
+  <path class="svg-line" d="M310 120 L320 120"/>
+  <rect class="svg-cool" x="324" y="106" width="80" height="28"/><text class="svg-t" x="340" y="125">HAVING</text>
+  <path class="svg-line" d="M408 120 L418 120"/>
+  <rect class="svg-vio" x="422" y="106" width="80" height="28"/><text class="svg-t" x="440" y="125">SELECT</text>
+  <path class="svg-line" d="M506 120 L516 120"/>
+  <rect class="svg-cool" x="520" y="106" width="94" height="28"/><text class="svg-t" x="534" y="125">ORDER BY</text>
+  <path class="svg-line" d="M618 120 L628 120"/>
+  <rect class="svg-cool" x="632" y="106" width="66" height="28"/><text class="svg-t" x="648" y="125">LIMIT</text>
+  <text class="svg-s" x="422" y="152">aliases are born here &mdash;</text>
+  <text class="svg-s" x="422" y="166">so only steps to the right can see them</text>
+</svg>
+<figcaption><b>Logical execution order</b>Rows are produced by <code>FROM</code>, filtered by <code>WHERE</code>, collapsed by <code>GROUP BY</code>, filtered again by <code>HAVING</code>, and only then shaped by <code>SELECT</code>. Three common errors are just this picture.</figcaption></figure>
+<p>Read three familiar frustrations off that diagram:</p>
+<p><strong>"Why can't I use my alias in <code>WHERE</code>?"</strong> Because <code>WHERE</code> runs before <code>SELECT</code>, and the alias does not exist yet. <code>ORDER BY</code> runs after <code>SELECT</code>, which is why the same alias works there.</p>
+<p><strong>"Why can't I put <code>SUM(revenue) &gt; 100</code> in <code>WHERE</code>?"</strong> Because grouping has not happened yet &mdash; there is no sum to compare. That is what <code>HAVING</code> is for.</p>
+<p><strong>"Why is my <code>LIMIT 10</code> still slow?"</strong> Because it is last. Everything before it &mdash; the join, the grouping, the sort &mdash; happened over the full data set to decide which ten rows win.</p>
+<div class="k"><b>The distinction to keep</b><p><code>WHERE</code> filters <em>rows</em>, before grouping. <code>HAVING</code> filters <em>groups</em>, after. If your condition mentions an aggregate it belongs in <code>HAVING</code>; if it does not, put it in <code>WHERE</code> &mdash; where it removes rows before the expensive part instead of after.</p></div>
+</section>
+
+<section><h2>A join multiplies rows &mdash; it does not "add columns"</h2>
+<p>This one mental model prevents the most expensive class of quiet SQL bug: the query that runs fine, returns plausible numbers, and is wrong.</p>
+<p>It is tempting to picture a join as gluing extra columns onto the side of your table. What actually happens is: <strong>for each row on the left, find every matching row on the right, and emit one output row per match.</strong></p>
+<p>So the row count changes based on how many matches there are:</p>
+<table>
+<tr><th>Matches on the right per left row</th><th>Result</th></tr>
+<tr><td>Exactly one</td><td>Row count unchanged &mdash; this is the case people assume</td></tr>
+<tr><td>Zero</td><td>Row disappears (inner join) or is kept with NULLs (left join)</td></tr>
+<tr><td>Two</td><td><strong>Row is duplicated.</strong> Every measure on the left is now counted twice.</td></tr>
+</table>
+<figure><svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="One impression row joined to a campaign table containing two rows for the same id produces two output rows and doubles revenue.">
+  <text class="svg-l" x="0" y="14">IMPRESSIONS</text>
+  <rect class="svg-box" x="0" y="26" width="180" height="28"/><text class="svg-t" x="12" y="45">c=42  revenue = $10</text>
+
+  <text class="svg-l" x="250" y="14">CAMPAIGNS</text>
+  <rect class="svg-box" x="250" y="26" width="180" height="28"/><text class="svg-t" x="262" y="45">c=42  name = Acme</text>
+  <rect class="svg-hot" x="250" y="60" width="180" height="28"/><text class="svg-t" x="262" y="79">c=42  name = Acme</text>
+  <text class="svg-s" x="250" y="104">a duplicate nobody knew about</text>
+
+  <path class="svg-line" d="M184 40 L244 40"/>
+  <path class="svg-line" d="M184 40 L244 74"/>
+
+  <text class="svg-l" x="480" y="14">RESULT</text>
+  <rect class="svg-hot" x="480" y="26" width="200" height="28"/><text class="svg-t" x="492" y="45">c=42  Acme  $10</text>
+  <rect class="svg-hot" x="480" y="60" width="200" height="28"/><text class="svg-t" x="492" y="79">c=42  Acme  $10</text>
+  <text class="svg-s" x="480" y="104">SUM(revenue) = $20</text>
+
+  <rect class="svg-box" x="0" y="132" width="680" height="46"/>
+  <text class="svg-t" x="16" y="152">One duplicate row in a dimension table silently doubled the revenue of every</text>
+  <text class="svg-t" x="16" y="170">impression it matched. The query did not error. The dashboard did not either.</text>
+</svg>
+<figcaption><b>Fan-out</b>The join did what it was asked. The bug is that the right-hand table was not unique on the join key &mdash; and nothing in the SQL says it should have been.</figcaption></figure>
+<div class="k"><b>Ask this before every join</b><p>"How many rows on the right can match one row on the left?" If the answer is not "at most one", your aggregates will move. Check it directly: <code>SELECT key, count(*) FROM right_table GROUP BY key HAVING count(*) &gt; 1 LIMIT 5</code>.</p></div>
+<p>Real dimension tables break this constantly, and usually for a legitimate reason: a campaign table that is one row per campaign <em>per day</em>, or one row per campaign <em>per version</em>, is unique on <code>(campaign_id, dt)</code> but not on <code>campaign_id</code> alone. Joining on the partial key fans out. The fix is to join on the full key, or to deduplicate to the grain you actually want first.</p>
+</section>
+
+<section><h2>Grain: what one row means</h2>
+<p>The single most useful habit in SQL is naming the <strong>grain</strong> of every table you touch &mdash; one sentence beginning "one row per...".</p>
+<p><code>impressions</code>: one row per impression. <code>campaign_daily</code>: one row per campaign per day. <code>devices</code>: one row per device.</p>
+<p>Two operations change grain, and they are the two that cause trouble:</p>
+<p><strong><code>GROUP BY</code> coarsens it deliberately.</strong> One row per impression becomes one row per campaign per day. That is the point of the query.</p>
+<p><strong>A join can change it accidentally.</strong> That is the fan-out above &mdash; the grain got finer without anyone asking.</p>
+<div class="fp"><b class="hdr">Reason it through</b><p>Why does stating the grain catch bugs that reading the SQL does not? Because a wrong result and a right result look identical in the output &mdash; both are a table of plausible numbers. Grain gives you an independent prediction to check against.</p>
+<p>If you say up front "this should be one row per campaign per day, so about 500 campaigns &times; 30 days &asymp; 15,000 rows" and the query returns 31,000, you have found the fan-out before it reaches a dashboard. Without that prediction there is nothing to compare against, and the duplicate revenue ships.</p>
+<p>It is the same discipline as sanity-checking units in physics: the arithmetic can be flawless and the answer still wrong, and the cheapest check is the one that does not involve redoing the arithmetic.</p></div>
+</section>
+
+<section><h2>NULL is "unknown", not "empty"</h2>
+<p>NULL does not mean zero and it does not mean blank. It means <em>the value is not known</em> &mdash; and comparisons with an unknown produce <strong>unknown</strong>, which is not the same as false. SQL keeps only rows where a condition is definitely <em>true</em>.</p>
+<p>That single rule generates all of the following:</p>
+<table>
+<tr><th>Expression</th><th>Result</th><th>Why</th></tr>
+<tr><td><code>revenue = NULL</code></td><td>Never true</td><td>Is an unknown equal to 10? Unknown. Use <code>IS NULL</code>.</td></tr>
+<tr><td><code>COUNT(*)</code> vs <code>COUNT(col)</code></td><td>Different</td><td><code>COUNT(*)</code> counts rows; <code>COUNT(col)</code> skips NULLs.</td></tr>
+<tr><td><code>SUM(x)</code> over zero rows</td><td><code>NULL</code>, not 0</td><td>No rows means no known total. Wrap in <code>COALESCE(..., 0)</code> if you want a zero.</td></tr>
+<tr><td><code>x NOT IN (1, 2, NULL)</code></td><td><strong>Never returns anything</strong></td><td>See below &mdash; the classic trap.</td></tr>
+</table>
+<p>The <code>NOT IN</code> trap is worth walking through, because it silently returns an empty result rather than an error. <code>x NOT IN (1, 2, NULL)</code> expands to <code>x &lt;&gt; 1 AND x &lt;&gt; 2 AND x &lt;&gt; NULL</code>. For <code>x = 3</code> that is <code>true AND true AND unknown</code>, which is <strong>unknown</strong> &mdash; not true &mdash; so the row is dropped. Every row is dropped, for any <code>x</code>. If the subquery inside a <code>NOT IN</code> can produce even one NULL, the whole query returns nothing.</p>
+<p>Use <code>NOT EXISTS</code> instead, which is null-safe and usually plans better as an anti-join.</p>
+</section>
+
+<section><h2>LEFT JOIN then WHERE quietly becomes INNER JOIN</h2>
+<p>This follows from the two previous sections, and it is worth its own heading because it is so common.</p>
+<p>You want every impression, with click information where a click exists:</p>
+<table>
+<tr><th>Query</th><th>What you get</th></tr>
+<tr><td><code>FROM impressions i LEFT JOIN clicks c ON c.imp_id = i.id</code><br><code>WHERE c.ts &gt; '2026-08-09'</code></td><td><strong>Only impressions that were clicked.</strong> The left join did keep unclicked rows, filling <code>c.ts</code> with NULL &mdash; then <code>WHERE</code> compared NULL to a date, got unknown, and dropped them.</td></tr>
+<tr><td><code>FROM impressions i LEFT JOIN clicks c ON c.imp_id = i.id AND c.ts &gt; '2026-08-09'</code></td><td><strong>Every impression</strong>, with click data attached only when it matches. The condition is part of what counts as a match, not a filter applied afterwards.</td></tr>
+</table>
+<div class="k"><b>The rule</b><p>A condition on the <em>right-hand</em> table of a <code>LEFT JOIN</code> belongs in <code>ON</code>. A condition on the left-hand table belongs in <code>WHERE</code>. Putting a right-side condition in <code>WHERE</code> throws away the outer-ness you asked for.</p></div>
+</section>
+
+<section><h2>Window functions: aggregate without collapsing</h2>
+<p>The difference from <code>GROUP BY</code> is exactly one thing: <strong>row count</strong>.</p>
+<p><code>GROUP BY campaign_id</code> takes 1,000 rows and gives you 5 &mdash; the detail is gone. <code>SUM(...) OVER (PARTITION BY campaign_id)</code> takes 1,000 rows and gives you 1,000, each one still itself but now carrying its campaign's total alongside. That is what lets you compute "this impression's revenue as a share of its campaign" in one pass.</p>
+<p>Three parts, and only the first is required:</p>
+<p><strong><code>PARTITION BY</code></strong> &mdash; which rows count as "the group" for this row. Leave it out and the group is the whole result set.</p>
+<p><strong><code>ORDER BY</code></strong> &mdash; the order within the group. Required for anything positional: <code>ROW_NUMBER</code>, <code>LAG</code>, running totals.</p>
+<p><strong>The frame</strong> &mdash; which rows within the group are included, defaulting to everything from the start of the partition up to the current row when you supply an <code>ORDER BY</code>. This default surprises people: with <code>ORDER BY</code>, <code>SUM</code> becomes a <em>running</em> total rather than the group total.</p>
+<p>The most common practical use is deduplication &mdash; keep the latest row per key:</p>
+<table>
+<tr><th>Goal</th><th>Pattern</th></tr>
+<tr><td>Latest row per device</td><td><code>ROW_NUMBER() OVER (PARTITION BY device_id ORDER BY ts DESC)</code> then keep <code>= 1</code></td></tr>
+<tr><td>Compare a row to the previous one</td><td><code>LAG(value) OVER (PARTITION BY k ORDER BY ts)</code> &mdash; not a self-join</td></tr>
+<tr><td>Share of group total</td><td><code>value / SUM(value) OVER (PARTITION BY k)</code></td></tr>
+</table>
+<p>That middle row matters for performance as well as clarity: comparing each row to its neighbour with a self-join is a quadratic shuffle, while <code>LAG</code> is one pass over sorted partitions.</p>
+</section>
+
+<section><h2>Then, and only then, make it fast</h2>
+<p>Correctness first &mdash; grain, fan-out, NULLs. Once the answer is right, the performance model is short enough to state in one line, and stage 08 unpacks it:</p>
+<div class="k"><b>Read less &rarr; shuffle less &rarr; shuffle better</b><p>Scan fewer partitions and fewer columns; move fewer rows across the network by filtering and aggregating before joining; only then worry about join strategy. Tuning a join on a query that scans the whole table is decorating.</p></div>
+<p>The one habit worth adopting now: <strong>aggregate before you join</strong> whenever the semantics allow. Joining a billion-row fact table to something you were about to group anyway moves a billion rows so you can throw most of them away. Grouping first moves thousands.</p>
+</section>
+
+<section><h2>Check yourself</h2>
+<p>Answer out loud before revealing. Recognising an explanation is not the same as being able to produce one.</p>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">You add a join to a campaign dimension table to pick up the campaign name. Total revenue goes from $2M to $3.1M. Nothing else changed. What happened?</div>
+    <div class="hint">The join did exactly what joins do.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p><strong>Fan-out.</strong> The dimension table is not unique on <code>campaign_id</code>, so some impressions matched more than one row and were duplicated &mdash; and their revenue was counted once per duplicate.</p>
+<p>I would confirm it in one query: <code>SELECT campaign_id, count(*) FROM campaigns GROUP BY 1 HAVING count(*) &gt; 1</code>. The fact that revenue grew by roughly 55% rather than doubling tells me only some campaigns are affected, which fits a table that is one row per campaign <em>per version</em> or <em>per day</em>.</p>
+<p>The fix depends on what the extra rows mean. If the table is versioned, join on the full key &mdash; including the effective date &mdash; or select the current version first. If they are genuine accidental duplicates, deduplicate to one row per campaign before joining. What I would <em>not</em> do is wrap the result in <code>SELECT DISTINCT</code>, which hides the fan-out and breaks as soon as two real rows are legitimately identical.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">The dimension is small. Could you avoid the join entirely?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Often, yes &mdash; and it sidesteps the whole class of bug. If all you need is a label for display, attach it at the very end, after aggregating to one row per campaign: the join then happens against thousands of rows instead of a billion, so a fan-out would be obvious immediately and the cost is negligible. More generally, joining a dimension before aggregating is both the riskier and the more expensive order. Aggregate to your target grain first, then decorate.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">Why is <code>WHERE date(event_ts) = '2026-08-09'</code> slow on a table partitioned by <code>dt</code>, when <code>WHERE dt = '2026-08-09'</code> is fast?</div>
+    <div class="hint">Think about what the engine must know before it reads anything.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>Partition pruning happens <em>before</em> reading, by matching the predicate against directory names. <code>dt = '2026-08-09'</code> is a direct comparison on the partition column, so the engine reads one directory.</p>
+<p>Once the column is wrapped in a function, the engine can no longer reason backwards from the result to which directories could produce it &mdash; so it does the only safe thing: <strong>reads every partition</strong>, computes <code>date(event_ts)</code> for every row, and then discards almost all of them. The work is the same shape, but the scan is thousands of times larger.</p>
+<p>The fix is to leave the column bare and move the transformation to the literal side: a bounded range on the raw column, <code>event_ts &gt;= '2026-08-09' AND event_ts &lt; '2026-08-10'</code>, or a direct predicate on the partition column.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Does this apply to non-partition columns too?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>Yes, for the same reason at a smaller scale. Columnar formats keep min/max statistics per row group, and the reader skips a row group when the predicate cannot possibly be satisfied inside it. Wrapping the column in a function defeats that check as well, so you lose file-level skipping on top of partition pruning. It is also why an index in a transactional database goes unused the moment you compute on the indexed column &mdash; one rule, three places it shows up.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">A query using <code>WHERE device_id NOT IN (SELECT device_id FROM suppression_list)</code> returns zero rows, but you can see qualifying rows in the table. What is going on?</div>
+    <div class="hint">It is not a data problem and not a permissions problem.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p>The suppression list contains at least one <strong>NULL</strong>.</p>
+<p><code>NOT IN</code> expands to a chain of <code>&lt;&gt;</code> comparisons joined by <code>AND</code>. Comparing anything to NULL yields <em>unknown</em>, so the chain becomes <code>true AND true AND unknown</code> = unknown &mdash; and since SQL keeps only rows that are definitely true, every row is dropped. It returns nothing for any input, which is why it looks so much like a broken query rather than a logic error.</p>
+<p>The fix is <code>NOT EXISTS</code>, which is null-safe because it asks whether a matching row was found rather than comparing values. <code>WHERE NOT EXISTS (SELECT 1 FROM suppression_list s WHERE s.device_id = d.device_id)</code>. Adding <code>WHERE device_id IS NOT NULL</code> inside the subquery also works, but <code>NOT EXISTS</code> is the habit worth having &mdash; it does not depend on remembering the trap.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Why does the equivalent <code>IN</code> not have this problem?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>Because a single true is enough. <code>IN</code> is a chain of <code>OR</code>s, so as soon as one comparison is true the result is true regardless of any unknowns beside it &mdash; the NULL is simply never decisive. With <code>NOT IN</code> the chain is <code>AND</code>s, so <em>every</em> comparison must come back true, and one unknown poisons the whole expression. Same NULL, opposite outcome, purely because of how three-valued logic combines under <code>AND</code> versus <code>OR</code>.</p></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section>
+<div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+  <li>It runs <code>FROM</code> &rarr; <code>WHERE</code> &rarr; <code>GROUP BY</code> &rarr; <code>HAVING</code> &rarr; <code>SELECT</code> &rarr; <code>ORDER BY</code> &rarr; <code>LIMIT</code>. Aliases exist only from <code>SELECT</code> rightwards; <code>WHERE</code> filters rows, <code>HAVING</code> filters groups.</li>
+  <li>A join <strong>multiplies rows</strong>. Before every join ask how many right-hand rows can match one left-hand row; if it is more than one, your totals move.</li>
+  <li>State the <strong>grain</strong> &mdash; "one row per ..." &mdash; for every input and for your output. It is the cheapest bug-catcher there is.</li>
+  <li><strong>NULL is unknown</strong>, so comparisons return unknown, not false. Hence <code>IS NULL</code>, hence <code>NOT EXISTS</code> over <code>NOT IN</code>.</li>
+  <li>A right-side condition in <code>WHERE</code> turns a <code>LEFT JOIN</code> into an inner join. Put it in <code>ON</code>.</li>
+  <li>Window functions aggregate <strong>without collapsing rows</strong> &mdash; the tool for ranking, dedup, running totals, and neighbour comparisons.</li>
+</ol></div>
+<div class="flags"><div class="lab">Signs the model has not landed yet</div><ul>
+  <li>Reading a query top to bottom and expecting it to execute that way.</li>
+  <li>Thinking of a join as "adding columns" rather than matching and multiplying rows.</li>
+  <li>Reaching for <code>SELECT DISTINCT</code> to fix a row count &mdash; it hides a fan-out instead of explaining it.</li>
+  <li>Treating NULL as zero or empty string, then being surprised by an empty result.</li>
+  <li>Optimising the <code>SELECT</code> list when the query is scanning the entire table.</li>
+</ul></div>
+</section>
+
+<nav class="pager">
+<a href="index.html"><span>Back</span>All stages</a>
+<a class="nx" href="sql-at-scale.html"><span>Next</span>Stage 06 &middot; SQL that survives ten billion rows</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spark, from one machine to many &middot; Interview Stages</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#12141B; --panel:#1A1E28; --panel2:#222835; --line:#2E3545;
+  --ink:#E6E9F0; --dim:#99A1B3; --faint:#6B7385;
+  --hot:#F4A259; --cool:#4FD1C5; --violet:#A08CF0;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
+  align-items:center;gap:16px;justify-content:space-between}
+.home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none}
+.home:hover{color:var(--cool)}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.tally b{color:var(--hot);font-weight:500}
+
+/* ---- header ---- */
+header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
+  font-weight:700;letter-spacing:-.03em}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cool)}
+h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
+  letter-spacing:-.025em;margin-bottom:20px}
+.why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
+  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+
+/* ---- sections ---- */
+section{margin-bottom:52px}
+h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
+  margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
+h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
+  background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
+p{margin-bottom:15px;max-width:70ch}
+ul,ol{margin:0 0 16px 20px;max-width:70ch}
+li{margin-bottom:8px}
+code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
+  padding:2px 6px;border-radius:3px;color:var(--cool)}
+pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
+  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
+pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
+strong{color:#fff;font-weight:600}
+em{color:var(--violet);font-style:normal}
+a{color:var(--cool)}
+
+/* figure */
+figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
+  background:var(--panel);padding:20px 18px 14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--panel2);line-height:1.55}
+figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
+.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
+.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
+.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
+.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
+.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
+.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
+.svg-line{stroke:var(--line);stroke-width:1;fill:none}
+.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+
+/* first principles */
+.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
+  margin:22px 0;border-radius:3px;font-size:15px}
+.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
+.fp p{margin-bottom:10px}
+.fp p:last-child{margin-bottom:0}
+
+/* key fact */
+.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
+  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
+.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
+.k p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;
+  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+
+/* ---- pushback ---- */
+.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
+.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
+.pbhead h2{padding-left:0}
+.pbhead h2::before{display:none}
+.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
+
+.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
+  background:var(--panel);overflow:hidden}
+.pb.done{border-color:#3A4356}
+.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
+  flex-shrink:0;letter-spacing:.06em}
+.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
+.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
+.pb .body{padding:0 22px 20px 60px}
+@media(max-width:600px){.pb .body{padding-left:22px}}
+textarea{width:100%;background:var(--ground);border:1px solid var(--line);
+  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
+  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--hot)}
+textarea::placeholder{color:var(--faint)}
+.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
+  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
+  cursor:pointer;font-weight:600}
+button:hover{filter:brightness(1.1)}
+button.ghost{background:none;color:var(--faint);border-color:var(--line)}
+button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+
+.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.reveal.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
+.reveal p{font-size:15px}
+.reveal ul{font-size:15px}
+.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
+  border-left:2px solid var(--hot)}
+.esc .lab{color:var(--hot)}
+.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
+.esc .ans.on{display:block}
+.esc .ans p{font-size:14.5px;margin-bottom:10px}
+.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
+
+/* ---- closing ---- */
+.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
+.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:24px 26px;margin-bottom:24px}
+.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
+.sixty ol{margin:0 0 0 18px}
+.sixty li{margin-bottom:10px;font-size:15px}
+.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
+.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+.flags ul{margin:0 0 0 18px}
+.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
+
+nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
+  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
+nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
+nav.pager a:hover{color:var(--cool)}
+nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:4px}
+nav.pager .nx{text-align:right}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}}
+@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
+  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+</style>
+</head><body>
+<div class="bar"><div class="in">
+  <a class="home" href="index.html">&larr; All stages</a>
+  <div class="tally" id="tally"></div>
+</div></div>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow"><div class="stage">P1</div><div class="kicker">Primer &middot; before stage 03</div></div>
+  <h1>Spark, from one machine to many</h1>
+  <p class="why">Stages 03&ndash;05 assume you can already picture a cluster running your code. This builds that picture from nothing, with small numbers you can hold in your head. No prior Spark needed &mdash; read it once and the vocabulary stops being vocabulary.</p>
+  <div class="tags"><span class="tag">Primer</span><span class="tag">Read before 03&ndash;05</span><span class="tag">No prior Spark needed</span></div>
+</header>
+
+<section><h2>One machine, then many</h2>
+<p>You have a day of impressions &mdash; call it 1&nbsp;TB &mdash; and a laptop with 16&nbsp;GB of memory. You cannot load it. There are only two ways out, and Spark is the second one.</p>
+<p><strong>Read it in chunks on one machine.</strong> Works, but one CPU core does all the work, one chunk at a time.</p>
+<p><strong>Cut it into chunks and hand each to a different machine.</strong> Same chunks &mdash; but now hundreds of cores work at once. That is the whole idea. Everything else is detail about when the chunks have to talk to each other.</p>
+<p>A chunk has a name: a <strong>partition</strong>. Its size is chosen so that one CPU core can hold it and work on it alone &mdash; in practice a few hundred MB. So 1&nbsp;TB is not "one big job", it is roughly <strong>5,000 independent small jobs</strong>.</p>
+<div class="k"><b>The whole model in one sentence</b><p>Cut the data into independent chunks, do the same thing to every chunk in parallel, and move data between chunks only when the question forces you to. Everything expensive is that last part.</p></div>
+</section>
+
+<section><h2>Five words, each of which is a physical thing</h2>
+<p>The vocabulary is small, and every word maps to something real. Keep this concrete cluster in your head: <strong>20 executors, 4 cores each</strong>.</p>
+<table>
+<tr><th>Word</th><th>What it physically is</th><th>In our example</th></tr>
+<tr><td>Cluster</td><td>The set of machines you rented</td><td>20 machines</td></tr>
+<tr><td>Driver</td><td>One process that holds the plan and hands out work. Does not process your data.</td><td>1</td></tr>
+<tr><td>Executor</td><td>A process on a machine with its own memory, that actually processes data</td><td>20</td></tr>
+<tr><td>Core / slot</td><td>One thread inside an executor. Runs exactly one task at a time.</td><td>20 &times; 4 = <strong>80 slots</strong></td></tr>
+<tr><td>Task</td><td>The work of applying your code to <em>one partition</em></td><td>5,000 tasks</td></tr>
+</table>
+<p>Now the arithmetic that explains most tuning advice you will ever read. You have 5,000 tasks and 80 slots. Spark runs 80 at a time, so the stage takes about <strong>63 waves</strong>. If each task takes 10 seconds, the stage takes around ten minutes.</p>
+<figure><svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Eight tasks fed through three slots take three waves, with the last wave half empty.">
+  <text class="svg-l" x="0" y="14">8 TASKS (ONE PER PARTITION)</text>
+  <rect class="svg-box" x="0"   y="26" width="72" height="30"/><text class="svg-t" x="26" y="46">T1</text>
+  <rect class="svg-box" x="80"  y="26" width="72" height="30"/><text class="svg-t" x="106" y="46">T2</text>
+  <rect class="svg-box" x="160" y="26" width="72" height="30"/><text class="svg-t" x="186" y="46">T3</text>
+  <rect class="svg-box" x="240" y="26" width="72" height="30"/><text class="svg-t" x="266" y="46">T4</text>
+  <rect class="svg-box" x="320" y="26" width="72" height="30"/><text class="svg-t" x="346" y="46">T5</text>
+  <rect class="svg-box" x="400" y="26" width="72" height="30"/><text class="svg-t" x="426" y="46">T6</text>
+  <rect class="svg-box" x="480" y="26" width="72" height="30"/><text class="svg-t" x="506" y="46">T7</text>
+  <rect class="svg-box" x="560" y="26" width="72" height="30"/><text class="svg-t" x="586" y="46">T8</text>
+
+  <path class="svg-line" d="M316 62 L316 78"/>
+  <path class="svg-cool" d="M310 72 L316 80 L322 72"/>
+
+  <text class="svg-l" x="0" y="104">3 SLOTS (1 EXECUTOR &times; 3 CORES)</text>
+  <rect class="svg-cool" x="0"   y="116" width="150" height="30"/><text class="svg-t" x="52" y="136">core 1</text>
+  <rect class="svg-cool" x="160" y="116" width="150" height="30"/><text class="svg-t" x="212" y="136">core 2</text>
+  <rect class="svg-cool" x="320" y="116" width="150" height="30"/><text class="svg-t" x="372" y="136">core 3</text>
+
+  <text class="svg-s" x="0"   y="166">wave 1: T1 T2 T3</text>
+  <text class="svg-s" x="160" y="166">wave 2: T4 T5 T6</text>
+  <text class="svg-s" x="320" y="166">wave 3: T7 T8 &mdash;</text>
+  <path class="svg-dash" d="M470 116 L470 176"/>
+  <text class="svg-s" x="480" y="140">one slot idle in the</text>
+  <text class="svg-s" x="480" y="154">last wave: this is why</text>
+  <text class="svg-s" x="480" y="168">partitions &gt; cores</text>
+</svg>
+<figcaption><b>Tasks, slots, waves</b>Tasks queue through a fixed number of slots. If tasks do not divide evenly into slots, the final wave leaves cores idle &mdash; which is why you want several times more partitions than cores, not exactly as many.</figcaption></figure>
+<div class="fp"><b class="hdr">Reason it through</b><p>Why is the default of 200 shuffle partitions wrong for almost every real job? Run the arithmetic in both directions.</p>
+<p>Too few: with 200 partitions on 400 cores, half the cluster is idle no matter how much you pay. Worse, 1&nbsp;TB across 200 partitions is 5&nbsp;GB per task, which will not fit in the memory given to one core &mdash; so it spills to disk and the stage crawls.</p>
+<p>Too many: at 500,000 partitions each task handles 2&nbsp;MB, and the fixed per-task overhead &mdash; scheduling it, launching it, reporting it &mdash; starts to cost more than the work inside it.</p>
+<p>So the target is a small multiple of core count: enough tasks that every core stays busy and a slow one can be absorbed, few enough that overhead stays invisible. Then check the second constraint separately: whatever the count, one partition must fit in one task's memory.</p></div>
+</section>
+
+<section><h2>Nothing runs until you ask for an answer</h2>
+<p>This surprises everyone once. Read it as four lines that build a plan and one line that executes it.</p>
+<table>
+<tr><th>Line</th><th>What happens</th></tr>
+<tr><td><code>df = spark.read.parquet(".../impressions")</code></td><td>Nothing. Records the intent.</td></tr>
+<tr><td><code>df = df.filter(col("dt") == "2026-08-09")</code></td><td>Nothing.</td></tr>
+<tr><td><code>df = df.groupBy("campaign_id").count()</code></td><td>Nothing.</td></tr>
+<tr><td><code>df.write.parquet(".../out")</code></td><td><strong>Everything.</strong></td></tr>
+</table>
+<p>Operations that describe a transformation are <em>lazy</em>; only an <strong>action</strong> &mdash; <code>write</code>, <code>collect</code>, <code>count</code>, <code>show</code> &mdash; triggers execution.</p>
+<p>This is not laziness for its own sake. Because Spark sees the whole recipe before it starts, it can throw work away: read only the <code>dt=2026-08-09</code> directory instead of the whole table, and read only the two columns you actually used instead of all 90. Neither optimisation is possible if it has to run each line as you type it.</p>
+<p>Two consequences to expect:</p>
+<p><strong>Errors appear at the wrong line.</strong> A typo in the <code>filter</code> surfaces at the <code>write</code>, because that is when it ran.</p>
+<p><strong>Asking twice costs twice.</strong> Calling <code>df.count()</code> and then <code>df.write(...)</code> re-reads the source from scratch both times. Spark does not remember results unless you tell it to with <code>cache()</code>.</p>
+</section>
+
+<section><h2>The one question that decides everything: does this row need to meet another row?</h2>
+<p>You now have every idea you need to predict what a job will cost. Take any operation and ask that single question.</p>
+<p><strong>"No" &mdash; the chunk can answer alone.</strong> <code>filter</code>, <code>select</code>, <code>withColumn</code>: to decide whether a row survives a filter, you need that row and nothing else. Every partition is handled independently, in place, no data moves. These are called <em>narrow</em> operations, and they are nearly free &mdash; Spark even fuses a whole chain of them into one pass.</p>
+<p><strong>"Yes" &mdash; rows must be brought together.</strong> <code>groupBy</code>, <code>join</code>, <code>distinct</code>, <code>orderBy</code>: to count impressions per campaign, every row for campaign 42 must end up on the same machine. They start scattered across 5,000 partitions. So they have to move. These are <em>wide</em> operations, and that movement is the <strong>shuffle</strong>.</p>
+<div class="k"><b>The sentence to keep</b><p>A shuffle is the price of making related rows meet. If you can answer the question without related rows meeting, it is cheap. If you cannot, it is expensive, and no amount of cluster is going to change that.</p></div>
+<table>
+<tr><th>Operation</th><th>Does a row need to meet another?</th><th>Shuffle?</th></tr>
+<tr><td><code>filter</code>, <code>select</code>, <code>withColumn</code></td><td>No</td><td>No</td></tr>
+<tr><td><code>union</code></td><td>No &mdash; it just stacks partitions together</td><td>No</td></tr>
+<tr><td><code>groupBy</code>, <code>agg</code></td><td>Yes &mdash; all rows of a key</td><td>Yes</td></tr>
+<tr><td><code>join</code></td><td>Yes &mdash; matching keys from both sides</td><td>Yes (unless one side is broadcast)</td></tr>
+<tr><td><code>distinct</code></td><td>Yes &mdash; duplicates could be anywhere</td><td>Yes</td></tr>
+<tr><td><code>orderBy</code></td><td>Yes &mdash; a global order needs global comparison</td><td>Yes</td></tr>
+</table>
+<figure><svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" role="img"
+  aria-label="Narrow operations keep data in place; wide operations move records between partitions.">
+  <text class="svg-l" x="0" y="14">NARROW &mdash; FILTER</text>
+  <rect class="svg-box" x="0"  y="26" width="80" height="34"/><text class="svg-t" x="26" y="48">P1</text>
+  <rect class="svg-box" x="0"  y="72" width="80" height="34"/><text class="svg-t" x="26" y="94">P2</text>
+  <rect class="svg-box" x="0"  y="118" width="80" height="34"/><text class="svg-t" x="26" y="140">P3</text>
+  <path class="svg-cool" d="M88 43 L128 43"/><path class="svg-cool" d="M122 38 L130 43 L122 48"/>
+  <path class="svg-cool" d="M88 89 L128 89"/><path class="svg-cool" d="M122 84 L130 89 L122 94"/>
+  <path class="svg-cool" d="M88 135 L128 135"/><path class="svg-cool" d="M122 130 L130 135 L122 140"/>
+  <rect class="svg-box" x="138" y="26" width="80" height="34"/><text class="svg-t" x="164" y="48">P1'</text>
+  <rect class="svg-box" x="138" y="72" width="80" height="34"/><text class="svg-t" x="164" y="94">P2'</text>
+  <rect class="svg-box" x="138" y="118" width="80" height="34"/><text class="svg-t" x="164" y="140">P3'</text>
+  <text class="svg-s" x="0" y="176">straight through, nothing crosses</text>
+
+  <path class="svg-dash" d="M320 10 L320 180"/>
+
+  <text class="svg-l" x="380" y="14">WIDE &mdash; GROUP BY</text>
+  <rect class="svg-box" x="380" y="26" width="80" height="34"/><text class="svg-t" x="406" y="48">P1</text>
+  <rect class="svg-box" x="380" y="72" width="80" height="34"/><text class="svg-t" x="406" y="94">P2</text>
+  <rect class="svg-box" x="380" y="118" width="80" height="34"/><text class="svg-t" x="406" y="140">P3</text>
+  <path class="svg-hot" d="M468 43 L608 43"/>
+  <path class="svg-hot" d="M468 43 L608 89"/>
+  <path class="svg-hot" d="M468 89 L608 43"/>
+  <path class="svg-hot" d="M468 89 L608 135"/>
+  <path class="svg-hot" d="M468 135 L608 89"/>
+  <path class="svg-hot" d="M468 135 L608 135"/>
+  <rect class="svg-box" x="616" y="26" width="80" height="34"/><text class="svg-t" x="640" y="48">key A</text>
+  <rect class="svg-box" x="616" y="72" width="80" height="34"/><text class="svg-t" x="640" y="94">key B</text>
+  <rect class="svg-box" x="616" y="118" width="80" height="34"/><text class="svg-t" x="640" y="140">key C</text>
+  <text class="svg-s" x="380" y="176">every partition may feed every other &mdash; all-to-all</text>
+</svg>
+<figcaption><b>Narrow versus wide</b>The left side never touches the network. The right side is all-to-all: each destination may need records from every source. That fan of lines is the entire cost difference.</figcaption></figure>
+</section>
+
+<section><h2>What the shuffle actually does, in four steps</h2>
+<p>When you can narrate this, most Spark questions answer themselves.</p>
+<p><strong>1. Partition.</strong> Each task takes its output rows and sorts them into buckets &mdash; one bucket per destination partition &mdash; by hashing the key. Campaign 42 always hashes to the same bucket number, so it always lands in the same place.</p>
+<p><strong>2. Write to local disk.</strong> Buckets are written to the executor's own disk, not sent directly. If the in-memory buffer fills first, it spills early. <strong>Spill is the single most common cause of a slow stage.</strong></p>
+<p><strong>3. Wait.</strong> Nothing on the other side starts until <em>every</em> task has finished writing. This is a hard barrier.</p>
+<p><strong>4. Fetch and merge.</strong> Each destination task pulls its bucket from every source executor over the network, merges the streams, and only then runs your actual aggregation.</p>
+<div class="fp"><b class="hdr">Reason it through</b><p>Both of the surprising parts follow from one fact: a task computing the total for campaign 42 cannot emit an answer until it is certain no more rows for campaign 42 are coming. Partial knowledge of a key is useless.</p>
+<p>That forces the barrier &mdash; the receiver has to wait for every sender, so <strong>one slow task delays the entire stage</strong>, and adding machines does not help. It also forces materialisation: the sender cannot stream rows to a receiver that is not ready to consume them, so it parks them somewhere durable first, and local disk is the cheapest place. Which in turn explains the third surprise: <strong>if an executor dies after writing its buckets, that output is gone</strong> and those tasks must be re-run.</p>
+<p>It also tells you the cost is not CPU. Memory access is ~100&nbsp;ns; local SSD is ~100&nbsp;&micro;s; a network round trip is longer still. A shuffle is disk-bound and network-bound, which is why "the cluster is not busy but the job is slow" is such a common and confusing symptom.</p></div>
+<p>One consequence worth knowing early: <code>groupByKey</code> ships every raw row across the network, while <code>reduceByKey</code> and the DataFrame <code>agg</code> functions add up what they can <em>before</em> sending, so only one partial result per key travels. Same answer, often an order of magnitude less traffic. The DataFrame API does this for you &mdash; which is precisely why a hand-written Python UDF that does its own aggregation is so often the reason a job is slow.</p>
+</section>
+
+<section><h2>Three numbers tell you what is wrong</h2>
+<p>Open the Spark UI, click the slow stage, and look at the summary metrics table &mdash; it shows min, median and max <em>across tasks</em>. Almost every diagnosis is a comparison in that table.</p>
+<table>
+<tr><th>What you see</th><th>What it means</th><th>First move</th></tr>
+<tr><td>Max task time far above median &mdash; 199 tasks in 30s, one in 40 minutes</td><td><strong>Skew.</strong> One key has far more rows than the rest.</td><td>Count the key distribution. Adding executors will not help &mdash; it is one task on one core.</td></tr>
+<tr><td>Spill (memory / disk) non-zero across most tasks</td><td><strong>Partitions too big</strong> for the memory each task has.</td><td>Raise the partition count; drop unused columns before the shuffle.</td></tr>
+<tr><td>Large shuffle read, all tasks even</td><td>Honest volume. Nothing is broken; you are simply moving a lot.</td><td>Move less: filter earlier, aggregate earlier, select fewer columns.</td></tr>
+</table>
+<p>In adtech, skew is not an edge case &mdash; it is the default. A handful of campaigns and publishers carry a large share of traffic, and a null or sentinel device ID can be the single biggest "key" in the table.</p>
+</section>
+
+<section><h2>Put it together</h2>
+<p>The pipeline ran in 12 minutes on Monday and 3 hours on Tuesday, with no code change. Reason it out in the order the model suggests.</p>
+<p><strong>Is it reading more?</strong> Check input size. Same. So it is not volume.</p>
+<p><strong>Is every task slow, or one task?</strong> Open the slow stage. 2,000 tasks finish in under a minute; one has been running for two hours. That single comparison eliminates almost everything &mdash; it is not cluster size, not memory settings, not the query shape.</p>
+<p><strong>One task means one key.</strong> Count the join key on a sample. <code>device_id = '00000000-0000-0000'</code> is 40% of Tuesday's rows: an upstream SDK started sending a placeholder.</p>
+<p><strong>Fix the cause.</strong> Those rows should not be joined at all &mdash; filter them. Not "add executors", which would have changed nothing, because 40% of the data was queued behind a single core.</p>
+<div class="k"><b>The habit</b><p>Symptom &rarr; which number is abnormal &rarr; what physically produces that number &rarr; fix. Never symptom &rarr; fix. The middle two steps are the entire skill.</p></div>
+</section>
+
+<section><h2>Check yourself</h2>
+<p>Answer out loud before revealing. Recognising an explanation is not the same as being able to produce one.</p>
+<div class="pb" id="pb1">
+  <div class="q"><div class="n">01</div><div>
+    <div class="qt">Your cluster has 400 cores and <code>spark.sql.shuffle.partitions</code> is left at its default. What goes wrong, and what would you set it to?</div>
+    <div class="hint">Two separate things go wrong. Naming only one is a half answer.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(1,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(1,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv1">
+      <div class="lab">What a strong answer covers</div>
+      <p>The default is <strong>200</strong>, so after any shuffle there are only 200 tasks for 400 cores. <strong>Half the cluster sits idle</strong> &mdash; you are paying for 400 cores and using 200.</p>
+<p>Second, and usually worse: fewer partitions means each one is bigger. On 1&nbsp;TB that is 5&nbsp;GB per task, far more than the memory one core gets, so tasks <strong>spill to disk</strong> and the stage slows down for a reason that has nothing to do with idle cores.</p>
+<p>I would set it to roughly <strong>2&ndash;4&times; the core count</strong> &mdash; around 800&ndash;1,600 here &mdash; then check the Spark UI: each task should handle something in the low hundreds of MB with no spill. The extra factor over 1&times; matters because it lets a slow task be absorbed instead of leaving the whole cluster waiting on one straggler.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Why not set it to 100,000 and be safe?</p>
+        <button class="ghost" id="eb1" onclick="esc(1)">Reveal</button>
+        <div class="ans" id="es1"><p>Because per-task overhead is fixed &mdash; scheduling, launching, and reporting each task costs the same whether it processes 2&nbsp;MB or 200&nbsp;MB. At 100,000 partitions the useful work per task shrinks until the bookkeeping dominates, and the driver becomes a bottleneck tracking them all. There is a floor on useful partition size for the same reason there is a ceiling.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb2">
+  <div class="q"><div class="n">02</div><div>
+    <div class="qt">A colleague says <code>df.count()</code> is a good way to check their filter worked, then runs <code>df.write(...)</code>. Why is that slower than they expect?</div>
+    <div class="hint">The answer is one word, but the explanation is the point.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(2,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(2,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv2">
+      <div class="lab">What a strong answer covers</div>
+      <p>Laziness. <code>df</code> is not data, it is a <strong>recipe</strong>. <code>count()</code> is an action, so it executes the whole recipe &mdash; reading the source, applying the filter &mdash; to produce a number, then throws the rows away. <code>write</code> is another action, so it executes the entire recipe again from the source.</p>
+<p>They paid for the read and the filter twice. If the plan contains a shuffle, they paid for that twice too.</p>
+<p>The fix is <code>df.cache()</code> (or <code>persist()</code>) before the first action, which tells Spark to keep the computed rows in memory so the second action reuses them &mdash; worth it when a result is used more than once, and wasteful when it is not.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">So should I just cache everything?</p>
+        <button class="ghost" id="eb2" onclick="esc(2)">Reveal</button>
+        <div class="ans" id="es2"><p>No &mdash; cached data occupies executor memory that execution would otherwise use, so over-caching causes the spilling you were trying to avoid. Cache a result that is genuinely reused, ideally after the expensive narrowing step (post-filter, post-aggregation) rather than the raw source. And for a long chain where the concern is recovery rather than reuse, <code>checkpoint()</code> is the different tool: it writes to reliable storage and truncates the lineage, so a lost executor does not replay the whole pipeline.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb" id="pb3">
+  <div class="q"><div class="n">03</div><div>
+    <div class="qt">Which of these cause a shuffle, and why: <code>filter</code>, <code>withColumn</code>, <code>union</code>, <code>distinct</code>, <code>orderBy</code>?</div>
+    <div class="hint">Apply the one question to each. One of these catches people out.</div>
+  </div></div>
+  <div class="body">
+    <textarea placeholder="Say it out loud first, then type the short version. Committing badly still beats reading passively."></textarea>
+    <div class="btns">
+      <button onclick="lock(3,false)">Lock in answer</button>
+      <button class="ghost" onclick="lock(3,true)">Skip &amp; reveal</button>
+    </div>
+    <div class="reveal" id="rv3">
+      <div class="lab">What a strong answer covers</div>
+      <p><code>filter</code> and <code>withColumn</code>: <strong>no</strong>. Each row is decided using only itself, so every partition proceeds independently.</p>
+<p><code>union</code>: <strong>no</strong> &mdash; this is the one people get wrong. Union just stacks the two sets of partitions together; no row needs to meet any other row, so nothing moves. (<code>union</code> also keeps duplicates, which is exactly why it is cheap.)</p>
+<p><code>distinct</code>: <strong>yes</strong>. A duplicate of a row in partition 1 could be sitting in partition 5,000, and the only way to know is to bring equal values together.</p>
+<p><code>orderBy</code>: <strong>yes</strong>. A global ordering requires globally comparing rows, so Spark range-partitions the data &mdash; sampling to find boundaries, then moving every row into the right range.</p>
+      <div class="esc">
+        <div class="lab">Then they push again</div>
+        <p style="margin-bottom:0;color:#fff">Then why is <code>union</code> followed by <code>distinct</code> often given as an anti-pattern?</p>
+        <button class="ghost" id="eb3" onclick="esc(3)">Reveal</button>
+        <div class="ans" id="es3"><p>Because the pairing hides the cost. <code>union</code> is free and <code>distinct</code> is a full shuffle, so writing <code>a.union(b).distinct()</code> reads as one cheap-looking line while the second half does all the work &mdash; and in SQL, <code>UNION</code> does exactly this implicitly, where <code>UNION ALL</code> would not. If you do not actually need deduplication, <code>UNION ALL</code> removes a shuffle for free. If you do need it, it is honest work &mdash; just know that is where the time went.</p></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section>
+<div class="sixty"><div class="lab">Say it in sixty seconds</div><ol>
+  <li>Data is cut into <strong>partitions</strong>; a <strong>task</strong> applies your code to one partition; tasks run on <strong>slots</strong> (executor cores), several waves deep.</li>
+  <li>Nothing runs until an <strong>action</strong>. That is what lets Spark skip columns and directories &mdash; and why an error appears at the write.</li>
+  <li>Ask of any operation: <strong>does a row need to meet another row?</strong> No &rarr; narrow, free. Yes &rarr; wide, shuffle.</li>
+  <li>A shuffle is: bucket by hash &rarr; write to local disk &rarr; <strong>global barrier</strong> &rarr; all-to-all fetch &rarr; merge. Disk- and network-bound, not CPU-bound.</li>
+  <li>Diagnose from the task distribution: <strong>max far above median</strong> is skew; <strong>spill everywhere</strong> is partitions too big; <strong>even and large</strong> is honest volume.</li>
+</ol></div>
+<div class="flags"><div class="lab">Signs the model has not landed yet</div><ul>
+  <li>Saying Spark is fast "because it is in memory" &mdash; the interesting cost is disk and network at the shuffle.</li>
+  <li>Reaching for more executors before knowing whether one task or all tasks are slow.</li>
+  <li>Treating <code>df</code> as data rather than a recipe &mdash; the source of most surprise re-computation.</li>
+  <li>Mixing up in-memory partitions (units of parallelism) with on-disk partition directories (<code>dt=.../hour=...</code>).</li>
+  <li>Explaining a shuffle as an arrow on a diagram rather than as write-to-disk, wait, fetch, merge.</li>
+</ul></div>
+</section>
+
+<nav class="pager">
+<a href="index.html"><span>Back</span>All stages</a>
+<a class="nx" href="spark-execution.html"><span>Next</span>Stage 03 &middot; From DAG to shuffle</a>
+</nav>
+</div>
+<script>
+var TOTAL=0,DONE=0;
+function tick(){var t=document.getElementById('tally');
+  if(t)t.innerHTML='<b>'+DONE+'</b> / '+TOTAL+' answered';}
+function lock(i,skipped){
+  var c=document.getElementById('pb'+i);
+  var r=document.getElementById('rv'+i);
+  if(!r.classList.contains('on')){r.classList.add('on');c.classList.add('done');
+    if(!skipped){DONE++;tick();}}
+  r.scrollIntoView({block:'nearest'});
+}
+function esc(i){var e=document.getElementById('es'+i);e.classList.add('on');
+  var b=document.getElementById('eb'+i); if(b) b.style.display='none';}
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL=document.querySelectorAll('.pb').length;tick();});
+</script>
+</body></html>

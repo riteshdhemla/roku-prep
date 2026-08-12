@@ -6,6 +6,17 @@ written the way an interviewer actually pushes.
 
 Start at `index.html`.
 
+## Primers
+
+Two optional on-ramps for the Spark and SQL tracks, written intuition-first for readers who
+find those stages assume too much. Each builds the mental model from scratch with small
+concrete numbers, then ends in three self-check questions.
+
+| # | Page | Topic |
+|---|---|---|
+| P1 | `spark-foundations.html` | Spark, from one machine to many — read before stage 03 |
+| P2 | `sql-foundations.html` | SQL, in the order the engine runs it — read before stage 06 |
+
 ## Stages
 
 | # | Page | Topic |
