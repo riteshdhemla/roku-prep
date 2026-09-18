@@ -1,18 +1,19 @@
-# Interview Stages — CTV data & AI systems
+# 45-Day Prep Plan — with the Roku CTV study site
 
-An eighteen-stage study site for Roku data/AI systems interview prep, plus the 45-day prep
-plan the stages sit inside. Each stage covers one topic grounded in Roku's CTV platform rather
-than generic examples, and ends in pushbacks written the way an interviewer actually pushes.
+The 45-day senior MLE prep plan is the site root. The eighteen-stage Roku study site it was
+built around now lives under `backup/`, unchanged and still published.
 
-Start at `index.html`.
+```
+index.html          the prep plan, with progress tracking
+backup/index.html   the Roku study site index
+backup/*.html       18 stages + 2 primers
+```
+
+Start at `index.html`. It links into `backup/index.html`, and that page links back.
 
 ## Prep plan
 
-| # | Page | Topic |
-|---|---|---|
-| — | `prep-plan.html` | 45-day senior MLE prep plan, with progress tracking |
-
-The plan page carries the full schedule — seven components, 45 days, the sixteen designs, the
+`index.html` carries the full schedule — seven components, 45 days, the sixteen designs, the
 sixteen LLM topics, the twelve behavioral stories, the simulations and mock loops — and renders
 every one of them as a checkbox. 286 in total, grouped into ten progress meters plus a running
 total in the top bar.
@@ -32,38 +33,39 @@ concrete numbers, then ends in three self-check questions.
 
 | # | Page | Topic |
 |---|---|---|
-| P1 | `spark-foundations.html` | Spark, from one machine to many — read before stage 03 |
-| P2 | `sql-foundations.html` | SQL, in the order the engine runs it — read before stage 06 |
+| P1 | `backup/spark-foundations.html` | Spark, from one machine to many — read before stage 03 |
+| P2 | `backup/sql-foundations.html` | SQL, in the order the engine runs it — read before stage 06 |
 
 ## Stages
 
 | # | Page | Topic |
 |---|---|---|
-| 01 | `ctv-ecosystem.html` | How a CTV ad actually gets served |
-| 02 | `roku-platform.html` | What makes Roku's data different |
-| 03 | `spark-execution.html` | From DAG to shuffle |
-| 04 | `spark-performance.html` | Memory, executors, and the knobs that matter |
-| 05 | `spark-streaming.html` | Streaming impressions without lying about time |
-| 06 | `sql-at-scale.html` | SQL that survives ten billion rows |
-| 07 | `sql-ctv-cookbook.html` | The CTV query cookbook |
-| 08 | `query-performance.html` | Reading the plan before blaming the warehouse |
-| 09 | `storage-and-modeling.html` | Files, formats, and tables at ten billion rows a day |
-| 10 | `identity-graphs.html` | Resolving who is who, at a billion edges |
-| 11 | `sketches.html` | Counting without counting |
-| 12 | `concurrency-reliability.html` | Two kinds of concurrency, one kind of failure |
-| 13 | `ml-fundamentals.html` | ML fundamentals as trade-offs, not definitions |
-| 14 | `feature-pipelines.html` | From raw beacons to a served feature |
-| 15 | `agentic-systems.html` | Agents that someone has to trust on Monday |
-| 16 | `measurement.html` | Numbers someone will argue with |
-| 17 | `coding-patterns.html` | The eight problems, in their data-shaped form |
-| 18 | `design-framework.html` | Driving the room when the question is vague |
+| 01 | `backup/ctv-ecosystem.html` | How a CTV ad actually gets served |
+| 02 | `backup/roku-platform.html` | What makes Roku's data different |
+| 03 | `backup/spark-execution.html` | From DAG to shuffle |
+| 04 | `backup/spark-performance.html` | Memory, executors, and the knobs that matter |
+| 05 | `backup/spark-streaming.html` | Streaming impressions without lying about time |
+| 06 | `backup/sql-at-scale.html` | SQL that survives ten billion rows |
+| 07 | `backup/sql-ctv-cookbook.html` | The CTV query cookbook |
+| 08 | `backup/query-performance.html` | Reading the plan before blaming the warehouse |
+| 09 | `backup/storage-and-modeling.html` | Files, formats, and tables at ten billion rows a day |
+| 10 | `backup/identity-graphs.html` | Resolving who is who, at a billion edges |
+| 11 | `backup/sketches.html` | Counting without counting |
+| 12 | `backup/concurrency-reliability.html` | Two kinds of concurrency, one kind of failure |
+| 13 | `backup/ml-fundamentals.html` | ML fundamentals as trade-offs, not definitions |
+| 14 | `backup/feature-pipelines.html` | From raw beacons to a served feature |
+| 15 | `backup/agentic-systems.html` | Agents that someone has to trust on Monday |
+| 16 | `backup/measurement.html` | Numbers someone will argue with |
+| 17 | `backup/coding-patterns.html` | The eight problems, in their data-shaped form |
+| 18 | `backup/design-framework.html` | Driving the room when the question is vague |
 
 Every stage links to the next one, and stage 18 links back to the index.
 
 ## Running it
 
 Static HTML with no build step and no dependencies — each page carries its own styles inline.
-Open `index.html` directly, or serve the directory:
+Open `index.html` directly, or serve the repository root (not `backup/`, so the links between
+the two levels resolve):
 
 ```
 python3 -m http.server 8000
@@ -79,8 +81,9 @@ offline.
 or `claude/web-pages-repo-push-cby8qx`, and can also be run manually from the Actions tab. All
 links are relative, so the site works served from the `/roku-prep/` subpath.
 
-The whole repo root is the artifact, so every Roku stage page, both primers and the prep plan
-are published together — nothing is built, filtered or transformed on the way out.
+The whole repo root is the artifact, so the prep plan and everything under `backup/` publish
+together — nothing is built, filtered or transformed on the way out. The published URLs are
+`/roku-prep/` for the plan and `/roku-prep/backup/` for the study site.
 
 `configure-pages` runs with `enablement: true`, so it turns Pages on by itself — no manual
 Settings step. That part now works: the repository became eligible and run #5 deployed
