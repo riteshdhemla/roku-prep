@@ -76,8 +76,8 @@ offline.
 ## Deployment
 
 `.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to `main`
-or to either of the two `claude/*` working branches, and can also be run manually from the
-Actions tab. All links are relative, so the site works served from the `/roku-prep/` subpath.
+or `claude/web-pages-repo-push-cby8qx`, and can also be run manually from the Actions tab. All
+links are relative, so the site works served from the `/roku-prep/` subpath.
 
 The whole repo root is the artifact, so every Roku stage page, both primers and the prep plan
 are published together — nothing is built, filtered or transformed on the way out.
@@ -96,7 +96,10 @@ A push from a branch outside that policy starts the run, holds it at `waiting`, 
 in a couple of seconds with no step logs — the job never begins, so there is nothing to debug
 in the log output.
 
-Only `claude/web-pages-repo-push-cby8qx` is currently allowed. To let another branch publish,
-add it under **Settings → Environments → github-pages → Deployment branches**, or merge the
-branch into one that is already allowed.
+Only `claude/web-pages-repo-push-cby8qx` is currently allowed, which is why it is the only
+working branch in the trigger list. Adding a branch to `on.push.branches` without also adding
+it to the environment does nothing useful: it just produces a red run on every push. To let
+another branch publish, add it under **Settings → Environments → github-pages → Deployment
+branches** *and* to the trigger list. Otherwise, merge into a branch that is already allowed —
+that is the normal path, and it is how work reaches the published site.
 

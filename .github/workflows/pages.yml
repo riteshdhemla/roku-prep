@@ -3,7 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - claude/github-pages-roku-docs-ie78cb
+      # Only branches the github-pages environment permits belong here; a push
+      # from any other branch fails the run at the environment gate.
       - claude/web-pages-repo-push-cby8qx
       - main
   workflow_dispatch:
