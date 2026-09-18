@@ -1,10 +1,28 @@
 # Interview Stages — CTV data & AI systems
 
-An eighteen-stage study site for Roku data/AI systems interview prep. Each stage covers one
-topic grounded in Roku's CTV platform rather than generic examples, and ends in pushbacks
-written the way an interviewer actually pushes.
+An eighteen-stage study site for Roku data/AI systems interview prep, plus the 45-day prep
+plan the stages sit inside. Each stage covers one topic grounded in Roku's CTV platform rather
+than generic examples, and ends in pushbacks written the way an interviewer actually pushes.
 
 Start at `index.html`.
+
+## Prep plan
+
+| # | Page | Topic |
+|---|---|---|
+| — | `prep-plan.html` | 45-day senior MLE prep plan, with progress tracking |
+
+The plan page carries the full schedule — seven components, 45 days, the sixteen designs, the
+sixteen LLM topics, the twelve behavioral stories, the simulations and mock loops — and renders
+every one of them as a checkbox. 286 in total, grouped into ten progress meters plus a running
+total in the top bar.
+
+Ticks are written to `localStorage` under the key `roku-prep.plan45.v1`, so progress is
+**per-browser and per-device**: it survives reloads and redeploys, but does not sync between
+machines and is lost if site data is cleared. There is no account and nothing leaves the
+browser. Every storage access is wrapped in `try`/`catch`, so the page still renders in private
+mode or with storage blocked — it simply stops remembering. The `Reset` button in the top bar
+clears every tick after a confirmation.
 
 ## Primers
 
@@ -57,9 +75,12 @@ offline.
 
 ## Deployment
 
-`.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to the
-default branch, and can also be run manually from the Actions tab. All links are relative, so
-the site works served from the `/roku-prep/` subpath.
+`.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to `main`
+or to either of the two `claude/*` working branches, and can also be run manually from the
+Actions tab. All links are relative, so the site works served from the `/roku-prep/` subpath.
+
+The whole repo root is the artifact, so every Roku stage page, both primers and the prep plan
+are published together — nothing is built, filtered or transformed on the way out.
 
 `configure-pages` runs with `enablement: true`, so it turns Pages on by itself once the
 repository is eligible — no manual Settings step.
