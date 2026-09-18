@@ -2,7 +2,8 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Interview Stages &middot; CTV data &amp; AI systems</title>
+<title>45-Day Senior MLE Prep Plan &middot; tracked</title>
+<meta name="description" content="The 45-day senior MLE interview prep plan, with a checklist that tracks progress in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,291 +20,1009 @@
 html{scroll-behavior:smooth}
 body{background:var(--ground);color:var(--ink);font-family:var(--body);
   font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
-.wrap{max-width:820px;margin:0 auto;padding:0 24px 120px}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px 120px}
 
 /* ---- top bar ---- */
-.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.92);
+.bar{position:sticky;top:0;z-index:40;background:rgba(18,20,27,.94);
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.bar .in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;
-  align-items:center;gap:16px;justify-content:space-between}
+.bar .in{max-width:880px;margin:0 auto;padding:10px 24px;display:flex;
+  align-items:center;gap:14px;justify-content:space-between}
 .home{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim);text-decoration:none}
+  text-transform:uppercase;color:var(--dim);text-decoration:none;white-space:nowrap}
 .home:hover{color:var(--cool)}
-.tally{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.barright{display:flex;align-items:center;gap:12px;min-width:0;flex:1;justify-content:flex-end}
+.barbar{flex:0 1 200px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.barbar i{display:block;height:100%;width:0;background:var(--cool);
+  transition:width .25s ease}
+.tally{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap}
 .tally b{color:var(--hot);font-weight:500}
+.rst{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:1px solid var(--line);color:var(--faint);padding:4px 9px;
+  border-radius:3px;cursor:pointer}
+.rst:hover{color:var(--hot);border-color:var(--hot)}
 
 /* ---- header ---- */
-header.top{padding:64px 0 8px;border-bottom:1px solid var(--line);margin-bottom:48px}
-.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
-.stage{font-family:var(--mono);font-size:52px;line-height:1;color:var(--line);
-  font-weight:700;letter-spacing:-.03em}
+header.top{padding:60px 0 8px;border-bottom:1px solid var(--line);margin-bottom:44px}
+.eyebrow{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;flex-wrap:wrap}
 .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--cool)}
 h1{font-family:var(--disp);font-size:42px;line-height:1.1;font-weight:600;
   letter-spacing:-.025em;margin-bottom:20px}
 .why{font-size:18px;color:var(--dim);max-width:66ch;margin-bottom:26px}
-.tags{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:34px}
-.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:4px 10px;
-  border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+.stats{display:flex;flex-wrap:wrap;gap:30px;padding:22px 0 34px}
+.stat b{display:block;font-family:var(--mono);font-size:26px;color:var(--hot);font-weight:600}
+.stat span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--faint)}
+
+/* ---- nav ---- */
+.toc{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:46px}
+.toc a{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;padding:5px 10px;
+  border:1px solid var(--line);border-radius:3px;color:var(--dim);text-decoration:none}
+.toc a:hover{color:var(--cool);border-color:var(--cool)}
 
 /* ---- sections ---- */
-section{margin-bottom:52px}
+section{margin-bottom:56px;scroll-margin-top:70px}
 h2{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.015em;
   margin-bottom:18px;padding-left:18px;position:relative;line-height:1.25}
 h2::before{content:"";position:absolute;left:0;top:.42em;width:6px;height:6px;
   background:var(--cool);box-shadow:0 10px 0 var(--line),0 20px 0 var(--line)}
-h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:26px 0 10px;color:var(--ink)}
-p{margin-bottom:15px;max-width:70ch}
-ul,ol{margin:0 0 16px 20px;max-width:70ch}
+h3{font-family:var(--disp);font-size:17px;font-weight:600;margin:28px 0 12px;color:var(--ink)}
+p{margin-bottom:15px;max-width:72ch;color:var(--dim)}
+p.lead{color:var(--ink)}
+ul,ol{margin:0 0 16px 20px;max-width:72ch;color:var(--dim)}
 li{margin-bottom:8px}
+strong{color:var(--ink);font-weight:600}
+em{color:var(--ink);font-style:italic}
 code{font-family:var(--mono);font-size:.86em;background:var(--panel2);
   padding:2px 6px;border-radius:3px;color:var(--cool)}
-pre{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--violet);
-  padding:16px 18px;overflow-x:auto;margin-bottom:18px;border-radius:3px}
-pre code{background:none;padding:0;color:var(--ink);font-size:13px;line-height:1.6}
-strong{color:#fff;font-weight:600}
-em{color:var(--violet);font-style:normal}
 a{color:var(--cool)}
 
-/* figure */
-figure{margin:26px 0;border:1px solid var(--line);border-radius:4px;
-  background:var(--panel);padding:20px 18px 14px}
-figure svg{width:100%;height:auto;display:block}
-figcaption{font-size:13.5px;color:var(--dim);margin-top:14px;padding-top:12px;
-  border-top:1px solid var(--panel2);line-height:1.55}
-figcaption b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--cool);display:block;margin-bottom:5px;font-weight:500}
-.svg-l{font-family:var(--mono);font-size:11px;fill:var(--dim)}
-.svg-t{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
-.svg-s{font-family:var(--mono);font-size:9.5px;fill:var(--faint)}
-.svg-box{fill:var(--panel2);stroke:var(--line);stroke-width:1}
-.svg-hot{fill:none;stroke:var(--hot);stroke-width:1.5}
-.svg-cool{fill:none;stroke:var(--cool);stroke-width:1.5}
-.svg-vio{fill:none;stroke:var(--violet);stroke-width:1.5}
-.svg-line{stroke:var(--line);stroke-width:1;fill:none}
-.svg-dash{stroke:var(--faint);stroke-width:1;fill:none;stroke-dasharray:3 3}
+/* ---- callout ---- */
+.note{background:var(--panel);border-left:2px solid var(--hot);padding:16px 18px;
+  margin:0 0 22px;border-radius:0 4px 4px 0}
+.note p:last-child{margin-bottom:0}
+.note .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--hot);margin-bottom:7px}
 
-/* first principles */
-.fp{border:1px solid #2C3A44;background:#141C21;padding:16px 18px;
-  margin:22px 0;border-radius:3px;font-size:15px}
-.fp b.hdr{color:var(--cool);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;display:block;margin-bottom:8px;font-weight:500}
-.fp p{margin-bottom:10px}
-.fp p:last-child{margin-bottom:0}
+/* ---- tables ---- */
+.tbl{overflow-x:auto;margin:0 0 24px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px;line-height:1.5}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;background:var(--panel2);
+  padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:bottom}
+td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--dim)}
+td:first-child{color:var(--ink);font-family:var(--mono);font-size:13px}
+tr:last-child td{border-bottom:none}
 
-/* key fact */
-.k{border-left:2px solid var(--violet);background:var(--panel);padding:14px 18px;
-  margin:20px 0;font-size:15px;border-radius:0 3px 3px 0}
-.k b{color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;display:block;margin-bottom:6px;font-weight:500}
-.k p:last-child{margin-bottom:0}
+/* ---- allocation bars ---- */
+.alloc{margin-bottom:8px}
+.alloc-row{display:grid;grid-template-columns:150px 1fr 52px;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:12px;margin-bottom:7px;color:var(--dim)}
+.alloc-bar{background:var(--panel2);height:10px;border-radius:2px;overflow:hidden}
+.alloc-bar i{display:block;height:100%;background:var(--violet)}
+.alloc-hrs{color:var(--faint);text-align:right}
 
-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14.5px}
-th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--faint);font-weight:500;
-  border-bottom:1px solid var(--line);padding:8px 12px 8px 0}
-td{padding:10px 12px 10px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
+/* ---- checkboxes ---- */
+.ck{display:flex;gap:11px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);
+  border-radius:4px;background:var(--panel);cursor:pointer;margin-bottom:7px;
+  position:relative;transition:border-color .15s,opacity .15s}
+.ck:hover{border-color:var(--faint)}
+.ck input{position:absolute;opacity:0;width:0;height:0}
+.ck .box{flex:0 0 auto;width:16px;height:16px;margin-top:4px;border:1.5px solid var(--faint);
+  border-radius:3px;position:relative;transition:background .15s,border-color .15s}
+.ck input:checked ~ .box{background:var(--cool);border-color:var(--cool)}
+.ck input:checked ~ .box::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;
+  height:9px;border:solid var(--ground);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ck input:focus-visible ~ .box{outline:2px solid var(--violet);outline-offset:2px}
+.ck .txt{font-size:14.5px;color:var(--dim);line-height:1.5}
+/* inline-block so the .done line-through does not propagate into the label */
+.ck .txt b{display:inline-block;width:100%;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--faint);font-weight:500;
+  margin-bottom:2px}
+.ck.done{opacity:.5}
+.ck.done .txt{text-decoration:line-through;text-decoration-color:var(--faint)}
 
-/* ---- pushback ---- */
-.pbhead{margin:66px 0 26px;padding-top:30px;border-top:1px solid var(--line)}
-.pbhead .lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--hot);margin-bottom:10px}
-.pbhead h2{padding-left:0}
-.pbhead h2::before{display:none}
-.pbhead p{color:var(--dim);font-size:15px;margin-bottom:0}
-
-.pb{border:1px solid var(--line);border-radius:4px;margin-bottom:20px;
-  background:var(--panel);overflow:hidden}
-.pb.done{border-color:#3A4356}
-.pb .q{padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
-.pb .n{font-family:var(--mono);font-size:11px;color:var(--hot);padding-top:3px;
-  flex-shrink:0;letter-spacing:.06em}
-.pb .qt{font-size:16.5px;line-height:1.55;color:#fff;font-weight:500}
-.pb .hint{font-size:13.5px;color:var(--faint);margin-top:8px;font-style:italic}
-.pb .body{padding:0 22px 20px 60px}
-@media(max-width:600px){.pb .body{padding-left:22px}}
-textarea{width:100%;background:var(--ground);border:1px solid var(--line);
-  color:var(--ink);font-family:var(--body);font-size:14.5px;padding:12px 14px;
-  border-radius:3px;resize:vertical;min-height:76px;line-height:1.55}
-textarea:focus{outline:none;border-color:var(--hot)}
-textarea::placeholder{color:var(--faint)}
-.btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
-button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:8px 16px;
-  border-radius:3px;border:1px solid var(--hot);background:var(--hot);color:#12141B;
-  cursor:pointer;font-weight:600}
-button:hover{filter:brightness(1.1)}
-button.ghost{background:none;color:var(--faint);border-color:var(--line)}
-button.ghost:hover{color:var(--dim);border-color:var(--dim);filter:none}
-button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--cool);outline-offset:2px}
-
-.reveal{display:none;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
-.reveal.on{display:block;animation:fade .28s ease}
-@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.reveal .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--cool);margin-bottom:10px}
-.reveal p{font-size:15px}
-.reveal ul{font-size:15px}
-.esc{margin-top:20px;padding:16px 18px;background:var(--panel2);border-radius:3px;
-  border-left:2px solid var(--hot)}
-.esc .lab{color:var(--hot)}
-.esc .ans{display:none;margin-top:12px;font-size:14.5px;color:var(--dim)}
-.esc .ans.on{display:block}
-.esc .ans p{font-size:14.5px;margin-bottom:10px}
-.esc button{margin-top:10px;font-size:11px;padding:6px 12px}
-
-/* ---- closing ---- */
-.close{margin-top:70px;padding-top:34px;border-top:1px solid var(--line)}
-.sixty{background:var(--panel);border:1px solid var(--line);border-radius:4px;
-  padding:24px 26px;margin-bottom:24px}
-.sixty .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+/* ---- meters ---- */
+.meter-row{display:grid;grid-template-columns:minmax(120px,190px) 1fr 58px;align-items:center;
+  gap:12px;margin-bottom:9px;font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.mlab{letter-spacing:.06em}
+.meter{background:var(--panel2);height:8px;border-radius:4px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--cool);transition:width .25s ease}
+.mnum{text-align:right;color:var(--faint)}
+.panelbox{background:var(--panel);border:1px solid var(--line);border-radius:5px;
+  padding:20px 20px 14px;margin-bottom:26px}
+.panelbox .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--cool);margin-bottom:14px}
-.sixty ol{margin:0 0 0 18px}
-.sixty li{margin-bottom:10px;font-size:15px}
-.flags{border:1px solid #46331F;background:#1E1811;border-radius:4px;padding:24px 26px}
-.flags .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--hot);margin-bottom:14px}
-.flags ul{margin:0 0 0 18px}
-.flags li{font-size:15px;color:var(--dim);margin-bottom:9px}
 
-nav.pager{display:flex;justify-content:space-between;gap:16px;margin-top:56px;
-  padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px}
-nav.pager a{color:var(--dim);text-decoration:none;max-width:46%}
-nav.pager a:hover{color:var(--cool)}
-nav.pager span{display:block;color:var(--faint);font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;margin-bottom:4px}
-nav.pager .nx{text-align:right}
+/* ---- day cards ---- */
+.weekhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.days{display:grid;gap:14px}
+.day{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:14px 16px 8px}
+.day.cp{border-color:#4A3B28;box-shadow:inset 3px 0 0 var(--hot)}
+.dhead{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.dnum{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink)}
+.day.cp .dnum{color:var(--hot)}
+.dtag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--hot);border:1px solid #4A3B28;border-radius:2px;padding:2px 7px}
+.dratio{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.day.full .dnum{color:var(--cool)}
+.day.full{opacity:.72}
 
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
-  html{scroll-behavior:auto}}
-@media(max-width:640px){h1{font-size:31px}.stage{font-size:38px}h2{font-size:21px}
-  .wrap{padding:0 18px 80px}.bar .in{padding:10px 18px}}
+/* ---- footer ---- */
+.foot{border-top:1px solid var(--line);padding-top:26px;margin-top:50px;
+  font-family:var(--mono);font-size:12px;color:var(--faint);display:flex;
+  justify-content:space-between;gap:18px;flex-wrap:wrap}
+.foot a{color:var(--dim);text-decoration:none}
+.foot a:hover{color:var(--cool)}
 
-
-.hero{padding:88px 0 52px}
-.hero .lead{font-family:var(--mono);font-size:11px;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--hot);margin-bottom:22px}
-.hero h1{font-family:var(--disp);font-size:54px;line-height:1.04;font-weight:600;
-  letter-spacing:-.032em;margin-bottom:26px;max-width:17ch}
-.hero h1 em{color:var(--cool);font-style:normal}
-.hero .sub{font-size:19px;color:var(--dim);max-width:62ch;margin-bottom:34px}
-.stats{display:flex;gap:38px;flex-wrap:wrap;padding-top:28px;border-top:1px solid var(--line)}
-.stat b{display:block;font-family:var(--mono);font-size:30px;color:var(--ink);
-  font-weight:600;letter-spacing:-.02em}
-.stat span{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--faint)}
-.howto{background:var(--panel);border:1px solid var(--line);border-radius:4px;
-  padding:28px 30px;margin-bottom:52px}
-.howto .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--cool);margin-bottom:14px}
-.howto p{font-size:15px;color:var(--dim);margin-bottom:12px}
-.howto p:last-child{margin-bottom:0}
-.howto strong{color:var(--ink)}
-.track{margin-bottom:44px}
-.track-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;
-  padding-bottom:12px;border-bottom:1px solid var(--line)}
-.track-head .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--cool)}
-.track-head .d{font-size:13.5px;color:var(--faint)}
-a.card{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);
-  border-radius:4px;padding:20px 22px;margin-bottom:10px;background:var(--panel);
-  transition:border-color .16s,transform .16s}
-a.card:hover{border-color:var(--cool);transform:translateX(3px)}
-a.card .row{display:flex;gap:18px;align-items:baseline}
-a.card .num{font-family:var(--mono);font-size:12px;color:var(--hot);flex-shrink:0}
-a.card h3{font-family:var(--disp);font-size:19px;font-weight:600;margin-bottom:5px;
-  letter-spacing:-.015em;color:var(--ink)}
-a.card p{font-size:14.5px;color:var(--dim);margin:0;max-width:66ch}
-a.card .meta{font-family:var(--mono);font-size:10.5px;color:var(--faint);
-  margin-top:9px;letter-spacing:.06em}
-.route{margin-bottom:48px}
-.route table{width:100%;border-collapse:collapse;font-size:14.5px}
-.route th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--faint);font-weight:500;padding:8px 14px 8px 0;
-  border-bottom:1px solid var(--line)}
-.route td{padding:11px 14px 11px 0;border-bottom:1px solid var(--panel2);vertical-align:top}
-.route td:first-child{font-family:var(--mono);font-size:12px;color:var(--cool);white-space:nowrap}
-.sec-lab{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--faint);margin-bottom:20px;
-  padding-bottom:12px;border-bottom:1px solid var(--line)}
-.note{font-size:14.5px;color:var(--faint);border-left:2px solid var(--line);
-  padding-left:16px;max-width:68ch}
-@media(max-width:640px){.hero h1{font-size:35px}.hero{padding:54px 0 38px}}
+@media (max-width:640px){
+  h1{font-size:32px}
+  .wrap{padding:0 18px 90px}
+  .bar .in{padding:10px 18px}
+  .barbar{flex-basis:90px}
+  .alloc-row{grid-template-columns:110px 1fr 46px;font-size:11px}
+  .meter-row{grid-template-columns:minmax(90px,130px) 1fr 52px}
+  .stats{gap:20px}
+}
+@media print{.bar,.toc,.rst{display:none}}
 </style>
 </head><body>
+
+<div class="bar"><div class="in">
+  <a class="home" href="backup/index.html">&larr; Interview stages</a>
+  <span class="barright">
+    <span class="barbar"><i id="barAll"></i></span>
+    <span class="tally"><b id="pctAll">0%</b> <span id="cntAll">0 / 0</span></span>
+    <button class="rst" id="resetBtn" type="button">Reset</button>
+  </span>
+</div></div>
+
 <div class="wrap">
-
-<div class="hero">
-  <div class="lead">Two panels &middot; Coding &amp; design &middot; CTV advertising</div>
-  <h1>You know most of this. The job is <em>producing it while someone interrupts</em>.</h1>
-  <p class="sub">Eighteen stages covering the whole surface of both panels, grounded in Roku&rsquo;s CTV platform rather than generic examples. Each ends in pushbacks written the way an interviewer actually pushes &mdash; a challenge, then a harder follow-up once you've committed.</p>
+<header class="top">
+  <div class="eyebrow"><span class="kicker">Prep plan &middot; tracked</span></div>
+  <h1>45-Day Senior MLE<br>Interview Prep Plan</h1>
+  <p class="why">Seven components &middot; 6 hours weekdays, 10 at weekends &middot; ~215 hours. Built around one
+  finding: the loop is ending at ML system design, twice, while the coding rounds clear
+  comfortably. Hours follow the gap, not the comfort.</p>
   <div class="stats">
-    <div class="stat"><b>18</b><span>Stages</span></div>
-    <div class="stat"><b>71</b><span>Pushbacks</span></div>
-    <div class="stat"><b>6</b><span>Tracks</span></div>
+    <div class="stat"><b>45</b><span>Days</span></div>
+    <div class="stat"><b>16</b><span>Designs</span></div>
+    <div class="stat"><b>16</b><span>LLM topics</span></div>
+    <div class="stat"><b>12</b><span>Stories</span></div>
+    <div class="stat"><b>~215</b><span>Hours</span></div>
   </div>
+  <div class="alloc">
+    <div class="alloc-row"><span>ML system design</span><span class="alloc-bar"><i style="width:30.8%"></i></span><span class="alloc-hrs">12 h</span></div>
+    <div class="alloc-row"><span>Coding</span><span class="alloc-bar"><i style="width:16.7%"></i></span><span class="alloc-hrs">6.5 h</span></div>
+    <div class="alloc-row"><span>LLM</span><span class="alloc-bar"><i style="width:12.8%"></i></span><span class="alloc-hrs">5 h</span></div>
+    <div class="alloc-row"><span>Agentic systems</span><span class="alloc-bar"><i style="width:11.5%"></i></span><span class="alloc-hrs">4.5 h</span></div>
+    <div class="alloc-row"><span>ML depth</span><span class="alloc-bar"><i style="width:10.3%"></i></span><span class="alloc-hrs">4 h</span></div>
+    <div class="alloc-row"><span>Behavioral</span><span class="alloc-bar"><i style="width:10.3%"></i></span><span class="alloc-hrs">4 h</span></div>
+    <div class="alloc-row"><span>ML breadth</span><span class="alloc-bar"><i style="width:7.7%"></i></span><span class="alloc-hrs">3 h</span></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#progress">Progress</a>
+  <a href="#diagnosis">Diagnosis</a>
+  <a href="#daily-block">Daily block</a>
+  <a href="#components">Seven components</a>
+  <a href="#artifacts">Hands-on artifacts</a>
+  <a href="#why-design-fails">Why design fails</a>
+  <a href="#designs">16 designs</a>
+  <a href="#serving">Serving &amp; monitoring</a>
+  <a href="#llm">LLM fundamentals</a>
+  <a href="#material">Learning material</a>
+  <a href="#worked-day">A day, worked</a>
+  <a href="#week-1">Week 1</a>
+  <a href="#week-2">Week 2</a>
+  <a href="#week-3">Week 3</a>
+  <a href="#week-4">Week 4</a>
+  <a href="#days-31-37">Days 31&ndash;37</a>
+  <a href="#days-38-45">Days 38&ndash;45</a>
+  <a href="#stories">Story bank</a>
+  <a href="#milestones">Milestones</a>
+  <a href="#tracking">Tracking</a>
+  <a href="#failure-modes">Failure modes</a>
+</nav>
+
+<section id="progress">
+<h2>Progress</h2>
+<p>Every checkbox on this page is saved in this browser, on this device, the moment you tick it
+&mdash; there is no account and nothing leaves the machine. Clearing site data, or opening the
+page in a different browser, starts from zero.</p>
+<div class="panelbox">
+  <div class="lab">Where you are</div>
+  <div class="meter-row"><span class="mlab">Daily blocks</span><span class="meter"><i data-bar="days"></i></span><span class="mnum" data-mnum="days">0/170</span></div>
+  <div class="meter-row"><span class="mlab">16 designs</span><span class="meter"><i data-bar="designs"></i></span><span class="mnum" data-mnum="designs">0/16</span></div>
+  <div class="meter-row"><span class="mlab">LLM topics</span><span class="meter"><i data-bar="llm"></i></span><span class="mnum" data-mnum="llm">0/16</span></div>
+  <div class="meter-row"><span class="mlab">Serving answers</span><span class="meter"><i data-bar="serving"></i></span><span class="mnum" data-mnum="serving">0/7</span></div>
+  <div class="meter-row"><span class="mlab">Monitoring answers</span><span class="meter"><i data-bar="monitoring"></i></span><span class="mnum" data-mnum="monitoring">0/8</span></div>
+  <div class="meter-row"><span class="mlab">Behavioral stories</span><span class="meter"><i data-bar="stories"></i></span><span class="mnum" data-mnum="stories">0/12</span></div>
+  <div class="meter-row"><span class="mlab">Simulations &amp; mocks</span><span class="meter"><i data-bar="milestones"></i></span><span class="mnum" data-mnum="milestones">0/12</span></div>
+  <div class="meter-row"><span class="mlab">Hands-on artifacts</span><span class="meter"><i data-bar="artifactlist"></i></span><span class="mnum" data-mnum="artifactlist">0/7</span></div>
+  <div class="meter-row"><span class="mlab">Component mastery</span><span class="meter"><i data-bar="components"></i></span><span class="mnum" data-mnum="components">0/7</span></div>
+  <div class="meter-row"><span class="mlab">Learning material</span><span class="meter"><i data-bar="material"></i></span><span class="mnum" data-mnum="material">0/31</span></div>
+</div>
+</section>
+
+<section id="diagnosis">
+<h2>Diagnosis and assumptions</h2>
+<p class="lead">ML system design is the binding constraint. It went badly at both Amazon and Oracle, and both
+coding rounds were cleared comfortably, so the loop is ending at the same place twice. LLM
+fundamentals are the secondary gap and overlap heavily with modern design rounds. Coding stays
+in the plan only as CodeSignal format drilling, which is a speed problem rather than a skill
+problem.</p>
+<h3>What this plan assumes</h3>
+<ul>
+<li>You are still working full-time at Samsung, so weekdays run 6 hours and weekends 10. If you move to leave or a notice period, the shape changes completely.</li>
+<li>45 days total: 30 at full intensity, then 15 at reduced hours. Days 7, 14, 21 and 28 are deliberately light rather than off.</li>
+<li>Target roles are Senior MLE and Applied Scientist at MNCs and funded startups, with active or expected loops.</li>
+<li>No new study websites, explainers or interactive artifacts get built during this month. Building teaches synthesis; loops test recall under observation. This month buys recall.</li>
+</ul>
+<div class="tbl"><table>
+<thead><tr><th>Surface</th><th>Share</th><th>Current state</th><th>Target state</th></tr></thead>
+<tbody>
+<tr><td>ML system design</td><td>40%</td><td>Failed at Amazon and Oracle</td><td>16 designs delivered cold, structure never dropped</td></tr>
+<tr><td>LLM fundamentals</td><td>20%</td><td>Needs a rebuild from first principles</td><td>Explains attention, training, serving, eval without notes</td></tr>
+<tr><td>Behavioral and senior signal</td><td>20%</td><td>Ad-hoc banks per company</td><td>12 stories, scope and conflict forward</td></tr>
+<tr><td>Timed assessments</td><td>15%</td><td>Live rounds cleared; 400/600 on CodeSignal</td><td>500+ consistently, 4 tasks opened</td></tr>
+<tr><td>SQL and stats</td><td>5%</td><td>Untested recently</td><td>Window functions written without reference</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="daily-block">
+<h2>The daily block</h2>
+<p>6 hours on weekdays, 10 at weekends. 50 hours a week, about 215 over the month. All seven
+components are touched daily; weekends carry the long-form work that cannot be done in slices.</p>
+<div class="note"><div class="lab">Hard rule</div>
+<p>Blocks run in order. ML system design happens before fatigue sets in, not after.</p></div>
+<h3>Weekday, 6 hours (360 min)</h3>
+<div class="tbl"><table>
+<thead><tr><th>Block</th><th>Time</th><th>Component</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>75 min</td><td>ML system design &mdash; one full design or two components, aloud</td></tr>
+<tr><td>B</td><td>60 min</td><td>Coding &mdash; timed, assessment conditions</td></tr>
+<tr><td>C</td><td>50 min</td><td>LLM fundamentals &mdash; one topic to explain-it-cold depth</td></tr>
+<tr><td>D</td><td>45 min</td><td>Agentic systems design &mdash; one pattern or failure mode</td></tr>
+<tr><td>E</td><td>40 min</td><td>ML depth &mdash; one topic, three layers of follow-up</td></tr>
+<tr><td>F</td><td>30 min</td><td>ML breadth &mdash; rapid-fire recall across classical ML</td></tr>
+<tr><td>G</td><td>40 min</td><td>Behavioral &mdash; one story written, then delivered to camera</td></tr>
+<tr><td>H</td><td>20 min</td><td>Hands-on increment on the week's build, plus the log</td></tr>
+</tbody></table></div>
+<h3>Weekend, 10 hours (600 min)</h3>
+<div class="tbl"><table>
+<thead><tr><th>Block</th><th>Time</th><th>Component</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>70 min</td><td>Timed assessment simulation, 4 tasks, hard stop</td></tr>
+<tr><td>B</td><td>30 min</td><td>Written post-mortem of the simulation</td></tr>
+<tr><td>C</td><td>100 min</td><td>Two full ML system designs, 45&ndash;50 min each, recorded</td></tr>
+<tr><td>D</td><td>45 min</td><td>Agentic systems design &mdash; one end-to-end agent architecture</td></tr>
+<tr><td>E</td><td>50 min</td><td>LLM fundamentals &mdash; the week's weakest topic, to depth</td></tr>
+<tr><td>F</td><td>40 min</td><td>ML breadth &mdash; full sweep, spoken</td></tr>
+<tr><td>G</td><td>40 min</td><td>ML depth &mdash; one topic to whiteboard fluency</td></tr>
+<tr><td>H</td><td>90 min</td><td>Hands-on build &mdash; the week's artifact, shipped</td></tr>
+<tr><td>I</td><td>75 min</td><td>Mock interview with a human, feedback captured same day</td></tr>
+<tr><td>J</td><td>40 min</td><td>Behavioral &mdash; 4 stories delivered cold to camera</td></tr>
+<tr><td>K</td><td>20 min</td><td>Weekly review, next week's target</td></tr>
+</tbody></table></div>
+<p>Design is first because it is the failure point and deserves your freshest hour. Coding follows
+because it needs a clock but not peak alertness. Breadth and behavioral sit last because they are
+recall and rehearsal, which survive tiredness.</p>
+</section>
+
+<section id="components">
+<h2>The seven components</h2>
+<p>Each component has a scope, a mastery test, and a hands-on artifact built from your own systems rather than a tutorial. The artifact is what converts study time into interview material &mdash; you end the month able to say &ldquo;I built that&rdquo; instead of &ldquo;I read about that&rdquo;.</p>
+<div class="tbl"><table><thead><tr><th>Component</th><th>Weekly hours</th><th>Scope</th><th>Mastery test</th></tr></thead><tbody>
+<tr><td>ML system design</td><td>12.0</td><td>Six-step structure; serving and monitoring to depth</td><td>16 designs cold, serving and monitoring never thin</td></tr>
+<tr><td>Coding</td><td>6.5</td><td>CodeSignal format; speed and pattern recall</td><td>Two simulations at 500+, 4 tasks opened</td></tr>
+<tr><td>LLM</td><td>5.0</td><td>Transformers to serving to eval, from first principles</td><td>Explains any of 16 topics with no notes, 2 follow-ups</td></tr>
+<tr><td>Agentic systems</td><td>4.5</td><td>Loop design, tool use, failure recovery, cost, eval</td><td>Designs an agent system end to end, names 5 failure modes</td></tr>
+<tr><td>ML depth</td><td>4.0</td><td>Calibration, drift, experimentation, forecasting theory</td><td>Survives 3 layers on each</td></tr>
+<tr><td>Behavioral</td><td>4.0</td><td>12 stories, ownership and scope forward</td><td>Each under 3 min, decision-led</td></tr>
+<tr><td>ML breadth</td><td>3.0</td><td>Classical ML, stats, metrics, the standard question bank</td><td>40 rapid-fire questions, no hesitation</td></tr>
+</tbody></table></div>
+<h3>Mastery tests &mdash; tick when it is true cold, not when you have read it</h3>
+<label class="ck"><input type="checkbox" data-ck="comp-0" data-group="components"><span class="box"></span><span class="txt"><b>ML system design</b>16 designs cold, serving and monitoring never thin</span></label>
+<label class="ck"><input type="checkbox" data-ck="comp-1" data-group="components"><span class="box"></span><span class="txt"><b>Coding</b>Two simulations at 500+, 4 tasks opened</span></label>
+<label class="ck"><input type="checkbox" data-ck="comp-2" data-group="components"><span class="box"></span><span class="txt"><b>LLM</b>Explains any of 16 topics with no notes, 2 follow-ups</span></label>
+<label class="ck"><input type="checkbox" data-ck="comp-3" data-group="components"><span class="box"></span><span class="txt"><b>Agentic systems</b>Designs an agent system end to end, names 5 failure modes</span></label>
+<label class="ck"><input type="checkbox" data-ck="comp-4" data-group="components"><span class="box"></span><span class="txt"><b>ML depth</b>Survives 3 layers on each</span></label>
+<label class="ck"><input type="checkbox" data-ck="comp-5" data-group="components"><span class="box"></span><span class="txt"><b>Behavioral</b>Each under 3 min, decision-led</span></label>
+<label class="ck"><input type="checkbox" data-ck="comp-6" data-group="components"><span class="box"></span><span class="txt"><b>ML breadth</b>40 rapid-fire questions, no hesitation</span></label>
+</section>
+<section id="artifacts">
+<h2>Hands-on artifact per component</h2>
+<p>The design artifact is the most important one in the month. It attacks the exact round that failed, and it gives you a second production-shaped system to talk about that is entirely yours.</p>
+<label class="ck"><input type="checkbox" data-ck="art-0" data-group="artifactlist"><span class="box"></span><span class="txt"><b>ML system design &middot; built on Your Samsung pipeline, rebuilt small</b>Serving and monitoring layer for a stripped-down CTV forecasting replica &mdash; feature store, online inference, drift detection, retraining trigger</span></label>
+<label class="ck"><input type="checkbox" data-ck="art-1" data-group="artifactlist"><span class="box"></span><span class="txt"><b>Coding &middot; built on Fresh</b>Your own template library, typed from scratch and tested: union-find, Dijkstra, binary search boundaries, topo sort, LRU</span></label>
+<label class="ck"><input type="checkbox" data-ck="art-2" data-group="artifactlist"><span class="box"></span><span class="txt"><b>LLM &middot; built on Your exo cluster work</b>Attention and a KV cache implemented from scratch in NumPy; then a quantised local serve benchmarked for decode speed</span></label>
+<label class="ck"><input type="checkbox" data-ck="art-3" data-group="artifactlist"><span class="box"></span><span class="txt"><b>Agentic systems &middot; built on <code>ts</code></b>An eval harness and failure-recovery layer for <code>ts</code> &mdash; replay, cost ceilings enforced, failure taxonomy logged</span></label>
+<label class="ck"><input type="checkbox" data-ck="art-4" data-group="artifactlist"><span class="box"></span><span class="txt"><b>ML depth &middot; built on <code>ts</code> experiment loop</b>Calibration and drift experiments run end to end, with reliability diagrams and a written finding</span></label>
+<label class="ck"><input type="checkbox" data-ck="art-5" data-group="artifactlist"><span class="box"></span><span class="txt"><b>ML breadth &middot; built on Fresh, small</b>A single benchmark script running 8 baselines on one dataset with correct evaluation</span></label>
+<label class="ck"><input type="checkbox" data-ck="art-6" data-group="artifactlist"><span class="box"></span><span class="txt"><b>Behavioral &middot; built on Samsung work, <code>ts</code>, <code>nlq</code></b>12 recorded stories, each under 3 minutes, plus a one-page ownership framing per project</span></label>
+</section>
+<section id="why-design-fails">
+<h2>ML system design: why it fails</h2>
+<p>Design rounds rarely fail on knowledge. They fail on five things, and it is worth identifying
+which one is yours before drilling, because the fixes are unrelated.</p>
+<div class="tbl"><table>
+<thead><tr><th>Failure mode</th><th>What the interviewer sees</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Jumping to the model</td><td>Talking architecture at minute three, before requirements exist</td><td>Spend 8 minutes on requirements, always, even when it feels slow</td></tr>
+<tr><td>No numbers</td><td>Design that could serve 100 or 100 million users</td><td>State QPS, latency budget, data volume out loud, early</td></tr>
+<tr><td>Depth without breadth</td><td>30 minutes on features, nothing on serving or monitoring</td><td>Timebox each component; move on even mid-thought</td></tr>
+<tr><td>Following, not driving</td><td>Interviewer has to ask the next question every time</td><td>You narrate the plan, then walk it; they interrupt, not steer</td></tr>
+<tr><td>No tradeoffs stated</td><td>Every choice sounds like the only choice</td><td>Name the alternative and why you rejected it, every time</td></tr>
+</tbody></table></div>
+<div class="note"><div class="lab">Your diagnosed mode</div>
+<p>Different from the common one: you reach steps 5 and 6 but thin out once there. That is a
+content gap, not a pacing gap, so serving and monitoring matter more for you than design
+repetition does.</p></div>
+<h3>The structure, used identically every time</h3>
+<ol>
+<li><strong>Requirements</strong> &mdash; functional, then scale numbers, then the one metric that defines success (8 min)</li>
+<li><strong>Data</strong> &mdash; sources, labels, how labels are actually obtained, leakage risks (7 min)</li>
+<li><strong>Features and baselines</strong> &mdash; what the dumb baseline is, and why the model beats it (7 min)</li>
+<li><strong>Model</strong> &mdash; choice, the alternative rejected, training cadence (8 min)</li>
+<li><strong>Serving</strong> &mdash; latency budget, precompute vs online, caching, fallback when the model fails (8 min)</li>
+<li><strong>Monitoring and iteration</strong> &mdash; drift, feedback loops, retraining triggers, A/B design (7 min)</li>
+</ol>
+<p>The timings are the point. Most people fail by spending 25 minutes on steps 3 and 4 and never
+reaching 5 and 6, which is where senior signal lives.</p>
+</section>
+
+<section id="designs">
+<h2>Sixteen designs, delivered aloud and recorded</h2>
+<p>Two a day at weekends, one a day on weekdays. The last four matter most &mdash; both Amazon and Oracle are asking LLM-shaped design questions now, and those are also where <code>ts</code> and <code>nlq</code> give you real material to draw on rather than textbook answers.</p>
+<label class="ck"><input type="checkbox" data-ck="design-0" data-group="designs"><span class="box"></span><span class="txt"><b>Design 01</b>Recommendation feed</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-1" data-group="designs"><span class="box"></span><span class="txt"><b>Design 02</b>Ads ranking</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-2" data-group="designs"><span class="box"></span><span class="txt"><b>Design 03</b>Real-time bidding</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-3" data-group="designs"><span class="box"></span><span class="txt"><b>Design 04</b>Search retrieval</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-4" data-group="designs"><span class="box"></span><span class="txt"><b>Design 05</b>Fraud detection</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-5" data-group="designs"><span class="box"></span><span class="txt"><b>Design 06</b>Forecasting at scale</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-6" data-group="designs"><span class="box"></span><span class="txt"><b>Design 07</b>Personalisation with cold start</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-7" data-group="designs"><span class="box"></span><span class="txt"><b>Design 08</b>Notification targeting</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-8" data-group="designs"><span class="box"></span><span class="txt"><b>Design 09</b>Content moderation</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-9" data-group="designs"><span class="box"></span><span class="txt"><b>Design 10</b>Dynamic pricing</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-10" data-group="designs"><span class="box"></span><span class="txt"><b>Design 11</b>A/B experimentation platform</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-11" data-group="designs"><span class="box"></span><span class="txt"><b>Design 12</b>Feature store</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-12" data-group="designs"><span class="box"></span><span class="txt"><b>Design 13 &middot; LLM-shaped, highest priority</b>RAG over enterprise documents</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-13" data-group="designs"><span class="box"></span><span class="txt"><b>Design 14 &middot; LLM-shaped, highest priority</b>An LLM agent with tool use</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-14" data-group="designs"><span class="box"></span><span class="txt"><b>Design 15 &middot; LLM-shaped, highest priority</b>LLM-powered support routing</span></label>
+<label class="ck"><input type="checkbox" data-ck="design-15" data-group="designs"><span class="box"></span><span class="txt"><b>Design 16 &middot; LLM-shaped, highest priority</b>Eval pipeline for a generative product</span></label>
+</section>
+<section id="serving">
+<h2>Serving and monitoring</h2>
+<p>This is where both loops thinned out, and it is the highest-return block in the month. It is also
+the part of ML that reads as senior, because it is what you only learn by running something in
+production. You have run something in production, so the material exists &mdash; it has not been
+organised into interview answers.</p>
+<div class="note"><div class="lab">How to use these two lists</div>
+<p>For each row, write your answer once, in your own words, grounded in the CTV pipeline wherever
+possible. Then say it aloud until it is fluent. Tick the row only once it is fluent spoken, not
+once it is written. Calibration monitoring in particular is something you already know deeply
+&mdash; it should be your strongest answer in the whole loop, and right now it is not being used.</p></div>
+<h3>Serving: what gets probed</h3>
+<label class="ck"><input type="checkbox" data-ck="serv-0" data-group="serving"><span class="box"></span><span class="txt"><b>Online vs batch vs precompute &mdash; Do you know inference does not have to be real time?</b>Latency budget first, then the cheapest architecture that meets it</span></label>
+<label class="ck"><input type="checkbox" data-ck="serv-1" data-group="serving"><span class="box"></span><span class="txt"><b>Latency budgets &mdash; Can you decompose 200&nbsp;ms across a system?</b>Feature fetch, model, network, p50 vs p99, where the tail comes from</span></label>
+<label class="ck"><input type="checkbox" data-ck="serv-2" data-group="serving"><span class="box"></span><span class="txt"><b>Feature stores &mdash; Do you understand training-serving skew?</b>Same transform code both paths; point-in-time correctness for labels</span></label>
+<label class="ck"><input type="checkbox" data-ck="serv-3" data-group="serving"><span class="box"></span><span class="txt"><b>Caching &mdash; Can you avoid computing what you already know?</b>What is cacheable, TTL reasoning, cache staleness vs freshness</span></label>
+<label class="ck"><input type="checkbox" data-ck="serv-4" data-group="serving"><span class="box"></span><span class="txt"><b>Model deployment &mdash; Have you shipped a model, or just trained one?</b>Shadow mode, canary, gradual rollout, instant rollback path</span></label>
+<label class="ck"><input type="checkbox" data-ck="serv-5" data-group="serving"><span class="box"></span><span class="txt"><b>Fallbacks &mdash; What happens when the model is down or slow?</b>Timeout to a heuristic or cached prediction; never fail the request</span></label>
+<label class="ck"><input type="checkbox" data-ck="serv-6" data-group="serving"><span class="box"></span><span class="txt"><b>Scaling and cost &mdash; Do you think about money?</b>Batching, hardware choice, cost per 1000 predictions</span></label>
+<h3>Monitoring: what gets probed</h3>
+<label class="ck"><input type="checkbox" data-ck="mon-0" data-group="monitoring"><span class="box"></span><span class="txt"><b>Data vs concept drift &mdash; Do you know which one you are detecting?</b>Input distribution shift vs the relationship changing; different fixes</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-1" data-group="monitoring"><span class="box"></span><span class="txt"><b>Drift detection &mdash; Can you be concrete?</b>PSI, KL divergence, per-feature monitoring, alert thresholds you chose</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-2" data-group="monitoring"><span class="box"></span><span class="txt"><b>Delayed labels &mdash; Do you understand the real constraint?</b>Ground truth arrives late; proxy metrics fill the gap meanwhile</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-3" data-group="monitoring"><span class="box"></span><span class="txt"><b>Model quality in prod &mdash; Can you measure without labels?</b>Prediction distribution, confidence drift, calibration over time</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-4" data-group="monitoring"><span class="box"></span><span class="txt"><b>Guardrail metrics &mdash; Do you think beyond your own metric?</b>Business and health metrics that must not regress</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-5" data-group="monitoring"><span class="box"></span><span class="txt"><b>Retraining &mdash; Is it a schedule or a trigger?</b>Trigger conditions, the cost of retraining, and when not to</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-6" data-group="monitoring"><span class="box"></span><span class="txt"><b>Incident response &mdash; Have you been paged?</b>Detection, rollback first, root cause after</span></label>
+<label class="ck"><input type="checkbox" data-ck="mon-7" data-group="monitoring"><span class="box"></span><span class="txt"><b>Online vs offline gap &mdash; Do you know they diverge?</b>Why offline gains vanish, and how you reconciled them</span></label>
+<p>The highest-value single exercise: take your forecasting pipeline and design its serving and monitoring layer from scratch, aloud, as though an interviewer asked. Anywhere you say &ldquo;we had something for that&rdquo; without detail is a gap to close this week.</p>
+</section>
+<section id="llm">
+<h2>LLM fundamentals</h2>
+<p>The bar to aim for: you can explain each of these to a sceptical interviewer, with no notes, and answer two follow-ups. Working with LangChain and Llama 3 daily does not produce this; it produces familiarity, which collapses under questioning. One topic per day in block C, in this order &mdash; each builds on the last.</p>
+<label class="ck"><input type="checkbox" data-ck="llm-0" data-group="llm"><span class="box"></span><span class="txt"><b>Day 1 &middot; Attention and transformers</b>Write scaled dot-product attention; explain why QKV, not one matrix</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-1" data-group="llm"><span class="box"></span><span class="txt"><b>Day 2 &middot; Positional encoding, RoPE</b>Explain why position needs encoding at all, and what RoPE fixes</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-2" data-group="llm"><span class="box"></span><span class="txt"><b>Day 3 &middot; Tokenisation</b>Explain BPE, why token counts differ by language, cost implications</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-3" data-group="llm"><span class="box"></span><span class="txt"><b>Day 4 &middot; Pretraining objectives</b>Next-token prediction, what it does and does not teach the model</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-4" data-group="llm"><span class="box"></span><span class="txt"><b>Day 5 &middot; SFT and instruction tuning</b>Why a base model is unusable, what SFT data looks like</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-5" data-group="llm"><span class="box"></span><span class="txt"><b>Day 6 &middot; RLHF, DPO and alternatives</b>The reward model, why DPO simplifies it, what each costs</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-6" data-group="llm"><span class="box"></span><span class="txt"><b>Day 7 &middot; Scaling laws</b>Compute, data and parameter tradeoffs; why Chinchilla mattered</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-7" data-group="llm"><span class="box"></span><span class="txt"><b>Day 8 &middot; Inference mechanics</b>KV cache, prefill vs decode, why decode is memory-bound</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-8" data-group="llm"><span class="box"></span><span class="txt"><b>Day 9 &middot; Serving and throughput</b>Batching, speculative decoding, quantisation tradeoffs</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-9" data-group="llm"><span class="box"></span><span class="txt"><b>Day 10 &middot; Context and long sequences</b>Attention cost, context extension methods, what breaks</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-10" data-group="llm"><span class="box"></span><span class="txt"><b>Day 11 &middot; Embeddings and retrieval</b>Why embeddings work, HNSW tradeoffs, chunking decisions</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-11" data-group="llm"><span class="box"></span><span class="txt"><b>Day 12 &middot; RAG architecture</b>Failure modes &mdash; retrieval, grounding, and how you would measure each</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-12" data-group="llm"><span class="box"></span><span class="txt"><b>Day 13 &middot; Agents and tool use</b>Loop design, error recovery, cost governance, when not to use one</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-13" data-group="llm"><span class="box"></span><span class="txt"><b>Day 14 &middot; Evaluation</b>LLM-as-judge and its biases, offline vs online, regression suites</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-14" data-group="llm"><span class="box"></span><span class="txt"><b>Day 15 &middot; Hallucination and calibration</b>Why it happens mechanically; connects to your calibration work</span></label>
+<label class="ck"><input type="checkbox" data-ck="llm-15" data-group="llm"><span class="box"></span><span class="txt"><b>Day 16 &middot; Fine-tuning in practice</b>LoRA, when to tune vs prompt vs retrieve, the cost argument</span></label>
+<p>Days 8 to 10 connect directly to your local inference work, and days 13 to 15 connect to <code>ts</code> and <code>nlq</code>. Where a topic touches something you have built, rehearse it as a story about a decision you made, not as theory.</p>
+</section>
+<section id="material">
+<h2>Learning material</h2>
+<p>One primary source per component, plus a reference to fall back on. The failure mode with resources is collecting them, so the rule is: primary source only, and you may not open the fallback until the primary has been finished.</p>
+<h3>Educative &mdash; the spine</h3>
+<label class="ck"><input type="checkbox" data-ck="mat-0" data-group="material"><span class="box"></span><span class="txt"><b>Machine Learning System Design</b>ML system design &mdash; work the problems, but write your own answer before reading theirs; compare structure, not content</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-1" data-group="material"><span class="box"></span><span class="txt"><b>Grokking the Machine Learning Interview</b>ML system design, breadth &mdash; its methodology is close to the six-step structure; use it to pressure-test yours</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-2" data-group="material"><span class="box"></span><span class="txt"><b>Grokking the Modern System Design Interview</b>Serving, scale, infra &mdash; the distributed-systems half of your gap: caching, load balancing, replication</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-3" data-group="material"><span class="box"></span><span class="txt"><b>Grokking the Coding Interview Patterns</b>Coding &mdash; pattern-first, which is what CodeSignal rewards; one pattern per day, weeks 1&ndash;2</span></label>
+<h3>LeetCode &mdash; format drilling, not learning</h3>
+<label class="ck"><input type="checkbox" data-ck="mat-4" data-group="material"><span class="box"></span><span class="txt"><b>Blind 75</b>Week 1 &mdash; speed pass, 25-min cap, skip anything already automatic</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-5" data-group="material"><span class="box"></span><span class="txt"><b>NeetCode 150 by category</b>Weeks 1&ndash;2 &mdash; follow the day-by-day categories in the calendar</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-6" data-group="material"><span class="box"></span><span class="txt"><b>LeetCode SQL 50</b>Day 17 &mdash; window functions and sessionisation are the ones that matter</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-7" data-group="material"><span class="box"></span><span class="txt"><b>Company tag: eBay, Amazon, Oracle</b>Weeks 3&ndash;4 &mdash; recency-sorted; pattern exposure, not memorisation</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-8" data-group="material"><span class="box"></span><span class="txt"><b>Timed contest archive, 70 min, 4 problems</b>Simulations 1&ndash;6 &mdash; the closest free proxy for CodeSignal conditions</span></label>
+<h3>Serving and monitoring &mdash; the priority gap</h3>
+<label class="ck"><input type="checkbox" data-ck="mat-9" data-group="material"><span class="box"></span><span class="txt"><b><em>Designing Machine Learning Systems</em>, Chip Huyen</b>The single best fit for your gap. Deployment, monitoring and continual learning are the chapters to read twice</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-10" data-group="material"><span class="box"></span><span class="txt"><b>Google's <em>Rules of Machine Learning</em></b>Production judgement, short, dense, free</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-11" data-group="material"><span class="box"></span><span class="txt"><b>Eugene Yan's blog &mdash; ML in production</b>Serving patterns, monitoring, real trade-offs from practitioners</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-12" data-group="material"><span class="box"></span><span class="txt"><b>Evidently AI's drift documentation</b>Concrete drift metrics and thresholds &mdash; PSI, KL, and when each misleads</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-13" data-group="material"><span class="box"></span><span class="txt"><b><em>Designing Data-Intensive Applications</em>, ch1&ndash;6</b>Only the parts on replication, partitioning and batch vs stream</span></label>
+<h3>LLM fundamentals</h3>
+<label class="ck"><input type="checkbox" data-ck="mat-14" data-group="material"><span class="box"></span><span class="txt"><b>Karpathy, <em>Neural Networks: Zero to Hero</em></b>Especially &ldquo;Let's build GPT&rdquo;. Days 1&ndash;4 &mdash; type the code, don't watch it</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-15" data-group="material"><span class="box"></span><span class="txt"><b><em>The Illustrated Transformer</em>, Jay Alammar</b>Fast intuition for attention, before the maths</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-16" data-group="material"><span class="box"></span><span class="txt"><b>Lilian Weng's blog</b>LLM agents, prompting, hallucination &mdash; days 11&ndash;16 and most of the agentic component</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-17" data-group="material"><span class="box"></span><span class="txt"><b>Hugging Face NLP course</b>Transformer and tokenizer chapters &mdash; tokenisation, fine-tuning mechanics</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-18" data-group="material"><span class="box"></span><span class="txt"><b>vLLM documentation and the PagedAttention paper</b>Days 8&ndash;9: KV cache, batching, why decode is memory-bound</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-19" data-group="material"><span class="box"></span><span class="txt"><b>Quantisation docs &mdash; GPTQ, AWQ</b>Serving trade-offs, connects to your exo cluster work</span></label>
+<h3>Agentic systems</h3>
+<label class="ck"><input type="checkbox" data-ck="mat-20" data-group="material"><span class="box"></span><span class="txt"><b>Anthropic's <em>Building Effective Agents</em></b>Loop patterns, when not to use an agent &mdash; the most interview-relevant piece</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-21" data-group="material"><span class="box"></span><span class="txt"><b>ReAct and Reflexion papers</b>The canonical loop architectures, read the method sections only</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-22" data-group="material"><span class="box"></span><span class="txt"><b>LangSmith or equivalent eval documentation</b>Agent evaluation, which almost no candidate can discuss well</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-23" data-group="material"><span class="box"></span><span class="txt"><b>Your own <code>ts</code> and <code>nlq</code> post-mortems</b>Your differentiator; no published source beats a failure taxonomy you produced</span></label>
+<h3>ML depth, breadth, behavioral</h3>
+<label class="ck"><input type="checkbox" data-ck="mat-24" data-group="material"><span class="box"></span><span class="txt"><b><em>Trustworthy Online Controlled Experiments</em>, Kohavi</b>Experimentation, A/B design, the depth interviewers probe</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-25" data-group="material"><span class="box"></span><span class="txt"><b>scikit-learn user guide on calibration</b>Platt, isotonic, reliability diagrams</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-26" data-group="material"><span class="box"></span><span class="txt"><b><em>Forecasting: Principles and Practice</em>, Hyndman</b>Your home turf &mdash; skim to formalise what you already do</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-27" data-group="material"><span class="box"></span><span class="txt"><b><em>Introduction to Statistical Learning</em></b>Breadth refresher only, chapters 3&ndash;8, skim</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-28" data-group="material"><span class="box"></span><span class="txt"><b>Amazon's published Leadership Principles</b>Days 38&ndash;41; map your 12 stories onto them directly</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-29" data-group="material"><span class="box"></span><span class="txt"><b><em>Staff Engineer</em>, Will Larson</b>The vocabulary of scope and influence at senior level</span></label>
+<label class="ck"><input type="checkbox" data-ck="mat-30" data-group="material"><span class="box"></span><span class="txt"><b>Your own recordings</b>The highest-value source in this table by a wide margin</span></label>
+<div class="note"><div class="lab">The rule</div><p>No new courses after week 2. No second book per component. If a resource is not listed above and not something a real interviewer told you to read, it goes on a list for after the loops finish.</p></div>
+</section>
+<section id="worked-day">
+<h2>A single day, worked</h2>
+<p>Every block ends with something that exists. A block with no artifact did not happen, whatever
+the clock says. Times are durations, not clock times &mdash; slot them around work. This is day 10.</p>
+<div class="tbl"><table>
+<thead><tr><th>Block</th><th>Min</th><th>Activity</th><th>Must exist at the end</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>75</td><td>Monitoring rows 1&ndash;4 delivered aloud, recorded, then one full design revisited with the monitoring half expanded</td><td>A recording, plus a one-page note per row in your own words</td></tr>
+<tr><td>B</td><td>60</td><td>Heaps and top-k under streaming: 4 problems, 25-min cap each, cold</td><td>Solved count logged; the one you failed rewritten from memory</td></tr>
+<tr><td>C</td><td>50</td><td>Inference mechanics: KV cache, prefill vs decode, why decode is memory-bound</td><td>A written explanation you can read aloud in 3 minutes</td></tr>
+<tr><td>D</td><td>45</td><td>Agentic: error recovery patterns &mdash; retry, replan, escalate, abort</td><td>Five failure modes named, each with its mitigation</td></tr>
+<tr><td>E</td><td>40</td><td>ML depth: drift detection methods and their thresholds</td><td>PSI vs KL comparison written, with when each misleads</td></tr>
+<tr><td>F</td><td>30</td><td>ML breadth: boosting internals, imbalanced data</td><td>15 rapid-fire answers given aloud without hesitation</td></tr>
+<tr><td>G</td><td>40</td><td>Behavioral: story 6 written, then delivered to camera twice</td><td>A recording under 3 minutes, decision-led</td></tr>
+<tr><td>H</td><td>20</td><td>Replica: prediction-distribution monitoring wired in</td><td>Code committed; the day logged in four lines</td></tr>
+</tbody></table></div>
+<div class="note"><div class="lab">The daily log</div>
+<p>Four lines and no more: problems solved inside the cap, the block that went worst, one sentence
+on why, and tomorrow's first task. A tracker that takes ten minutes to fill stops getting filled
+by day nine.</p></div>
+</section>
+
+<section id="week-1">
+<h2>Week 1 &mdash; structure and foundations</h2>
+<p class="lead"><strong>Goal.</strong> The design structure becomes automatic, and the LLM rebuild starts at the bottom rather than the middle. Deliver every design aloud, recorded, with a timer per step, and listen to at least two recordings back. The gap between what you think you said and what you said is where the round was lost.</p>
+<p><strong>Hands-on.</strong> Stand up a small forecasting service &mdash; synthetic or sampled data, a two-stage model, an inference endpoint with a latency budget you write down. Nothing fancy. It is the system you instrument in weeks 2 and 3.</p>
+<div class="note"><div class="lab">Shape of the week</div><p>Day 6 follows the weekend split at 10 hours; day 7 is light at 3&ndash;4 hours.</p></div>
+<div class="days">
+<div class="day" data-day="1">
+  <div class="dhead"><span class="dnum">Day 1 </span><span class="dratio" data-dratio="1">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d1-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Educative MLSD, intro and methodology; then deliver a generic recommender aloud</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d1-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Grokking Patterns: two pointers &middot; Blind 75 arrays, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d1-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Karpathy, <em>Let's build GPT</em> part 1 &middot; Anthropic, <em>Building Effective Agents</em></span></label>
+  <label class="ck"><input type="checkbox" data-ck="d1-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>sklearn calibration guide: Platt &middot; ISL ch3, linear models</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d1-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 1 drafted &middot; replica repo, latency budget written</span></label>
+</div>
+<div class="day" data-day="2">
+  <div class="dhead"><span class="dnum">Day 2 </span><span class="dratio" data-dratio="2">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d2-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Educative MLSD: ranking and retrieval &mdash; write yours first, then compare</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d2-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Grokking: hashing &middot; NeetCode hashing, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d2-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Karpathy part 2 &middot; ReAct paper, method section</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d2-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>sklearn: isotonic, reliability diagrams &middot; ISL ch8, trees</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d2-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 1 recorded &middot; baseline model trained</span></label>
+</div>
+<div class="day" data-day="3">
+  <div class="dhead"><span class="dnum">Day 3 </span><span class="dratio" data-dratio="3">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d3-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>RTB design, unaided, recorded &mdash; your home turf</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d3-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Grokking: stacks and intervals &middot; NeetCode stack, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d3-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>HF NLP course, tokenizers &middot; Reflexion paper</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d3-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Huyen ch6, model evaluation &middot; classification metrics</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d3-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 2 drafted &middot; inference endpoint running</span></label>
+</div>
+<div class="day" data-day="4">
+  <div class="dhead"><span class="dnum">Day 4 </span><span class="dratio" data-dratio="4">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d4-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Educative Grokking ML Interview: search ranking</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d4-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Grokking: binary search &middot; NeetCode binary search, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d4-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b><em>Illustrated Transformer</em> &middot; Weng, when agents fail</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d4-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Calibration in bidding, written &middot; regression metrics</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d4-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 2 recorded &middot; two-stage wired end to end</span></label>
+</div>
+<div class="day" data-day="5">
+  <div class="dhead"><span class="dnum">Day 5 </span><span class="dratio" data-dratio="5">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d5-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Forecasting at scale, unaided &mdash; draw on your own pipeline</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d5-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Grokking: trees &middot; NeetCode trees, 6</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d5-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>HF course: SFT and instruction tuning &middot; agent cost basics</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d5-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Hyndman ch1&ndash;3, skim &middot; feature engineering</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d5-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 3 drafted &middot; p50 and p99 measured</span></label>
+</div>
+<div class="day cp" data-day="6">
+  <div class="dhead"><span class="dnum">Day 6 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="6">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d6-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Two designs: fraud, notification targeting</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d6-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b><strong>Simulation 1</strong>, 70m &middot; graphs, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d6-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Karpathy part 3 &middot; loop patterns compared end to end</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d6-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Huyen ch4, training data &middot; full breadth sweep, spoken</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d6-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Stories 3&ndash;4 recorded &middot; batch and online paths working</span></label>
+</div>
+<div class="day" data-day="7">
+  <div class="dhead"><span class="dnum">Day 7 </span><span class="dratio" data-dratio="7">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d7-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Re-deliver the week's weakest design</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d7-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Re-solve the 6 slowest, cold</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d7-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Review days 1&ndash;5 aloud, no notes</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d7-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Light recall pass</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d7-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Stories 1&ndash;4 reviewed &middot; design doc v1</span></label>
+</div>
+</div>
+</section>
+<section id="week-2">
+<h2>Week 2 &mdash; serving and monitoring</h2>
+<p class="lead"><strong>Goal.</strong> Close the content gap that ended both loops. This is the most important week in the plan. Every design this week is scored on steps 5 and 6 alone &mdash; if serving and monitoring took under 15 minutes of the 45, the design failed regardless of how good the first half was.</p>
+<p><strong>Hands-on.</strong> Instrument the replica. A feature path shared between training and serving, p50 and p99 measured rather than guessed, prediction-distribution monitoring, a PSI or KL drift check per feature with a threshold you chose and can defend, and a fallback that returns a cached or heuristic prediction when the model times out. Write the numbers down as you go.</p>
+<div class="note"><div class="lab">Shape of the week</div><p>Day 13 follows the weekend split; day 14 is light. This is the week where cutting a block costs you the most.</p></div>
+<div class="days">
+<div class="day" data-day="8">
+  <div class="dhead"><span class="dnum">Day 8 </span><span class="dratio" data-dratio="8">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d8-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Serving rows 1&ndash;4 aloud &middot; Huyen ch7, deployment</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d8-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Grokking: DP patterns &middot; NeetCode 1D DP, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d8-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>HF: RLHF and DPO &middot; tool-use design</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d8-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Huyen ch8, drift: data vs concept &middot; ensembles</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d8-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 5 drafted &middot; shared feature path, train and serve</span></label>
+</div>
+<div class="day" data-day="9">
+  <div class="dhead"><span class="dnum">Day 9 </span><span class="dratio" data-dratio="9">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d9-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Serving rows 5&ndash;7, then redesign RTB &middot; Grokking Modern SD: caching, load balancing</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d9-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>NeetCode 2D DP, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d9-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Chinchilla paper, results only &middot; retry and replan</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d9-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Evidently docs: PSI and KL &middot; boosting internals</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d9-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 5 recorded &middot; point-in-time correctness</span></label>
+</div>
+<div class="day" data-day="10">
+  <div class="dhead"><span class="dnum">Day 10 </span><span class="dratio" data-dratio="10">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d10-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Monitoring rows 1&ndash;4 &middot; Huyen ch8 continued</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d10-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>NeetCode heaps and top-k, 4</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d10-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>vLLM docs + PagedAttention: KV cache &middot; escalate and abort</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d10-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Delayed labels and proxy metrics &middot; imbalanced data</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d10-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 6 drafted &middot; prediction-distribution monitoring</span></label>
+</div>
+<div class="day" data-day="11">
+  <div class="dhead"><span class="dnum">Day 11 </span><span class="dratio" data-dratio="11">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d11-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Monitoring rows 5&ndash;8 &middot; Google <em>Rules of ML</em>, full read</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d11-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>NeetCode union-find and graphs, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d11-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Quantisation docs, GPTQ and AWQ &middot; cost governance</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d11-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Guardrail metrics &middot; evaluation traps</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d11-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 6 recorded &middot; PSI or KL drift check per feature</span></label>
+</div>
+<div class="day" data-day="12">
+  <div class="dhead"><span class="dnum">Day 12 </span><span class="dratio" data-dratio="12">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d12-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Redesign feed ranking, half the time on steps 5&ndash;6</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d12-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>NeetCode tries and strings, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d12-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Long-context methods &middot; agent eval basics</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d12-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Eugene Yan: online vs offline gap &middot; model selection</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d12-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 7 drafted &middot; drift thresholds tuned and defensible</span></label>
+</div>
+<div class="day cp" data-day="13">
+  <div class="dhead"><span class="dnum">Day 13 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="13">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d13-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Two designs: feature store, moderation</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d13-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b><strong>Simulation 2</strong>, 70m &middot; mixed hard, 4</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d13-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Error recovery end to end &middot; LangSmith eval docs</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d13-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>DDIA ch1&ndash;3, skim &middot; full breadth sweep</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d13-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Stories 7&ndash;8 recorded &middot; fallback path on timeout</span></label>
+</div>
+<div class="day" data-day="14">
+  <div class="dhead"><span class="dnum">Day 14 </span><span class="dratio" data-dratio="14">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d14-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Re-deliver, scored on steps 5&ndash;6 only</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d14-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Templates rewritten cold, timed</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d14-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Weakest topic of days 6&ndash;10</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d14-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Light recall pass</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d14-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Stories 5&ndash;8 reviewed &middot; design doc v2, with real numbers</span></label>
+</div>
+</div>
+</section>
+<section id="week-3">
+<h2>Week 3 &mdash; LLM, agentic, and mocks</h2>
+<p class="lead"><strong>Goal.</strong> The LLM-shaped design round stops being the one you hope you don't get. Everything this week happens on a clock or in front of someone. Book the three mock interviewers before the week starts &mdash; this is the week most likely to slip for reasons outside your control.</p>
+<p><strong>Hands-on.</strong> Harden <code>ts</code>. An eval harness with replayable runs, a logged failure taxonomy, enforced cost ceilings with measured spend per run, and one human-in-the-loop checkpoint. Then write a one-page design doc for it as though onboarding an engineer. That page is your agentic-design interview answer.</p>
+<div class="note"><div class="lab">Shape of the week</div><p>Day 20 follows the weekend split; day 21 is light. Each mock loop is compressed: 45 min design, 45 min LLM and agentic depth, 45 min coding, 30 min behavioral, no breaks. Prioritise a human interviewer for the design round above all others.</p></div>
+<div class="days">
+<div class="day" data-day="15">
+  <div class="dhead"><span class="dnum">Day 15 </span><span class="dratio" data-dratio="15">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d15-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>RAG over enterprise documents, unaided</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d15-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>LC company tag: eBay, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d15-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Weng on RAG &middot; agent memory and state</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d15-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Kohavi ch1&ndash;4: A/B design and power &middot; time series basics</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d15-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 9 drafted &middot; <code>ts</code> eval harness skeleton</span></label>
+</div>
+<div class="day cp" data-day="16">
+  <div class="dhead"><span class="dnum">Day 16 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="16">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d16-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b><strong>Mock loop 1</strong>, design round included</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d16-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>In the mock</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d16-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>RAG failure modes &middot; multi-agent patterns</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d16-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Kohavi: interleaving &middot; clustering</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d16-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 9 recorded &middot; replayable runs</span></label>
+</div>
+<div class="day" data-day="17">
+  <div class="dhead"><span class="dnum">Day 17 </span><span class="dratio" data-dratio="17">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d17-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>LLM support routing</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d17-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b><strong>LeetCode SQL 50</strong>: windows, funnels, cohorts</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d17-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Agents and tool use, Weng &middot; human-in-the-loop design</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d17-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Bandits &middot; dimensionality reduction</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d17-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 10 drafted &middot; failure taxonomy logged</span></label>
+</div>
+<div class="day" data-day="18">
+  <div class="dhead"><span class="dnum">Day 18 </span><span class="dratio" data-dratio="18">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d18-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Eval pipeline for a generative product</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d18-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>LC company tag: Amazon, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d18-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>LLM-as-judge and its biases &middot; LangSmith agent eval</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d18-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Experiment pitfalls &middot; classic question bank</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d18-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 10 recorded &middot; cost ceilings enforced and measured</span></label>
+</div>
+<div class="day cp" data-day="19">
+  <div class="dhead"><span class="dnum">Day 19 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="19">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d19-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b><strong>Mock loop 2</strong></span></label>
+  <label class="ck"><input type="checkbox" data-ck="d19-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>In the mock</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d19-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Hallucination mechanics &middot; state management</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d19-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Calibration revisited &middot; Hyndman, forecasting theory</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d19-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Story 11 drafted &middot; human-in-the-loop checkpoint</span></label>
+</div>
+<div class="day cp" data-day="20">
+  <div class="dhead"><span class="dnum">Day 20 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="20">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d20-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Two designs: cold start, dynamic pricing</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d20-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b><strong>Simulation 3</strong>, 70m</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d20-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>LoRA and fine-tuning economics &middot; agentic sweep</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d20-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Huyen ch9, continual learning &middot; full breadth sweep</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d20-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>Stories 11&ndash;12 recorded &middot; <code>ts</code> design doc written</span></label>
+</div>
+<div class="day cp" data-day="21">
+  <div class="dhead"><span class="dnum">Day 21 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="21">0/5</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d21-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b><strong>Mock loop 3</strong>, then rest</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d21-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Light set only</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d21-2" data-group="days"><span class="box"></span><span class="txt"><b>LLM 50m + agentic 45m</b>Weakest agentic topic</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d21-3" data-group="days"><span class="box"></span><span class="txt"><b>Depth 40m + breadth 30m</b>Light recall pass</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d21-4" data-group="days"><span class="box"></span><span class="txt"><b>Behavioral 40m + hands-on 20m</b>All 12 rehearsed cold &middot; attention and KV cache from scratch</span></label>
+</div>
+</div>
+</section>
+<section id="week-4">
+<h2>Week 4 &mdash; repair, integrate, taper</h2>
+<p class="lead"><strong>Goal.</strong> Close the gaps your logs name, turn the hands-on work into interview stories, and arrive sharp rather than depleted.</p>
+<p><strong>Hands-on.</strong> Each hands-on artifact becomes a three-minute spoken story: the problem, the decision, the tradeoff, the number, what you would change. Five artifacts, five stories, rehearsed like the behavioral bank. Done properly, this is what makes you sound like someone who builds systems rather than someone who studied them.</p>
+<div class="note"><div class="lab">Shape of the week</div><p>No new material enters after day 26. Weeks 1&ndash;3 build the library; week 4 uses only what is already in it. The taper exists because loop performance depends on sleep and calm more than on the last 5% of knowledge.</p></div>
+<div class="days">
+<div class="day" data-day="22">
+  <div class="dhead"><span class="dnum">Day 22 </span><span class="dratio" data-dratio="22">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d22-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Weakest design re-run twice</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d22-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Weakest category, 5 problems</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d22-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>Re-read only the source that maps to the weakness</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d22-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>Artifact stories 1&ndash;2 recorded</span></label>
+</div>
+<div class="day" data-day="23">
+  <div class="dhead"><span class="dnum">Day 23 </span><span class="dratio" data-dratio="23">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d23-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Same design until it stops being weak</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d23-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Weakest category, 5 problems</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d23-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>Same source, second pass</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d23-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>Artifact story 3</span></label>
+</div>
+<div class="day cp" data-day="24">
+  <div class="dhead"><span class="dnum">Day 24 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="24">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d24-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>One design under deliberate time pressure</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d24-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b><strong>Simulation 4</strong> &mdash; checkpoint</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d24-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>Huyen, whichever chapter the logs point at</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d24-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>Artifact story 4</span></label>
+</div>
+<div class="day" data-day="25">
+  <div class="dhead"><span class="dnum">Day 25 </span><span class="dratio" data-dratio="25">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d25-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>LLM-shaped design re-run</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d25-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>LC company tag: Oracle, 5</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d25-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>Weakest 2 LLM topics, primary source only</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d25-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>Artifact story 5</span></label>
+</div>
+<div class="day" data-day="26">
+  <div class="dhead"><span class="dnum">Day 26 </span><span class="dratio" data-dratio="26">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d26-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Design with hostile interruptions, if you can arrange them</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d26-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Mixed set, 4</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d26-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>None &mdash; consolidation day</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d26-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>All five artifact stories polished</span></label>
+</div>
+<div class="day cp" data-day="27">
+  <div class="dhead"><span class="dnum">Day 27 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="27">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d27-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b><strong>Final full mock loop</strong>, hardest interviewer available</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d27-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>In the loop</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d27-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>None</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d27-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>&mdash;</span></label>
+</div>
+<div class="day" data-day="28">
+  <div class="dhead"><span class="dnum">Day 28 </span><span class="dratio" data-dratio="28">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d28-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Repair only what the feedback named</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d28-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>Light</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d28-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>Only what the feedback named</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d28-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>&mdash;</span></label>
+</div>
+<div class="day" data-day="29">
+  <div class="dhead"><span class="dnum">Day 29 </span><span class="dratio" data-dratio="29">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d29-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Taper: one design aloud</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d29-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>4 easy-medium</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d29-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>None</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d29-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>One story block</span></label>
+</div>
+<div class="day" data-day="30">
+  <div class="dhead"><span class="dnum">Day 30 </span><span class="dratio" data-dratio="30">0/4</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d30-0" data-group="days"><span class="box"></span><span class="txt"><b>Design &middot; 75m</b>Taper: one story block</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d30-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding &middot; 60m</b>4 easy-medium</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d30-2" data-group="days"><span class="box"></span><span class="txt"><b>Material</b>None</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d30-3" data-group="days"><span class="box"></span><span class="txt"><b>Hands-on + behavioral</b>Rest</span></label>
+</div>
+</div>
+</section>
+<section id="days-31-37">
+<h2>Days 31&ndash;37 &mdash; performance conditions</h2>
+<p class="lead"><strong>Goal.</strong> Everything happens as though observed. No untimed work, no restarting a design halfway, no pausing a recording.</p>
+<p><strong>Hands-on.</strong> Hours drop &mdash; weekdays go to 4, weekends to 6. A month at 50 hours a week followed by another fortnight at the same intensity produces a tired candidate, and tiredness costs more in a loop than the extra hours buy. If real interviews land during this stretch, they take priority over the schedule without guilt.</p>
+<div class="days">
+<div class="day" data-day="31">
+  <div class="dhead"><span class="dnum">Day 31 </span><span class="dratio" data-dratio="31">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d31-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Two designs back to back, no break between</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d31-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>Hard set, 4 problems</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d31-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>Retrieval eval set built &mdash; 50 labelled queries</span></label>
+</div>
+<div class="day" data-day="32">
+  <div class="dhead"><span class="dnum">Day 32 </span><span class="dratio" data-dratio="32">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d32-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Design with a deliberately vague prompt; you extract the requirements</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d32-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>SQL set</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d32-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>Baseline retrieval measured, recall@k logged</span></label>
+</div>
+<div class="day" data-day="33">
+  <div class="dhead"><span class="dnum">Day 33 </span><span class="dratio" data-dratio="33">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d33-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>LLM-shaped design, then defend every tradeoff for 10 minutes</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d33-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>Hard set</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d33-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>Chunking strategies compared on the eval set</span></label>
+</div>
+<div class="day cp" data-day="34">
+  <div class="dhead"><span class="dnum">Day 34 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="34">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d34-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b><strong>Mock loop 4</strong> &mdash; full length</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d34-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>In the loop</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d34-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>Grounding check added</span></label>
+</div>
+<div class="day" data-day="35">
+  <div class="dhead"><span class="dnum">Day 35 </span><span class="dratio" data-dratio="35">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d35-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Design in your weakest domain, not your strongest</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d35-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>Mixed set</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d35-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>Failure taxonomy for retrieval vs generation</span></label>
+</div>
+<div class="day" data-day="36">
+  <div class="dhead"><span class="dnum">Day 36 </span><span class="dratio" data-dratio="36">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d36-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Two designs + <strong>simulation 5</strong></span></label>
+  <label class="ck"><input type="checkbox" data-ck="d36-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>Simulation</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d36-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>Cost and latency per query measured</span></label>
+</div>
+<div class="day" data-day="37">
+  <div class="dhead"><span class="dnum">Day 37 </span><span class="dratio" data-dratio="37">0/3</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d37-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Review: which of the 16 designs is still weakest</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d37-1" data-group="days"><span class="box"></span><span class="txt"><b>Coding</b>Light</span></label>
+  <label class="ck"><input type="checkbox" data-ck="d37-2" data-group="days"><span class="box"></span><span class="txt"><b>Second artifact: <code>nlq</code> or a RAG build</b>One-page design doc for the artifact</span></label>
+</div>
+</div>
+</section>
+<section id="days-38-45">
+<h2>Days 38&ndash;45 &mdash; company shaping, live loops, taper</h2>
+<p class="lead"><strong>Goal.</strong> This is where company-specific work finally belongs &mdash; one thin layer on a finished foundation, not a rebuilt curriculum per company.</p>
+<p><strong>Hands-on.</strong> Days 44&ndash;45 are three hours a day: one timed set, one design aloud, one story block. Then hold at that level for as long as the loops run &mdash; three hours a day indefinitely is sustainable, and it keeps you sharp without the fatigue that made weeks 1&ndash;4 costly.</p>
+<div class="note"><div class="lab">Shape of the week</div><p>By day 30 the logs will tell you whether design is fixed. If it is solid in mocks, spend the extension as written. If it is still shaky, drop the second artifact entirely and spend days 31&ndash;43 doing two designs a day with a human reviewer wherever possible. Twenty-six more designs with feedback beats any amount of solo building &mdash; and the second branch is more likely than you expect, because design improves through feedback rather than repetition.</p></div>
+<div class="days">
+<div class="day" data-day="38">
+  <div class="dhead"><span class="dnum">Day 38 </span><span class="dratio" data-dratio="38">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d38-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Map each target company's known loop shape; identify which of your 16 designs each maps to</span></label>
+</div>
+<div class="day" data-day="39">
+  <div class="dhead"><span class="dnum">Day 39 </span><span class="dratio" data-dratio="39">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d39-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Company-specific domain: their product, their scale, the design question they are most likely to ask</span></label>
+</div>
+<div class="day cp" data-day="40">
+  <div class="dhead"><span class="dnum">Day 40 <span class="dtag">Checkpoint</span></span><span class="dratio" data-dratio="40">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d40-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b><strong>Mock loop 5</strong>, run in the style of your highest-priority company</span></label>
+</div>
+<div class="day" data-day="41">
+  <div class="dhead"><span class="dnum">Day 41 </span><span class="dratio" data-dratio="41">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d41-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Behavioral pass targeted at that company's values or leadership principles, using the existing 12 stories</span></label>
+</div>
+<div class="day" data-day="42">
+  <div class="dhead"><span class="dnum">Day 42 </span><span class="dratio" data-dratio="42">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d42-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Weakest LLM and agentic topics, final pass; <strong>simulation 6</strong></span></label>
+</div>
+<div class="day" data-day="43">
+  <div class="dhead"><span class="dnum">Day 43 </span><span class="dratio" data-dratio="43">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d43-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Both hands-on artifacts rehearsed as 3-minute stories, back to back, recorded</span></label>
+</div>
+<div class="day" data-day="44">
+  <div class="dhead"><span class="dnum">Day 44 </span><span class="dratio" data-dratio="44">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d44-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Taper and hold: one timed set, one design aloud, one story block</span></label>
+</div>
+<div class="day" data-day="45">
+  <div class="dhead"><span class="dnum">Day 45 </span><span class="dratio" data-dratio="45">0/1</span></div>
+  <label class="ck"><input type="checkbox" data-ck="d45-0" data-group="days"><span class="box"></span><span class="txt"><b>Focus</b>Taper and hold: one timed set, one design aloud, one story block</span></label>
+</div>
+</div>
+</section>
+<section id="stories">
+<h2>Behavioral story bank</h2>
+<p>Twelve stories, written once and reused everywhere. Build three per week. Each runs under three minutes spoken, and each names a decision you made rather than work you contributed to. Tick a story once it has been delivered cold to camera under three minutes &mdash; not once it is written.</p>
+<label class="ck"><input type="checkbox" data-ck="story-0" data-group="stories"><span class="box"></span><span class="txt"><b>Story 01 &middot; Judgement under tradeoffs &middot; source: TFT vs simpler baseline</b>Hardest technical decision</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-1" data-group="stories"><span class="box"></span><span class="txt"><b>Story 02 &middot; Influence without authority &middot; source: Metric or scope argument</b>Disagreed with someone senior</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-2" data-group="stories"><span class="box"></span><span class="txt"><b>Story 03 &middot; Ownership of failure &middot; source: Production incident</b>Something you shipped that failed</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-3" data-group="stories"><span class="box"></span><span class="txt"><b>Story 04 &middot; Senior scope &middot; source: Forecasting ask as first received</b>Ambiguous problem you scoped</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-4" data-group="stories"><span class="box"></span><span class="txt"><b>Story 05 &middot; Impact &middot; source: Render-rate or campaign reporting</b>Moved a business number</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-5" data-group="stories"><span class="box"></span><span class="txt"><b>Story 06 &middot; Communication upward &middot; source: Metric defensibility work</b>Convinced stakeholders of a metric</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-6" data-group="stories"><span class="box"></span><span class="txt"><b>Story 07 &middot; Leadership signal &middot; source: Junior or cross-team</b>Mentored or unblocked someone</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-7" data-group="stories"><span class="box"></span><span class="txt"><b>Story 08 &middot; Pragmatism &middot; source: Two-stage pipeline delivery</b>Cut scope to hit a deadline</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-8" data-group="stories"><span class="box"></span><span class="txt"><b>Story 09 &middot; Learning speed &middot; source: LLM automation work</b>Learned something hard, fast</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-9" data-group="stories"><span class="box"></span><span class="txt"><b>Story 10 &middot; Prioritisation &middot; source: Multiple stakeholders</b>Handled conflicting priorities</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-10" data-group="stories"><span class="box"></span><span class="txt"><b>Story 11 &middot; Initiative &middot; source: LLM reporting automation</b>Built something nobody asked for</span></label>
+<label class="ck"><input type="checkbox" data-ck="story-11" data-group="stories"><span class="box"></span><span class="txt"><b>Story 12 &middot; Intellectual honesty &middot; source: A model choice you reversed</b>Changed your mind with evidence</span></label>
+<p>Keep the situation to two sentences and spend the time on the decision. Use &ldquo;I&rdquo; for decisions and &ldquo;we&rdquo; for execution, not the reverse. End every story with the result and one sentence on what you would do differently, because senior interviewers are listening for self-assessment.</p>
+<div class="note"><div class="lab">If you only perfect three</div><p>Stories 2, 4 and 12 are the ones that separate senior from mid-level, and they are the ones most people have weakest.</p></div>
+</section>
+<section id="milestones">
+<h2>Simulations and mock loops</h2>
+<p>The dated fixtures of the month. Everything else can slide by a day; these cannot, because each one produces the feedback the next week is built on.</p>
+<h3>Timed simulations</h3>
+<label class="ck"><input type="checkbox" data-ck="ms-0" data-group="milestones"><span class="box"></span><span class="txt"><b>Simulation 1</b>Day 6 &middot; 70 min, 4 tasks, hard stop</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-1" data-group="milestones"><span class="box"></span><span class="txt"><b>Simulation 2</b>Day 13 &middot; mixed hard</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-2" data-group="milestones"><span class="box"></span><span class="txt"><b>Simulation 3</b>Day 20</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-3" data-group="milestones"><span class="box"></span><span class="txt"><b>Simulation 4</b>Day 24 &mdash; checkpoint, target 500+</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-4" data-group="milestones"><span class="box"></span><span class="txt"><b>Simulation 5</b>Day 36</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-5" data-group="milestones"><span class="box"></span><span class="txt"><b>Simulation 6</b>Day 42 &mdash; final</span></label>
+<h3>Mock loops</h3>
+<label class="ck"><input type="checkbox" data-ck="ms-6" data-group="milestones"><span class="box"></span><span class="txt"><b>Mock loop 1</b>Day 16 &middot; design round included</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-7" data-group="milestones"><span class="box"></span><span class="txt"><b>Mock loop 2</b>Day 19</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-8" data-group="milestones"><span class="box"></span><span class="txt"><b>Mock loop 3</b>Day 21</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-9" data-group="milestones"><span class="box"></span><span class="txt"><b>Mock loop 4</b>Day 34 &middot; full length</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-10" data-group="milestones"><span class="box"></span><span class="txt"><b>Mock loop 5</b>Day 40 &middot; in your top company's style</span></label>
+<label class="ck"><input type="checkbox" data-ck="ms-11" data-group="milestones"><span class="box"></span><span class="txt"><b>Final full mock loop</b>Day 27 &middot; hardest interviewer available</span></label>
+</section>
+<section id="tracking">
+<h2>Tracking</h2>
+<p>Weekly rhythm: simulation on Saturday morning, written post-mortem the same afternoon, human
+mock on Sunday with feedback captured that day, and a review on Sunday evening that picks the
+next week's weak-spot target.</p>
+<div class="tbl"><table>
+<thead><tr><th>Metric</th><th>Week 1 baseline</th><th>Week 4 target</th></tr></thead>
+<tbody>
+<tr><td>Simulation score</td><td>~400</td><td>500+</td></tr>
+<tr><td>Problems solved within the 25-min cap</td><td>measure it</td><td>80%</td></tr>
+<tr><td>Designs delivered aloud, cumulative</td><td>0</td><td>16</td></tr>
+<tr><td>Stories rehearsed cold, cumulative</td><td>0</td><td>12</td></tr>
+</tbody></table></div>
+<p>Review the trend weekly, not daily. Daily variance is noise, and reading it as signal is how
+people talk themselves out of a working plan in week two.</p>
+</section>
+
+<section id="failure-modes">
+<h2>Failure modes</h2>
+<div class="note"><div class="lab">Building instead of practising</div>
+<p>Your strongest habit is producing excellent study material, and it will reassert itself around
+day 10 as an urge to make a tracker, a site, or a structured curriculum. That urge is the enemy of
+this plan. If you feel it, do a timed set instead &mdash; the tracker already exists, on this page.</p></div>
+<div class="note"><div class="lab">Collapse, not decay</div>
+<p>Intensity plans fail all at once. The defence is the hard rule: block A happens even on the
+worst day, even at 20 minutes. A month of 20-minute days beats nine good days and silence.</p></div>
+<div class="note"><div class="lab">Practising what is comfortable</div>
+<p>ML depth feels productive because you are good at it. Design and serving feel bad because they
+are where you are weak. The block that feels worst is the one moving the number.</p></div>
+<h3>If the schedule collapses, cut in this order</h3>
+<ol>
+<li>ML depth reading</li>
+<li>Weekend weak-spot work</li>
+<li>Behavioral writing &mdash; but never behavioral rehearsal</li>
+<li>Design frequency, from four a week to two</li>
+</ol>
+<p>Never cut the daily design block, the weekend simulation, or the weekly human mock.</p>
+<p>Alongside a full-time job, 6 hours a day for 30 days with no rest day is above what most people
+sustain. The collapse ordering above exists because the realistic outcome is 4 to 5 hours on most
+days. That is still an enormous amount of preparation. Judge the month by whether the four numbers
+moved, not by whether every hour was served.</p>
+</section>
+
+<div class="foot">
+  <span><a href="backup/index.html">&larr; Interview stages index</a></span>
+  <span>Progress is stored in this browser only</span>
+</div>
 </div>
 
-<div class="howto">
-  <div class="lab">How to use this</div>
-  <p>Read a stage's sections once, at pace. Then work the pushbacks &mdash; <strong>say your answer out loud before typing anything</strong>. The failure mode in these interviews is knowing the material and not being able to say it fluently under pressure, and only the spoken rehearsal fixes that.</p>
-  <p>Commit even when you're unsure. The gap between what you said and what's written is the actual study material; reading the strong answer first destroys that signal.</p>
-  <p>The <a href="prep-plan.html"><strong>45-day prep plan</strong></a> is the schedule these stages sit inside &mdash; it tracks progress with checkboxes saved in your browser.</p>
-  <p>The <strong>follow-up</strong> in each card is the escalation &mdash; the second question a good interviewer asks once you've handled the first. Those are where seniority gets assessed, and they're the part to re-run cold in the final week.</p>
-</div>
+<script>
+(function () {
+  "use strict";
+  var KEY = "roku-prep.plan45.v1";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("input[data-ck]"));
+  var state = {};
 
-<div class="track"><div class="track-head"><div class="t">Prep plan</div><div class="d">The 45-day schedule &mdash; ticks are saved in your browser</div></div>
-  <a class="card" href="prep-plan.html"><div class="row"><div class="num">45d</div><div><h3>45-Day Senior MLE interview prep plan</h3><p>Seven components across 45 days, hours weighted to ML system design. Every day, design, LLM topic, story and milestone is a checkbox that tracks what you&rsquo;ve actually done.</p><div class="meta">Tracked &middot; 286 checkpoints</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">Primers</div><div class="d">Optional on-ramp &mdash; read these if Spark or SQL feel shaky</div></div>
-  <a class="card" href="spark-foundations.html"><div class="row"><div class="num">P1</div><div><h3>Spark, from one machine to many</h3><p>Partitions, tasks and slots as physical things; why nothing runs until an action; and the one question that predicts whether an operation is cheap or expensive.</p><div class="meta">Before stage 03</div></div></div></a>
-  <a class="card" href="sql-foundations.html"><div class="row"><div class="num">P2</div><div><h3>SQL, in the order the engine runs it</h3><p>Logical execution order, joins as row multiplication, grain, NULL as unknown, and window functions &mdash; the correctness model before the performance one.</p><div class="meta">Before stage 06</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">Domain</div><div class="d">Read first &mdash; everything else assumes it</div></div>
-  <a class="card" href="ctv-ecosystem.html"><div class="row"><div class="num">01</div><div><h3>How a CTV ad actually gets served</h3><p>Request path, OpenRTB, VAST, pods, SSAI, identifiers, co-viewing, and the tables all of it produces.</p><div class="meta">Both panels</div></div></div></a>
-  <a class="card" href="roku-platform.html"><div class="row"><div class="num">02</div><div><h3>What makes Roku's data different</h3><p>Platform position, authenticated identity, ACR and cross-screen reach, the Snowflake clean room, audience activation and lookalikes.</p><div class="meta">Roku-specific</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">Spark</div><div class="d">Three stages: execution, tuning, streaming</div></div>
-  <a class="card" href="spark-execution.html"><div class="row"><div class="num">03</div><div><h3>From DAG to shuffle</h3><p>Stages and shuffles, join strategies, skew, partitioning, and reading a slow job backwards from its symptom.</p><div class="meta">Panel 2 core</div></div></div></a>
-  <a class="card" href="spark-performance.html"><div class="row"><div class="num">04</div><div><h3>Memory, executors, and the knobs that matter</h3><p>Unified memory, PySpark overhead OOMs, caching versus checkpointing, UDF cost, and touring the Spark UI.</p><div class="meta">Panel 2 core</div></div></div></a>
-  <a class="card" href="spark-streaming.html"><div class="row"><div class="num">05</div><div><h3>Streaming impressions without lying about time</h3><p>Micro-batches, watermarks, output modes, stream joins, state stores, and what breaks as state grows.</p><div class="meta">Panel 2 core</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">SQL</div><div class="d">Three stages: patterns, CTV cookbook, performance</div></div>
-  <a class="card" href="sql-at-scale.html"><div class="row"><div class="num">06</div><div><h3>SQL that survives ten billion rows</h3><p>Window frames, dedup, sessionization, attribution joins, salting, and two-phase aggregation.</p><div class="meta">Panel 2 core</div></div></div></a>
-  <a class="card" href="sql-ctv-cookbook.html"><div class="row"><div class="num">07</div><div><h3>The CTV query cookbook</h3><p>Delivery funnel, reach curves and frequency buckets, pod queries, date spines, pacing, nested payloads, sampling.</p><div class="meta">Live-coding risk</div></div></div></a>
-  <a class="card" href="query-performance.html"><div class="row"><div class="num">08</div><div><h3>Reading the plan before blaming the warehouse</h3><p>Plans bottom-up, the pruning checklist, cardinality and statistics, anti-patterns, and when it isn't the query.</p><div class="meta">Panel 2 core</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">Data platform</div><div class="d">Storage, identity, sketches, correctness</div></div>
-  <a class="card" href="storage-and-modeling.html"><div class="row"><div class="num">09</div><div><h3>Files, formats, and tables at ten billion rows a day</h3><p>Parquet internals, Iceberg and Delta, partition and clustering strategy, SCD-2, point-in-time correctness.</p><div class="meta">Panel 2 core</div></div></div></a>
-  <a class="card" href="identity-graphs.html"><div class="row"><div class="num">10</div><div><h3>Resolving who is who, at a billion edges</h3><p>Edge confidence, incremental components, over- versus under-merging, decay, consent, clean rooms.</p><div class="meta">Both panels</div></div></div></a>
-  <a class="card" href="sketches.html"><div class="row"><div class="num">11</div><div><h3>Counting without counting</h3><p>HyperLogLog, Count-Min, Bloom, t-digest, DGIM &mdash; and the error you just accepted.</p><div class="meta">Both panels</div></div></div></a>
-  <a class="card" href="concurrency-reliability.html"><div class="row"><div class="num">12</div><div><h3>Two kinds of concurrency, one kind of failure</h3><p>GIL and asyncio; then delivery semantics, idempotency, consistency, backpressure, graceful degradation.</p><div class="meta">Panel 2 core</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">ML &amp; AI</div><div class="d">Fundamentals, pipelines, agents, measurement</div></div>
-  <a class="card" href="ml-fundamentals.html"><div class="row"><div class="num">13</div><div><h3>ML fundamentals as trade-offs, not definitions</h3><p>Framing, leakage, high-cardinality features, loss versus metric, rolling-origin validation, model choice.</p><div class="meta">Both panels</div></div></div></a>
-  <a class="card" href="feature-pipelines.html"><div class="row"><div class="num">14</div><div><h3>From raw beacons to a served feature</h3><p>Layered architecture, training/serving skew, point-in-time joins, backfills, quality gates.</p><div class="meta">Panel 2 core</div></div></div></a>
-  <a class="card" href="agentic-systems.html"><div class="row"><div class="num">15</div><div><h3>Agents that someone has to trust on Monday</h3><p>The design template, deterministic validation, layered evaluation, human gates, observability, cost caps.</p><div class="meta">Panel 1 core</div></div></div></a>
-  <a class="card" href="measurement.html"><div class="row"><div class="num">16</div><div><h3>Numbers someone will argue with</h3><p>Descriptive versus conventional versus causal, experiment design for shared screens, bandits, calibration.</p><div class="meta">Panel 1 core</div></div></div></a>
-</div>
-<div class="track"><div class="track-head"><div class="t">Craft</div><div class="d">How the answer is delivered</div></div>
-  <a class="card" href="coding-patterns.html"><div class="row"><div class="num">17</div><div><h3>The eight problems, in their data-shaped form</h3><p>Dedup, top-k, sessionization, union-find, sampling, token bucket, worker pools &mdash; each with its scale variant.</p><div class="meta">Live coding</div></div></div></a>
-  <a class="card" href="design-framework.html"><div class="row"><div class="num">18</div><div><h3>Driving the room when the question is vague</h3><p>Scoping, falsifiable assumptions, audible trade-offs, talking about your own work, recovering when you don't know.</p><div class="meta">Both panels</div></div></div></a>
-</div>
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(KEY);
+      if (raw) { state = JSON.parse(raw) || {}; }
+    } catch (e) { state = {}; }   // private mode, blocked storage, corrupt JSON
+  }
+  function save() {
+    try { window.localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
 
-<div class="route">
-  <div class="sec-lab">A suggested route</div>
-  <table>
-  <tr><th>When</th><th>What</th><th>Why</th></tr>
-  <tr><td>Day 1</td><td>Domain 01, 02</td><td>CTV mechanics, then what is specific to Roku. Everything later refers back to these.</td></tr>
-  <tr><td>Days 2&ndash;3</td><td>Spark 03, 04</td><td>Tuning then streaming. Pair with the Spark UI on a real job if you can get cluster access.</td></tr>
-  <tr><td>Days 4&ndash;5</td><td>SQL 05, 06, 07</td><td>Three stages. The cookbook is the one to write out by hand rather than read.</td></tr>
-  <tr><td>Days 6&ndash;7</td><td>Platform 08&ndash;11</td><td>Storage, identity, sketches, correctness. Identity twice.</td></tr>
-  <tr><td>Days 8&ndash;9</td><td>ML &amp; AI 12&ndash;15</td><td>Narrate 14 and 15 from your own projects rather than from the page.</td></tr>
-  <tr><td>Day 10</td><td>Craft 16, 17</td><td>Coding patterns and the design framework.</td></tr>
-  <tr><td>Days 11&ndash;14</td><td>Pushbacks only</td><td>Cold, out loud, sections closed. Then escalations only. That pass is worth more than the first.</td></tr>
-  </table>
-</div>
+  function setPct(el, done, total) {
+    el.style.width = (total ? Math.round((done / total) * 100) : 0) + "%";
+  }
 
-<p class="note">Spark and SQL carry three stages each because they are the most likely to be live-coded and the hardest to fake. The domain stage exists so that every example in the other sixteen has a real referent &mdash; pods, SSAI, beacons, and bid requests rather than generic users and orders.</p>
+  function render() {
+    var groups = {}, total = 0, done = 0;
 
-</div>
+    boxes.forEach(function (b) {
+      var g = b.getAttribute("data-group");
+      if (!groups[g]) { groups[g] = { done: 0, total: 0 }; }
+      groups[g].total++; total++;
+      var on = b.checked;
+      if (on) { groups[g].done++; done++; }
+      b.closest(".ck").classList.toggle("done", on);
+    });
+
+    Object.keys(groups).forEach(function (g) {
+      var bar = document.querySelector('[data-bar="' + g + '"]');
+      var num = document.querySelector('[data-mnum="' + g + '"]');
+      if (bar) { setPct(bar, groups[g].done, groups[g].total); }
+      if (num) { num.textContent = groups[g].done + "/" + groups[g].total; }
+    });
+
+    // per-day ratios, and the dimming of a fully-completed day
+    Array.prototype.forEach.call(document.querySelectorAll(".day"), function (d) {
+      var kids = d.querySelectorAll("input[data-ck]");
+      var n = 0;
+      Array.prototype.forEach.call(kids, function (k) { if (k.checked) { n++; } });
+      var r = d.querySelector("[data-dratio]");
+      if (r) { r.textContent = n + "/" + kids.length; }
+      d.classList.toggle("full", kids.length > 0 && n === kids.length);
+    });
+
+    setPct(document.getElementById("barAll"), done, total);
+    document.getElementById("pctAll").textContent =
+      (total ? Math.round((done / total) * 100) : 0) + "%";
+    document.getElementById("cntAll").textContent = done + " / " + total;
+  }
+
+  load();
+  boxes.forEach(function (b) {
+    var id = b.getAttribute("data-ck");
+    b.checked = state[id] === true;
+    b.addEventListener("change", function () {
+      if (b.checked) { state[id] = true; } else { delete state[id]; }
+      save();
+      render();
+    });
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    if (!window.confirm("Clear every tick on this page? This cannot be undone.")) { return; }
+    state = {};
+    save();
+    boxes.forEach(function (b) { b.checked = false; });
+    render();
+  });
+
+  render();
+}());
+</script>
 </body></html>
