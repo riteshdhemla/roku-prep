@@ -82,16 +82,21 @@ Actions tab. All links are relative, so the site works served from the `/roku-pr
 The whole repo root is the artifact, so every Roku stage page, both primers and the prep plan
 are published together — nothing is built, filtered or transformed on the way out.
 
-`configure-pages` runs with `enablement: true`, so it turns Pages on by itself once the
-repository is eligible — no manual Settings step.
+`configure-pages` runs with `enablement: true`, so it turns Pages on by itself — no manual
+Settings step. That part now works: the repository became eligible and run #5 deployed
+successfully on 2026-08-12.
 
-**The repository is not eligible yet.** It is private, and Pages on a private repository
-requires a paid plan, so the deploy currently fails at `configure-pages` with
-`Create Pages site failed: Resource not accessible by integration`. To publish, either:
+The site is served at `https://riteshdhemla.github.io/roku-prep/`.
 
-- make the repository public — **Settings → General → Danger Zone → Change visibility** — then
-  re-run the workflow from the Actions tab; or
-- upgrade the account to GitHub Pro and re-run.
+### Which branches may actually deploy
 
-Once it succeeds the site is served at `https://riteshdhemla.github.io/roku-prep/`.
+Listing a branch under `on.push.branches` is necessary but not sufficient. The job targets the
+`github-pages` environment, and that environment carries its own **deployment branch policy**.
+A push from a branch outside that policy starts the run, holds it at `waiting`, then fails it
+in a couple of seconds with no step logs — the job never begins, so there is nothing to debug
+in the log output.
+
+Only `claude/web-pages-repo-push-cby8qx` is currently allowed. To let another branch publish,
+add it under **Settings → Environments → github-pages → Deployment branches**, or merge the
+branch into one that is already allowed.
 
