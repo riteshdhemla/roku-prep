@@ -1,10 +1,28 @@
 # Interview Stages — CTV data & AI systems
 
-An eighteen-stage study site for Roku data/AI systems interview prep. Each stage covers one
-topic grounded in Roku's CTV platform rather than generic examples, and ends in pushbacks
-written the way an interviewer actually pushes.
+An eighteen-stage study site for Roku data/AI systems interview prep, plus the 45-day prep
+plan the stages sit inside. Each stage covers one topic grounded in Roku's CTV platform rather
+than generic examples, and ends in pushbacks written the way an interviewer actually pushes.
 
 Start at `index.html`.
+
+## Prep plan
+
+| # | Page | Topic |
+|---|---|---|
+| — | `prep-plan.html` | 45-day senior MLE prep plan, with progress tracking |
+
+The plan page carries the full schedule — seven components, 45 days, the sixteen designs, the
+sixteen LLM topics, the twelve behavioral stories, the simulations and mock loops — and renders
+every one of them as a checkbox. 286 in total, grouped into ten progress meters plus a running
+total in the top bar.
+
+Ticks are written to `localStorage` under the key `roku-prep.plan45.v1`, so progress is
+**per-browser and per-device**: it survives reloads and redeploys, but does not sync between
+machines and is lost if site data is cleared. There is no account and nothing leaves the
+browser. Every storage access is wrapped in `try`/`catch`, so the page still renders in private
+mode or with storage blocked — it simply stops remembering. The `Reset` button in the top bar
+clears every tick after a confirmation.
 
 ## Primers
 
@@ -57,20 +75,31 @@ offline.
 
 ## Deployment
 
-`.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to the
-default branch, and can also be run manually from the Actions tab. All links are relative, so
-the site works served from the `/roku-prep/` subpath.
+`.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to `main`
+or `claude/web-pages-repo-push-cby8qx`, and can also be run manually from the Actions tab. All
+links are relative, so the site works served from the `/roku-prep/` subpath.
 
-`configure-pages` runs with `enablement: true`, so it turns Pages on by itself once the
-repository is eligible — no manual Settings step.
+The whole repo root is the artifact, so every Roku stage page, both primers and the prep plan
+are published together — nothing is built, filtered or transformed on the way out.
 
-**The repository is not eligible yet.** It is private, and Pages on a private repository
-requires a paid plan, so the deploy currently fails at `configure-pages` with
-`Create Pages site failed: Resource not accessible by integration`. To publish, either:
+`configure-pages` runs with `enablement: true`, so it turns Pages on by itself — no manual
+Settings step. That part now works: the repository became eligible and run #5 deployed
+successfully on 2026-08-12.
 
-- make the repository public — **Settings → General → Danger Zone → Change visibility** — then
-  re-run the workflow from the Actions tab; or
-- upgrade the account to GitHub Pro and re-run.
+The site is served at `https://riteshdhemla.github.io/roku-prep/`.
 
-Once it succeeds the site is served at `https://riteshdhemla.github.io/roku-prep/`.
+### Which branches may actually deploy
+
+Listing a branch under `on.push.branches` is necessary but not sufficient. The job targets the
+`github-pages` environment, and that environment carries its own **deployment branch policy**.
+A push from a branch outside that policy starts the run, holds it at `waiting`, then fails it
+in a couple of seconds with no step logs — the job never begins, so there is nothing to debug
+in the log output.
+
+Only `claude/web-pages-repo-push-cby8qx` is currently allowed, which is why it is the only
+working branch in the trigger list. Adding a branch to `on.push.branches` without also adding
+it to the environment does nothing useful: it just produces a red run on every push. To let
+another branch publish, add it under **Settings → Environments → github-pages → Deployment
+branches** *and* to the trigger list. Otherwise, merge into a branch that is already allowed —
+that is the normal path, and it is how work reaches the published site.
 
